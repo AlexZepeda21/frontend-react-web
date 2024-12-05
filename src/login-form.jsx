@@ -5,6 +5,7 @@ import { Label } from '@radix-ui/react-label';
 import { Checkbox } from '@radix-ui/react-checkbox'; 
 import { Button } from './components/ui/button'; 
 import { Input } from './components/ui/input'; 
+import Link from "./components/ui/Link";
 import { clsx } from 'clsx'; 
 
 export default function Login() {   
@@ -88,18 +89,15 @@ export default function Login() {
         
         {/* Botón de "Recordarme" */}         
         <div className="flex items-center justify-between">           
-          <div className="flex items-center space-x-2">             
-            <Checkbox               
-              id="remember"               
-              className="peer h-5 w-5 border border-gray-300 rounded-md checked:bg-blue-600"             
-            />              
-            <label               
-              htmlFor="remember"               
-              className="text-sm leading-none  peer-disabled:opacity-70"             
-            >               
-              Recordarme             
-            </label>           
-          </div>           
+        <div className="flex items-center space-x-2">
+            <Checkbox id="terms" className="border-gray-400 data-[state=checked]:bg-blue-500" />
+            <Label htmlFor="terms" className="text-white">
+              I agree all statements in{" "}
+              <Link href="#" className="text-blue-400 hover:underline">
+                Terms of service
+              </Link>
+            </Label>
+          </div>       
           <Button             
             variant="link"             
             className="text-blue-600 hover:text-blue-700 px-0"             
@@ -123,7 +121,7 @@ export default function Login() {
       <div className="mt-3 text-center">         
         <p>           
           ¿No tienes cuenta?{' '}           
-          <a href="#" onClick={() => navegar("/registro")}> // Corregido           
+          <a href="#" onClick={() => navegar("/register-form")}> // Corregido           
             Créala aquí           
           </a>         
         </p>       
