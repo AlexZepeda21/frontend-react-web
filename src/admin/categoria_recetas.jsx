@@ -28,16 +28,13 @@ const Categoria_recetas = () => {
     fetchCategorias();
   }, []); // El array vacío asegura que solo se ejecute una vez, al montar el componente
 
-  // Calculamos el rango de categorías a mostrar en la página actual
   const indexOfLastCategory = (currentPage + 1) * categoriasPorPagina;
   const indexOfFirstCategory = indexOfLastCategory - categoriasPorPagina;
   
-  // Filtramos las categorías según el término de búsqueda y aplicamos la paginación
   const currentCategorias = categorias
     .filter(categoria => categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
     .slice(indexOfFirstCategory, indexOfLastCategory);
 
-  // Función para manejar la selección de página en la paginación
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -59,7 +56,6 @@ const Categoria_recetas = () => {
 
       <div className="row">
         {currentCategorias.length > 0 ? (
-          // Si hay categorías que mostrar, las mapeamos
           currentCategorias.map((categoria) => (
             <div className="col-md-4 mb-4" key={categoria.id_categoria_recetas}>
               <Card>
