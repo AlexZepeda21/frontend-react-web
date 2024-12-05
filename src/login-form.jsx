@@ -99,14 +99,7 @@ export default function Login() {
             >               
               Recordarme             
             </label>           
-          </div>           
-          <Button             
-            variant="link"             
-            className="text-blue-600 hover:text-blue-700 px-0"             
-            disabled={isLoading}           
-          >             
-            ¿Olvidaste tu contraseña?           
-          </Button>         
+          </div>               
         </div>          
         
         {/* Botón de inicio de sesión */}         
