@@ -91,7 +91,7 @@ export default function Register() {
       </div>
       <div className="hidden lg:flex items-center justify-center">
         <Image
-          src="/placeholder.svg"
+          src="https://www.itca.edu.sv/wp-content/themes/elaniin-itca/images/logoColor.png"
           alt="Sign up illustration"
           width={500}
           height={400}

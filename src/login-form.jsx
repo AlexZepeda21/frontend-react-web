@@ -111,16 +111,6 @@ export default function Login() {
           {isLoading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}         
         </Button>       
       </form>        
-      
-      {/* Enlace para redirigir a la página de registro */}       
-      <div className="mt-3 text-center">         
-        <p>           
-          ¿No tienes cuenta?{' '}           
-          <a href="#" onClick={() => navegar("/register-form")}> // Corregido           
-            Créala aquí           
-          </a>         
-        </p>       
-      </div>     
     </div>   
   ); 
 }
