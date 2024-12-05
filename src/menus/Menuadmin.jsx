@@ -1,6 +1,5 @@
 import React from 'react';
 import { Home, TrendingUp, Users, Library, History, Video, Clock, ThumbsUp, Search, Camera, Grid, Bell, User, TicketPercent, MenuIcon, Menu, Disc2Icon } from 'lucide-react';
-import { PiLaptop } from 'react-icons/pi';
 
 const Menuadmin = () => {
   return (

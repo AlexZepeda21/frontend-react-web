@@ -24,7 +24,7 @@ function App() {
     <Router>
       <Routes>
         {/* Ruta principal */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Menuadmin />} />
 
         {/* Ruta de login */}
         <Route path="/loginForm" element={<Login />} />
