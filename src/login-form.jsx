@@ -34,7 +34,7 @@ export default function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('id', data.id);
 
-        alert(localStorage.getItem('id'));
+        alert('Inicio de sesion exitoso.');
 
 
         if (data.tipo_usuario == 1) {
