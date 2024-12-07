@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
+import { motion } from './framer-motion/motion'
+import { Button } from 'react-bootstrap'
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import { Textarea } from "./ui/textarea"
+import { Switch } from './ui/Switchh'
 
-export default function RecipeCategoryModal() {
+export default function MdAgregarCateRecetas() {
   const [isOpen, setIsOpen] = useState(false)
   const [formData, setFormData] = useState({
     nombre: '',
@@ -82,12 +82,14 @@ export default function RecipeCategoryModal() {
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="estado"
-                  checked={formData.estado}
-                  onCheckedChange={(checked) => setFormData({ ...formData, estado: checked })}
-                />
-                <Label htmlFor="estado" className="text-lg font-medium">Activo</Label>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="estado"
+                    checked={formData.estado}
+                    onCheckedChange={(checked) => setFormData({ ...formData, estado: checked })}
+                  />
+                  <Label htmlFor="estado" className="text-lg font-medium">Activo</Label>
+                </div>
               </div>
               <div className="flex justify-end space-x-2 mt-6">
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
