@@ -7,7 +7,7 @@ const Layout = () => {
         <div className="flex h-screen">
             <div className="w-64 border-r bg-white">
                 <div className="m-3">
-                    <img src="https://www.itca.edu.sv/wp-content/themes/elaniin-itca/images/logoColor.png" alt="" />
+                    <img src="https://virtual3.itca.edu.sv/pluginfile.php/682735/mod_folder/intro/ITCA_2024_FC%20%281%29.jpg?1728999031342" alt="" />
                 </div>
                 <div className="p-4">
                     <a href="/" className="flex items-center space-x-2 font-bold text-xl text-red-600 mb-6">
@@ -18,7 +18,7 @@ const Layout = () => {
                         <NavItem href="/../register-form" icon={<Users className="w-4 h-4" />} text="Agregar usuarios" />
                         <div className="pt-4"></div>
                         <NavItem href="/../admin/categoria_recetas" icon={<Library className="w-4 h-4" />} text="Recetas" />
-                        <NavItem href="/menu" icon={<Disc2Icon className="w-4 h-4" />} text="Platos" />
+                        <NavItem href="/../admin/productos" icon={<Disc2Icon className="w-4 h-4" />} text="Productos" />
                         <div className="pt-4"></div>
                         <NavItem href="/history" icon={<History className="w-4 h-4" />} text="Historial de reservas" />
                         <NavItem href="/watch-later" icon={<Clock className="w-4 h-4" />} text="Watch later" />
@@ -46,7 +46,7 @@ const Layout = () => {
                 </header>
 
                 {/* Aquí agregamos el Outlet */}
-                <main className="p-4">
+                <main className="">
                     <Outlet /> {/* Este es el lugar donde se cargará el contenido dinámico de las rutas hijas */}
                 </main>
             </div>

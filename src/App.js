@@ -11,6 +11,8 @@ import Layout from './Menus/Menuadmin';
 
 // Rutas de categorías
 import Categoria_recetas from './admin/categoria_recetas';
+import Productos from './admin/productos';
+
 
 // Importando rutas de controles
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,6 +30,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Rutas que usan el Layout como contenedor */}
           <Route path="admin/categoria_recetas" element={<Categoria_recetas />} />
+          <Route path="admin/productos" element={<Productos />} />
           <Route path="/register-form" element={<Register />} />
           <Route path="/login-form" element={<Login />} />
 
