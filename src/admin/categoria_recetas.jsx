@@ -3,18 +3,19 @@ import ReactPaginate from 'react-paginate';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { FaBook } from 'react-icons/fa';
+import { AiOutlineReconciliation } from "react-icons/ai";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { API_BASE_URL } from '../url';
 
 
 const Categoria_recetas = () => {
-  // Estado para almacenar las categorías obtenidas desde la API
-  const [categorias, setCategorias] = useState([]); // Inicializar con un array vacío
-  const [currentPage, setCurrentPage] = useState(0); // Página actual
-  const [categoriasPorPagina, setCategoriasPorPagina] = useState(9); // Número de categorías por página
-  const [searchTerm, setSearchTerm] = useState(""); // Término de búsqueda
 
-  // useEffect para hacer la petición a la API y obtener las categorías
+  const [categorias, setCategorias] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [categoriasPorPagina, setCategoriasPorPagina] = useState(9);
+  const [searchTerm, setSearchTerm] = useState("");
+
+
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -29,11 +30,15 @@ const Categoria_recetas = () => {
     };
 
     fetchCategorias();
+
+
+
+
   }, []); // El array vacío asegura que solo se ejecute una vez, al montar el componente
 
   const indexOfLastCategory = (currentPage + 1) * categoriasPorPagina;
   const indexOfFirstCategory = indexOfLastCategory - categoriasPorPagina;
-  
+
   // Filtrar las categorías solo por nombre
   const filteredCategorias = categorias.filter(categoria =>
     categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -48,6 +53,13 @@ const Categoria_recetas = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
+
+  const llamar = (event) => {
+    alert(localStorage.getItem('id'));
+  };
+
+  
+
 
   return (
     <div className="container mt-5">
@@ -65,28 +77,38 @@ const Categoria_recetas = () => {
       </div>
 
       <div className="row">
+
         {currentCategorias.length > 0 ? (
           currentCategorias.map((categoria) => (
-            <div className="col-md-4 mb-4" key={categoria.id_categoria_recetas}>
-              <Card>
-                <Card.Body>
-                  <div className="text-center mb-3">
+            <div className="col-md-3 mb-4" key={categoria.id_categoria_recetas}>
+              <Card className="h-100 d-flex justify-content-center align-items-center">
+                <Card.Body className="text-center">
+
+                  <div className="d-flex justify-content-center">
+
                     {/* Icono para representar la categoría */}
-                    <FaBook size={80} color="#007bff" />
+                    <AiOutlineReconciliation size={80} color="#007bff" />
+
                   </div>
-                  {/* Mostramos el nombre y la descripción de la categoría */}
+
+                  {/* Mostramos el nombre de la categoría */}
                   <Card.Title>{categoria.nombre}</Card.Title>
+
+                  {/* Mostramosla descripción de la categoría */}
                   <Card.Text>{categoria.descripcion}</Card.Text>
-                  <div className="d-flex justify-content-between">
+
+                  <div className="d-flex justify-content-center">
+
                     {/* Botón "Ver más" */}
-                    <Button variant="success">Ver más</Button>
+                    <Button variant="success" onClick={llamar}>Ver más</Button>
+
                   </div>
                 </Card.Body>
+
               </Card>
             </div>
           ))
         ) : (
-          // Si no hay categorías disponibles o no coinciden con la búsqueda
           <div className="col-12 text-center">
             <p>No hay categorías disponibles</p>
           </div>
