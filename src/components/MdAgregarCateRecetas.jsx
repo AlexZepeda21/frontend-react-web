@@ -7,6 +7,7 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Textarea } from "./ui/textarea"
 import { Switch } from './ui/Switch'
+import { API_BASE_URL } from '../url'
 
 export default function MdAgregarCateRecetas() {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,7 +20,7 @@ export default function MdAgregarCateRecetas() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch('/api/categoria-recetas', {
+      const response = await fetch(`${API_BASE_URL}/categoria-recetas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
