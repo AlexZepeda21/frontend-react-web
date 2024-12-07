@@ -1,0 +1,206 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+}
+
+.App {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.open-modal-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.open-modal-button:hover {
+  background-color: #0056b3;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Form Styles */
+.product-form .form-group {
+  margin-bottom: 15px;
+}
+
+.product-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.product-form input,
+.product-form select,
+.product-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.product-form textarea {
+  resize: none;
+}
+
+.product-form .form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product-form .form-group select {
+  width: 100%;
+}
+
+/* Image Upload */
+.image-upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Esto hace que ocupe todo el ancho disponible */
+  height: 200px; /* Mantén la altura fija si lo deseas */
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.image-upload .upload-placeholder {
+  font-size: 16px;
+  color: #aaa;
+  text-align: center;
+}
+
+.image-upload .file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-upload .upload-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* Button Styles */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel-button,
+.save-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #ccc;
+}
+
+.cancel-button:hover {
+  background-color: #999;
+}
+
+.save-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  max-width: 100%;
+  margin: auto;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.modal-content {
+  position: relative;
+  z-index: 1050; 
+}
+
+.modal-overlay {
+  z-index: 1040; 
+}
+
+.pagination {
+  z-index: 1;
+}
+
+
+.upload-placeholder {
+  display: flex; /* Usa Flexbox para alinear contenido */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+  width: 450px; /* Ajusta el tamaño según necesites */
+  height: 200px; /* Ajusta el tamaño según necesites */
+  /*background-image: url('/path/to/your/image.jpg'); /* Ruta de la imagen de fondo */
+  background-size: cover; /* Asegura que la imagen cubra todo el contenedor */
+  background-position: center; /* Centra la imagen dentro del contenedor */
+  color: white; /* El color del texto */
+}
+
+.upload-placeholder:hover {
+  opacity: 0.8; /* Opcional: para dar un efecto cuando el usuario pase el mouse sobre el área */
+}
