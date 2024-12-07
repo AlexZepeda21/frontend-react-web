@@ -7,7 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Categoria_recetas = () => {
   // Estado para almacenar las categorías obtenidas desde la API
-  const [categorias, setCategorias] = useState([]);
+  const [categorias, setCategorias] = useState([]); // Inicializar con un array vacío
   const [currentPage, setCurrentPage] = useState(0); // Página actual
   const [categoriasPorPagina, setCategoriasPorPagina] = useState(9); // Número de categorías por página
   const [searchTerm, setSearchTerm] = useState(""); // Término de búsqueda
@@ -18,10 +18,11 @@ const Categoria_recetas = () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/cate_recetas');
         const data = await response.json();
-        // Asignamos el array de categorías al estado
-        setCategorias(data.categoria_recetas);
+        // Asignamos el array de categorías al estado, asegurándonos de que sea un array vacío si no hay datos
+        setCategorias(data.categoria_recetas || []);
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
+        setCategorias([]); // Si hay error, asignamos un array vacío
       }
     };
 
@@ -31,9 +32,16 @@ const Categoria_recetas = () => {
   const indexOfLastCategory = (currentPage + 1) * categoriasPorPagina;
   const indexOfFirstCategory = indexOfLastCategory - categoriasPorPagina;
   
-  const currentCategorias = categorias
-    .filter(categoria => categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
-    .slice(indexOfFirstCategory, indexOfLastCategory);
+  // Filtrar las categorías solo por nombre
+  const filteredCategorias = categorias.filter(categoria =>
+    categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Obtener las categorías que se mostrarán en la página actual
+  const currentCategorias = filteredCategorias.slice(indexOfFirstCategory, indexOfLastCategory);
+
+  // Calcular el número total de páginas
+  const pageCount = Math.ceil(filteredCategorias.length / categoriasPorPagina);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -89,7 +97,7 @@ const Categoria_recetas = () => {
           previousLabel={'Anterior'}
           nextLabel={'Siguiente'}
           breakLabel={'...'}
-          pageCount={Math.ceil(categorias.filter(categoria => categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())).length / categoriasPorPagina)}
+          pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={4}
           onPageChange={handlePageClick} // Cambiar página
