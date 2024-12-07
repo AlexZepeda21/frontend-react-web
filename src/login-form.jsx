@@ -34,7 +34,7 @@ export default function Login() {
         alert('Inicio de sesión exitoso'); 
 
         if(data.tipo_usuario == 1){
-          navegar("./menus/Menuadmin");
+          navegar("./layout/Menuadmin");
         }
         else if(data.tipo_usuario == 1){
           navegar("./menus/Menuuser");

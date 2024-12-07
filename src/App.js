@@ -9,9 +9,6 @@ import Register from './register-form';
 // Layout que contiene el menú de administración
 import Layout from './layout/Menuadmin';
 
-// Rutas de menús
-import Menuuser from './menus/Menuuser';
-
 // Rutas de categorías
 import Categoria_recetas from './admin/categoria_recetas';
 
@@ -24,18 +21,18 @@ function App() {
     <Router>
       <Routes>
         {/* Ruta de autenticación (Login/Register) */}
-        <Route path="/loginForm" element={<Login />} />
+        <Route path="/layout/Menuadmin" element={<Layout />} />
+        <Route path="/" element={<Login />} />
 
         {/* Ruta principal con Layout contenedor */}
         <Route path="/" element={<Layout />}>
           {/* Rutas que usan el Layout como contenedor */}
-          <Route path="menus/Menuuser" element={<Menuuser />} />
           <Route path="admin/categoria_recetas" element={<Categoria_recetas />} />
           <Route path="/register-form" element={<Register />} />
+          <Route path="/login-form" element={<Login />} />
 
         </Route>
 
-        {/* Si quieres añadir más rutas adicionales, agrégalas aquí */}
       </Routes>
     </Router>
   );
