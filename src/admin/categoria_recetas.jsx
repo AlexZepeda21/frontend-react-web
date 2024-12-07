@@ -58,10 +58,11 @@ const Categoria_recetas = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <br />
+        {/* Aquí está el modal personalizado que llamamos desde otro archivo */}
         <div>
-          {/* BOTON DEL MODAL */}
-          <button onClick={() => setIsOpen(true)}>Abrir Modal</button>
+          <MdAgregarCateRecetas isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
+
       </div>
 
       <div className="row">
@@ -116,9 +117,6 @@ const Categoria_recetas = () => {
           nextLinkClassName={'page-link'}
         />
       </div>
-
-      {/* Aquí está el modal personalizado que llamamos desde otro archivo */}
-      <MdAgregarCateRecetas isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 };

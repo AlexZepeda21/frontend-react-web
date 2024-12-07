@@ -46,15 +46,15 @@ export default function MdAgregarCateRecetas() {
     <div>
       <Button onClick={() => setIsOpen(true)}>Agregar Categoría de Receta</Button>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white rounded-lg shadow-xl overflow-hidden max-w-md w-full"
+            className="bg-white rounded-lg shadow-xl w-full max-w-lg"
           >
-            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white">
+            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
               <h2 className="text-2xl font-bold mb-2">Nueva Categoría de Receta</h2>
               <p className="text-sm opacity-80">Añade una nueva categoría para tus deliciosas recetas</p>
             </div>
@@ -104,4 +104,3 @@ export default function MdAgregarCateRecetas() {
     </div>
   )
 }
-
