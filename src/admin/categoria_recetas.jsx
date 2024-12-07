@@ -4,6 +4,8 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { FaBook } from 'react-icons/fa';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { API_BASE_URL } from '../url';
+
 
 const Categoria_recetas = () => {
   // Estado para almacenar las categorías obtenidas desde la API
@@ -16,7 +18,7 @@ const Categoria_recetas = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/cate_recetas');
+        const response = await fetch(`${API_BASE_URL}/cate_recetas`);
         const data = await response.json();
         // Asignamos el array de categorías al estado, asegurándonos de que sea un array vacío si no hay datos
         setCategorias(data.categoria_recetas || []);

@@ -6,6 +6,7 @@ import { Checkbox } from "./components/ui/checkbox";
 import { Button } from './components/ui/button'; 
 import { Input } from './components/ui/input'; 
 import { clsx } from 'clsx'; 
+import { API_BASE_URL } from './url';
 
 export default function Login() {   
   const [correo, setEmail] = useState('');   
@@ -19,7 +20,7 @@ export default function Login() {
     const loginData = { correo, clave };      
     
     try {       
-      const response = await fetch('http://127.0.0.1:8000/api/login', {         
+      const response = await fetch(`${API_BASE_URL}/login`, {         
         method: 'POST',         
         headers: { 'Content-Type': 'application/json' },         
         body: JSON.stringify(loginData),       
@@ -36,7 +37,7 @@ export default function Login() {
         if(data.tipo_usuario == 1){
           navegar("./layout/Menuadmin");
         }
-        else if(data.tipo_usuario == 1){
+        else if(data.tipo_usuario == 2){
           navegar("./menus/Menuuser");
         }
         
