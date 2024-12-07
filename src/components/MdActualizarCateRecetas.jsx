@@ -1,60 +1,66 @@
-'use client'
+import React, { useEffect, useState } from 'react';
+import { motion } from './framer-motion/motion';
+import { Button } from 'react-bootstrap';
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { API_BASE_URL } from '../url';
+import { Switch } from './ui/Switch';
 
-import React, { useState } from 'react'
-import { motion } from './framer-motion/motion'
-import { Button } from 'react-bootstrap'
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
-import { Textarea } from "./ui/textarea"
-import { API_BASE_URL } from '../url'
-
-export default function MdAgregarCateRecetas() {
-  const [isOpen, setIsOpen] = useState(false)
+export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }) {
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
-  })
+    estado: false,
+  });
+
+  useEffect(() => {
+    if (categoria) {
+      setFormData({
+        nombre: categoria.nombre,
+        descripcion: categoria.descripcion,
+        estado: categoria.estado || false,  // Asegúrate de que "estado" exista en la categoría
+      });
+    }
+  }, [categoria]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE_URL}/cate_recetas`, {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/cate_recetas/${categoria.id_categoria_recetas}`, {
+        method: 'PUT',  // Usamos PUT para la actualización
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          nombre: formData.nombre,
-          descripcion: formData.descripcion
-        }),
-      })
+        body: JSON.stringify(formData),
+      });
+
       if (response.ok) {
-        alert('Categoría de receta creada con éxito!')
-        setIsOpen(false)
+        alert('Categoría de receta actualizada con éxito!');
+        setIsOpen(false);  // Cerrar modal al guardar
       } else {
-        throw new Error('Error al crear la categoría')
+        throw new Error('Error al actualizar la categoría');
       }
     } catch (error) {
-      console.error('Error:', error)
-      alert('Hubo un error al crear la categoría')
+      console.error('Error:', error);
+      alert('Hubo un error al actualizar la categoría');
     }
-  }
+  };
 
   return (
     <div>
-      <Button onClick={() => setIsOpen(true)}>Agregar Categoria</Button>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white rounded-lg shadow-xl w-full max-w-lg"
+            className="bg-white rounded-lg shadow-xl overflow-hidden max-w-md w-full"
           >
-            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
-              <h2 className="text-2xl font-bold mb-2">Nueva Categoría de Receta</h2>
-              <p className="text-sm opacity-80">Añade una nueva categoría para tus deliciosas recetas</p>
+            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white">
+              <h2 className="text-2xl font-bold mb-2">Actualizar esta categoría de receta</h2>
+              <p className="text-sm opacity-80">Actualiza según tus preferencias</p>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="space-y-2">
@@ -79,6 +85,14 @@ export default function MdAgregarCateRecetas() {
                   required
                 />
               </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="estado"
+                  checked={formData.estado}
+                  onCheckedChange={(checked) => setFormData({ ...formData, estado: checked })}
+                />
+                <Label htmlFor="estado" className="text-lg font-medium">Activo</Label>
+              </div>
               <div className="flex justify-end space-x-2 mt-6">
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
                 <Button type="submit" className="bg-gradient-to-r from-pink-500 to-orange-500 text-white">
@@ -90,5 +104,5 @@ export default function MdAgregarCateRecetas() {
         </div>
       )}
     </div>
-  )
+  );
 }
