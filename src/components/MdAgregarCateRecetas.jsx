@@ -6,7 +6,7 @@ import { Button } from 'react-bootstrap'
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Textarea } from "./ui/textarea"
-import { Switch } from './ui/Switchh'
+import { Switch } from './ui/Switch'
 
 export default function MdAgregarCateRecetas() {
   const [isOpen, setIsOpen] = useState(false)
