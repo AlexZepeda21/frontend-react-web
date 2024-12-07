@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import Card from 'react-bootstrap/Card';
@@ -6,6 +7,8 @@ import { FaBook } from 'react-icons/fa';
 import { AiOutlineReconciliation } from "react-icons/ai";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { API_BASE_URL } from '../url';
+
+
 
 
 const Categoria_recetas = () => {
@@ -58,7 +61,7 @@ const Categoria_recetas = () => {
     alert(localStorage.getItem('id'));
   };
 
-  
+
 
 
   return (
@@ -72,8 +75,17 @@ const Categoria_recetas = () => {
           className="form-control"
           placeholder="Buscar categoría..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <br />
+        <div>
+          {/* BOTON DEL MODAL */}
+          <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#Agregar">
+            Agregar
+          </button>
+
+        </div>
+
       </div>
 
       <div className="row">
@@ -101,7 +113,6 @@ const Categoria_recetas = () => {
 
                     {/* Botón "Ver más" */}
                     <Button variant="success" onClick={llamar}>Ver más</Button>
-
                   </div>
                 </Card.Body>
 
@@ -124,7 +135,7 @@ const Categoria_recetas = () => {
           pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={4}
-          onPageChange={handlePageClick} // Cambiar página
+          onPageChange={handlePageClick}
           containerClassName={'pagination'}
           activeClassName={'active'}
           pageClassName={'page-item'}
@@ -135,6 +146,27 @@ const Categoria_recetas = () => {
           nextLinkClassName={'page-link'}
         />
       </div>
+
+      {/* MODAL AGREGAR */}
+      <div class="modal fade" id="Agregar" tabindex="-1" aria-labelledby="AgregarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="AgregarlLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   );
 };
