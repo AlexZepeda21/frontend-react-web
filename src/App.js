@@ -7,7 +7,7 @@ import Login from './login-form';
 import Register from './register-form';
 
 // Layout que contiene el menú de administración
-import Layout from './layout/Menuadmin';
+import Layout from './Menus/Menuadmin';
 
 // Rutas de categorías
 import Categoria_recetas from './admin/categoria_recetas';
