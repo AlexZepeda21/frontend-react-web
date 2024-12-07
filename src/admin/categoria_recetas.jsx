@@ -2,26 +2,28 @@ import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { FaBook } from 'react-icons/fa';
+import { AiOutlineReconciliation } from "react-icons/ai";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { API_BASE_URL } from '../url';
-
+import { useNavigate } from 'react-router-dom';
+// Importamos el modal personalizado
+import MdAgregarCateRecetas from '../components/MdAgregarCateRecetas';
+import MdActualizarCateRecetas from '../components/MdActualizarCateRecetas';
 
 const Categoria_recetas = () => {
-  // Estado para almacenar las categorías obtenidas desde la API
-  const [categorias, setCategorias] = useState([]); // Inicializar con un array vacío
-  const [currentPage, setCurrentPage] = useState(0); // Página actual
-  const [categoriasPorPagina, setCategoriasPorPagina] = useState(9); // Número de categorías por página
-  const [searchTerm, setSearchTerm] = useState(""); // Término de búsqueda
+  const [categorias, setCategorias] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [categoriasPorPagina, setCategoriasPorPagina] = useState(9);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // Aquí defines isOpen y setIsOpen
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); // Estado para guardar la categoría seleccionada
 
-  // useEffect para hacer la petición a la API y obtener las categorías
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/cate_recetas`);
         const data = await response.json();
-        // Asignamos el array de categorías al estado, asegurándonos de que sea un array vacío si no hay datos
-        setCategorias(data.categoria_recetas || []);
+        setCategorias(data.categoria_recetas || []); // Asegúrate de que sea un array
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
         setCategorias([]); // Si hay error, asignamos un array vacío
@@ -29,24 +31,26 @@ const Categoria_recetas = () => {
     };
 
     fetchCategorias();
-  }, []); // El array vacío asegura que solo se ejecute una vez, al montar el componente
+  }, []);
 
   const indexOfLastCategory = (currentPage + 1) * categoriasPorPagina;
   const indexOfFirstCategory = indexOfLastCategory - categoriasPorPagina;
-  
-  // Filtrar las categorías solo por nombre
+
   const filteredCategorias = categorias.filter(categoria =>
     categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Obtener las categorías que se mostrarán en la página actual
   const currentCategorias = filteredCategorias.slice(indexOfFirstCategory, indexOfLastCategory);
-
-  // Calcular el número total de páginas
   const pageCount = Math.ceil(filteredCategorias.length / categoriasPorPagina);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  // Función para abrir el modal y cargar la categoría seleccionada
+  const openUpdateModal = (categoria) => {
+    setCategoriaSeleccionada(categoria);  // Al seleccionar la categoría, la guardamos en el estado
+    setIsOpen(true);  // Abrimos el modal
   };
 
   return (
@@ -60,33 +64,49 @@ const Categoria_recetas = () => {
           className="form-control"
           placeholder="Buscar categoría..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <br />
+        {/* Aquí está el modal personalizado que llamamos desde otro archivo */}
+        <div>
+          <MdAgregarCateRecetas isOpen={isOpen} setIsOpen={setIsOpen} />
+        </div>
+
       </div>
 
       <div className="row">
         {currentCategorias.length > 0 ? (
           currentCategorias.map((categoria) => (
-            <div className="col-md-4 mb-4" key={categoria.id_categoria_recetas}>
-              <Card>
-                <Card.Body>
-                  <div className="text-center mb-3">
+            <div className="col-md-3 mb-4" key={categoria.id_categoria_recetas}>
+              <Card className="h-100 d-flex justify-content-center align-items-center">
+                <Card.Body className="text-center">
+                  <div className="d-flex justify-content-center">
                     {/* Icono para representar la categoría */}
-                    <FaBook size={80} color="#007bff" />
+                    <AiOutlineReconciliation size={80} color="#007bff" />
                   </div>
-                  {/* Mostramos el nombre y la descripción de la categoría */}
-                  <Card.Title>{categoria.nombre}</Card.Title>
+
+                  {/* Mostramos el nombre de la categoría */}
+                  <Card.Title>
+                    {categoria.nombre}
+                  </Card.Title>
+
+                  {/* Mostramos la descripción de la categoría */}
                   <Card.Text>{categoria.descripcion}</Card.Text>
-                  <div className="d-flex justify-content-between">
-                    {/* Botón "Ver más" */}
-                    <Button variant="success">Ver más</Button>
+
+                  <div className="d-flex justify-content-center">
+                    {/* Al hacer clic en el botón de "Actualizar", se pasa la categoría seleccionada */}
+                    <Button
+                      onClick={() => openUpdateModal(categoria)} // Abrimos el modal y pasamos la categoría
+                      className="btn btn-primary"
+                    >
+                      Actualizar
+                    </Button>
                   </div>
                 </Card.Body>
               </Card>
             </div>
           ))
         ) : (
-          // Si no hay categorías disponibles o no coinciden con la búsqueda
           <div className="col-12 text-center">
             <p>No hay categorías disponibles</p>
           </div>
@@ -102,7 +122,7 @@ const Categoria_recetas = () => {
           pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={4}
-          onPageChange={handlePageClick} // Cambiar página
+          onPageChange={handlePageClick}
           containerClassName={'pagination'}
           activeClassName={'active'}
           pageClassName={'page-item'}
@@ -113,6 +133,15 @@ const Categoria_recetas = () => {
           nextLinkClassName={'page-link'}
         />
       </div>
+
+      {/* Modal de actualización, pasamos la categoría seleccionada */}
+      {isOpen && categoriaSeleccionada && (
+        <MdActualizarCateRecetas
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          categoria={categoriaSeleccionada}  // Pasamos la categoría al modal
+        />
+      )}
     </div>
   );
 };
