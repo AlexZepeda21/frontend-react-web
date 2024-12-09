@@ -1,13 +1,12 @@
 import React from 'react';
 //import './MainContent.css';
 import "../../styles/Menuadmin/MainContent.css";
-
+import { Outlet } from 'react-router-dom';
 function MainContent() {
   return (
     <main className="main-content">
       <div className="content-container">
-        <h2 className="content-title">Contenido Principal</h2>
-        <p className="content-text">Aquí se mostraría el contenido específico de cada sección.</p>
+        <Outlet />
       </div>
     </main>
   );

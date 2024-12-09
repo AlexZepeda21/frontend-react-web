@@ -19,7 +19,7 @@ function Sidebar() {
           <a href="#" className="nav-item">
             <i className="fas fa-box"></i>Productos
           </a>
-          <a href="#" className="nav-item">
+          <a href="/../admin/categoria_recetas" className="nav-item">
             <i className="fas fa-utensils"></i>Recetas
           </a>
           <a href="#" className="nav-item">
@@ -56,4 +56,6 @@ function Sidebar() {
     );
   }
   
+
+
 export default Sidebar;

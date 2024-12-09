@@ -8,7 +8,6 @@ import Register from './register-form';
 
 // Layout que contiene el menú de administración
 import Layout from './Menus/Menuadmin';
-import MainContent from './Menus/componentes/MainContent';
 
 
 //eligiendo pro
@@ -34,7 +33,7 @@ function App() {
         <Route path="/" element={<Login />} />
 
         {/* Ruta principal con Layout contenedor */}
-        <Route path="/" element={<MainContent />}>
+        <Route path="/" element={<Layout />}>
           {/* Rutas que usan el Layout como contenedor */}
           <Route path="admin/categoria_recetas" element={<Categoria_recetas />} />
           <Route path="admin/categoria_productos" element={<Categoria_productos />} />
