@@ -38,7 +38,7 @@ export default function Login() {
 
 
         if (data.tipo_usuario == 1) {
-          navegar("./layout/Menuadmin");
+          navegar("./admin");
         }
         else if (data.tipo_usuario == 2) {
           navegar("./menus/Menuuser");

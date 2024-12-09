@@ -1,0 +1,26 @@
+.main-content {
+    flex: 1;
+    background-color: #f8f9fa;
+    padding: 20px;
+  }
+  
+  .content-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .content-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .content-text {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  

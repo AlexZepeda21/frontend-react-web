@@ -1,0 +1,69 @@
+.sidebar {
+    width: 240px; /* Ancho de la barra lateral */
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Altura completa de la ventana */
+    overflow: hidden; /* Ocultar contenido desbordado */
+  }
+  
+  .logo-container {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .logo {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .main-nav {
+    flex-grow: 1; /* Permite que el contenedor crezca */
+    overflow-y: auto; /* Barra de desplazamiento vertical si es necesario */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: 50px; /* Altura fija para cada elemento */
+    padding: 0 20px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de texto */
+    color: #4a4a4a;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  .nav-item i {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #c28f17; /* Color amarillo para los íconos */
+  }
+  
+  .nav-item:hover {
+    background-color: #f5f5f5;
+    color: #000;
+  }
+  
+  .nav-item:hover i {
+    color: #C69214; /* Color amarillo más oscuro al pasar el cursor */
+  }
+  
+  .reports-panel {
+    margin-top: auto;
+    border-top: 1px solid #e0e0e0;
+    padding: 20px;
+  }
+  
+  .panel-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #9e9e9e;
+    margin-bottom: 10px;
+  }
+  

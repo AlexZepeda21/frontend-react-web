@@ -6,6 +6,7 @@ import { AiOutlineReconciliation } from "react-icons/ai";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { API_BASE_URL } from '../url';
 import { useNavigate } from 'react-router-dom';
+ 
 // Importamos el modal personalizado
 import MdAgregarCateRecetas from '../components/MdAgregarCateRecetas';
 import MdActualizarCateRecetas from '../components/MdActualizarCateRecetas';
@@ -13,7 +14,7 @@ import MdActualizarCateRecetas from '../components/MdActualizarCateRecetas';
 const Categoria_recetas = () => {
   const [categorias, setCategorias] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [categoriasPorPagina, setCategoriasPorPagina] = useState(9);
+  const [categoriasPorPagina, setCategoriasPorPagina] = useState(8);
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false); // Aquí defines isOpen y setIsOpen
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); // Estado para guardar la categoría seleccionada

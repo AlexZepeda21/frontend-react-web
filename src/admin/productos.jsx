@@ -8,9 +8,12 @@ import { API_BASE_URL } from '../url';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from "react-modal";
 import "../styles/styleproduct.css";
-
+import Mdinformacionproductos from '../components/Mdinformacionproductos';
+import MdActializarproducto from '../components/MdActializarproducto';
 // Configurar React Modal
 Modal.setAppElement("#root");
+
+
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -19,6 +22,12 @@ const Productos = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [productosporpagina] = useState(9);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpens, setIsOpens] = useState(false); 
+  const [productoSeleccionado, setproductoSeleccionado] = useState(null); 
+  const [productoSeleccionados, setproductoSeleccionados] = useState(null); 
+
+
   const [formData, setFormData] = useState({
     nombre_unidad: "",
     id_unidad_medida: "",
@@ -26,22 +35,32 @@ const Productos = () => {
     id_usuario: "",
     id_categoria_pro: "",
     foto: null,
-    imagenBase64:'',
-    nombre:'',
+    imagenBase64: '',
+    nombre: '',
   });
 
 
   const [formDatapro, setFormDatapro] = useState({
     nombre_categoria: "",
     id_categoria_pro: "",
-   
+
   });
 
+
+  const openinfoModal = (producto) => {
+    setproductoSeleccionado(producto);  
+    setIsOpen(true);  
+  };
+
+  const openactualizarModal = (producto) => {
+    setproductoSeleccionados(producto);  
+    setIsOpens(true);  
+  };
 
   useEffect(() => {
     const fetchcatepro = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/cate_pro`);
+        const response = await fetch(`${API_BASE_URL}/listasolo1`);
         const data = await response.json();
         // Asignamos el array de categorías al estado, asegurándonos de que sea un array vacío si no hay datos
         setcatepro(data.categorias_productos || []);
@@ -58,7 +77,7 @@ const Productos = () => {
   useEffect(() => {
     const fetchUnidadesMedida = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/uni_medidas`);
+        const response = await fetch(`${API_BASE_URL}/listasolounidademedia1`);
         const data = await response.json();
         // Asignamos el array de categorías al estado, asegurándonos de que sea un array vacío si no hay datos
         setunidad_medida(data.unidad_medida || []);
@@ -107,7 +126,7 @@ const Productos = () => {
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
- 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -140,10 +159,10 @@ const Productos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Mostrar alerta antes de enviar los datos
     alert('Enviando datos...');
-  
+
     try {
       const response = await fetch(`${API_BASE_URL}/productos`, {
         method: 'POST',
@@ -153,13 +172,13 @@ const Productos = () => {
         body: JSON.stringify({
           foto: formData.imagenBase64,
           nombre: formData.nombre,
-          descripcion:formData.descripcion,
+          descripcion: formData.descripcion,
           id_unidad_medida: formData.id_unidad_medida,
           id_categoria_pro: formData.id_categoria_pro,
-          id_usuario: '7',
+          id_usuario: '1',
         }),
       });
-  
+
       const result = await response.json();
       if (response.ok) {
         // Si la respuesta es exitosa, muestra un mensaje de éxito
@@ -173,7 +192,7 @@ const Productos = () => {
       alert('Ocurrió un error al enviar los datos');
     }
   };
-  
+
 
 
   return (
@@ -191,7 +210,17 @@ const Productos = () => {
       </div>
 
       <div className="App">
-        <button onClick={openModal} className="open-modal-button">
+        <button onClick={openModal}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            marginBottom: '20px', // Margen inferior
+          }}
+          className="open-modal-button">
           Registrar Producto
         </button>
 
@@ -263,7 +292,7 @@ const Productos = () => {
                   onChange={(e) => setFormData({ ...formData, id_categoria_pro: e.target.value })}
                   className="form-control"
                 >
-                 <option value="">Seleccionar una categoria</option>
+                  <option value="">Seleccionar una categoria</option>
                   {/* Aquí mapeamos los datos de las categorías a las opciones del select */}
                   {catepro.map((cate_pro) => (
                     <option key={cate_pro.id_categoria_pro} value={cate_pro.id_categoria_pro}>
@@ -303,22 +332,54 @@ const Productos = () => {
         {currentProducts.length > 0 ? (
           currentProducts.map((productos) => (
             <div className="col-md-4 mb-4" key={productos.id_producto}>
-              <Card>
+              <Card style={{ minHeight: "300px", maxHeight: "400px" }}>
                 <Card.Body>
                   <div className="text-center mb-3">
-                  <img 
-                    src={`data:image/png;base64,${productos.foto}`} 
-                    alt="Imagen del producto"
-                  />
+                    <img
+                      src={`data:image/png;base64,${productos.foto}`}
+                      alt="Imagen del producto"
+                      style={{
+                        width: "450px",
+                        height: "175px",
+                        objectFit: "contain",
+                        borderRadius: "8px",
+                        backgroundColor: "#f5f5f6",
+                      }}
+                    />
+
+
                   </div>
                   <Card.Title>{productos.nombre}</Card.Title>
-                  <Card.Text>{productos.descripcion}</Card.Text>
+                  <Card.Text>
+                    {productos.descripcion.length > 35
+                      ? `${productos.descripcion.slice(0, 35)}...`
+                      : productos.descripcion}
+                  </Card.Text>
                   <div className="d-flex justify-content-between">
-                    <Button variant="success">Ver más</Button>
+                    <Button
+                      variant="success"
+                      onClick={() => openinfoModal(productos)} // Abrimos el modal y pasamos la categoría
+                    >
+                      Ver más
+                    </Button>
+                    <Button
+                      variant="warning"
+                      onClick={() => openactualizarModal(productos)} // Abrimos el modal y pasamos la categoría
+                    >
+                      Actualizar
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => openinfoModal(productos)} // Abrimos el modal y pasamos la categoría
+                    >
+                      Ingresar
+                    </Button>
                   </div>
+
                 </Card.Body>
               </Card>
             </div>
+
           ))
         ) : (
           <div className="col-12 text-center">
@@ -346,7 +407,24 @@ const Productos = () => {
           nextLinkClassName={'page-link'}
         />
       </div>
+      {isOpen && productoSeleccionado && (
+        <Mdinformacionproductos 
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          producto={productoSeleccionado}  
+        />
+      )}
+
+{isOpens && productoSeleccionados && (
+        <MdActializarproducto
+          isOpen={isOpens}
+          setIsOpen={setIsOpens}
+          producto={productoSeleccionados}  
+        />
+      )}
     </div>
+
+    
   );
 };
 
