@@ -28,7 +28,7 @@ function Sidebar() {
           <a href="#" className="nav-item">
             <i className="fas fa-calendar-check"></i>Reservas
           </a>
-          <a href="#" className="nav-item">
+          <a href="../../register-form.jsx" className="nav-item">
             <i className="fas fa-users"></i>Usuarios
           </a>
           <a href="#" className="nav-item">
