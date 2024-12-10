@@ -16,6 +16,8 @@
     "chart.js": "^4.4.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "datatables.net": "^2.1.8",
+    "datatables.net-dt": "^2.1.8",
     "framer-motion": "^11.13.1",
     "jquery": "^3.7.1",
     "lucide-react": "^0.462.0",
