@@ -94,17 +94,22 @@ const Categoria_productos = () => {
       <div className="row">
         {currentCategorias.length > 0 ? (
           currentCategorias.map((categoria) => (
-            <div className="col-md-3 mb-4" key={categoria.id_categoria_pro}>
+            <div className="col-md-3 mb-4 " key={categoria.id_categoria_pro}>
               <div class="width-250px bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="p-3">
                   <div class="flex justify-between items-center mb-3">
                     <h2 class="text-sm font-medium text-gray-700">
                       {categoria.nombre_categoria}
                     </h2>
-                    <span class="text-xl font-bold">16</span>
+                    <span class="text-xl font-bold">{categoria.cantidad_productos}</span>
                   </div>
                   <div class="relative w-full height-150px mb-3">
                     <img
+                    style={{
+                      width: "450px",       
+                      height: "70px",      
+                      objectFit: "contain",
+                    }}
                       src={`data:image/png;base64,${categoria.foto}`}
                       alt={categoria.nombre_categoria}
                       class="w-full h-full object-cover rounded-md"

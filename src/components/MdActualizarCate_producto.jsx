@@ -71,7 +71,7 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
     <div>
       {isOpen && (
         //esta propiedad hace que no se levante el la paginacion tambien
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center ">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -90,6 +90,13 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
                     src={image ? image : `data:image/png;base64,${categoria.foto}`}
                     alt="Previsualización de imagen"
                     className="upload-preview"
+                    style={{
+                width: "450px",       
+                height: "175px",      
+                objectFit: "contain",
+                borderRadius: "8px",  
+                backgroundColor: "#f5f5f6", 
+              }}
                   />
                 ) : (
                   <span className="upload-placeholder text-center">Subir Imagen</span>
