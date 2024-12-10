@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import "../../styles/Menuadmin/Siderbar.css";
-import logo from '../../img/image.png';
+import logo from '../../img/logo.png';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
@@ -77,20 +77,20 @@ function Sidebar() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="modal-content mx-auto max-w-md rounded-lg bg-white shadow-lg p-6"
+        className="max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg modal-content"
         overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
-        <h1 className="text-xl font-bold text-center mb-4">¿Deseas cerrar sesión?</h1>
+        <h1 className="mb-4 text-xl font-bold text-center">¿Deseas cerrar sesión?</h1>
         <div className="flex justify-center space-x-4">
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
           >
             Sí, cerrar sesión
           </button>
           <button
             onClick={closeModal}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+            className="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg hover:bg-gray-400"
           >
             Cancelar
           </button>
