@@ -157,6 +157,8 @@ const Productos = () => {
     }
   };
 
+  const id = localStorage.getItem('id');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -175,7 +177,7 @@ const Productos = () => {
           descripcion: formData.descripcion,
           id_unidad_medida: formData.id_unidad_medida,
           id_categoria_pro: formData.id_categoria_pro,
-          id_usuario: '1',
+          id_usuario: id ,
         }),
       });
 

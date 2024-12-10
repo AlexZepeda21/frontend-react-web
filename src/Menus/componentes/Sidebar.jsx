@@ -1,6 +1,6 @@
 import React from 'react';
 import "../../styles/Menuadmin/Siderbar.css";
-import logo from '../../img/image.png';
+import logo from '../../img/logo.png';
 
 
 function Sidebar() {
@@ -13,7 +13,7 @@ function Sidebar() {
           <a href="#" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Dashboard
           </a>
-          <a href="#" className="nav-item">
+          <a href="/../admin/categoria_productos" className="nav-item">
             <i className="fas fa-th-large"></i>Categorías
           </a>
           <a href="#" className="nav-item">

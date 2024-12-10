@@ -6,7 +6,9 @@ import { AiOutlineReconciliation } from "react-icons/ai";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { API_BASE_URL } from '../url';
 import { useNavigate } from 'react-router-dom';
- 
+import "../styles/productos/cardcategorias_pro.css";
+
+
 // Importamos el modal personalizado
 import MdAgregarCateproductos from '../components/MdAgregarCatepro';
 import MdActualizarCate_producto from '../components/MdActualizarCate_producto';
@@ -28,15 +30,18 @@ const Categoria_productos = () => {
       try {
         const response = await fetch(`${API_BASE_URL}/cate_pro`);
         const data = await response.json();
-        setCategorias(data.categorias_productos || []); // Asegúrate de que sea un array
+        console.log('Datos de la API:', data);  // Verifica los datos aquí
+        setCategorias(data.categorias_productos || []);
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
-        setCategorias([]); // Si hay error, asignamos un array vacío
+        setCategorias([]);
       }
     };
-
+  
     fetchCategorias();
   }, []);
+  
+
 
   const indexOfLastCategory = (currentPage + 1) * categoriasPorPagina;
   const indexOfFirstCategory = indexOfLastCategory - categoriasPorPagina;
@@ -65,7 +70,6 @@ const Categoria_productos = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4 text-center">Listado de Categorías de productos</h1>
 
       {/* Barra de búsqueda */}
       <div className="mb-4">
@@ -84,51 +88,43 @@ const Categoria_productos = () => {
 
       </div>
 
+
+
+
       <div className="row">
         {currentCategorias.length > 0 ? (
           currentCategorias.map((categoria) => (
             <div className="col-md-3 mb-4" key={categoria.id_categoria_pro}>
-              <Card className="h-100 d-flex justify-content-center align-items-center">
-                <Card.Body className="text-center">
-                  <div className="d-flex justify-content-center">
-                  <img
+              <div class="width-250px bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-3">
+                  <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-sm font-medium text-gray-700">
+                      {categoria.nombre_categoria}
+                    </h2>
+                    <span class="text-xl font-bold">16</span>
+                  </div>
+                  <div class="relative w-full height-150px mb-3">
+                    <img
                       src={`data:image/png;base64,${categoria.foto}`}
-                      alt="Imagen del producto"
-                      style={{
-                        width: "250px",
-                        height: "175px",
-                        objectFit: "contain",
-                        borderRadius: "8px",
-                        backgroundColor: "#f5f5f6",
-                      }}/>
+                      alt={categoria.nombre_categoria}
+                      class="w-full h-full object-cover rounded-md"
+                    />
                   </div>
+                </div>
+                <div class="flex gap-1 p-3 bg-gray-100">
+                  <button class="flex-1 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors"
+                    onClick={() => openUpdateModal(categoria)} // Abrimos el modal y pasamos la categoría
+                  >
+                    Ver más
+                  </button>
+                  <button class="flex-1 bg-gray-200 text-gray-800 py-1 px-3 rounded hover:bg-gray-300 transition-colors"
+                    onClick={() => openproductcateg(categoria)} // Abrimos el modal y pasamos la categoría
+                  >
+                    Actualizar
+                  </button>
+                </div>
+              </div>
 
-                  {/* Mostramos el nombre de la categoría */}
-                  <Card.Title>
-                    {categoria.nombre_categoria}
-                  </Card.Title>
-
-                  {/* Mostramos la descripción de la categoría */}
-                  <Card.Text>{categoria.descripcion}</Card.Text>
-
-                  <div className="d-flex justify-content-center">
-                    {/* Al hacer clic en el botón de "Actualizar", se pasa la categoría seleccionada */}
-                    <Button
-                      onClick={() => openUpdateModal(categoria)} // Abrimos el modal y pasamos la categoría
-                      className="btn btn-primary"
-                    >
-                      Actualizar
-                    </Button>
-
-                    <Button
-                      onClick={() => openproductcateg(categoria)} // Abrimos el modal y pasamos la categoría
-                      className="btn btn-primary"
-                    >
-                      Ver
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
             </div>
           ))
         ) : (
@@ -161,7 +157,7 @@ const Categoria_productos = () => {
 
       {/* Modal de actualización, pasamos la categoría seleccionada */}
       {isOpen && MdActualizarCate_producto && (
-        <MdActualizarCate_producto
+        <Registrarproductos
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           categoria={categoriaSeleccionada}  // Pasamos la categoría al modal
@@ -169,8 +165,8 @@ const Categoria_productos = () => {
       )}
 
 
-{isOpens && Registrarproductos && (
-        <Registrarproductos
+      {isOpens && Registrarproductos && (
+        <MdActualizarCate_producto
           isOpen={isOpens}
           setIsOpen={setIsOpens}
           categoria={categoriaSeleccionada}  // Pasamos la categoría al modal

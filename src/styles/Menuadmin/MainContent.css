@@ -1,26 +1,12 @@
 .main-content {
     flex: 1;
-    background-color: #f8f9fa;
+    background-color: transparent; /* Fondo completamente transparente */
     padding: 20px;
-  }
-  
-  .content-container {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .content-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .content-text {
-    color: #666;
-    font-size: 14px;
-  }
-  
-  
+    position: fixed; /* Fijado en la pantalla */
+    top: 0;
+    z-index: 9999; /* Sobrepone a otros elementos */
+    color: rgba(0, 0, 0, 0.9); /* Texto más visible */
+    overflow: auto; /* Permite desplazar contenido interno si es necesario */
+    border-left: 1px solid rgba(0, 0, 0, 0.1); /* Línea divisoria sutil para separar contenido */
+}
+
