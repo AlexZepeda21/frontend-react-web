@@ -7,10 +7,10 @@ import 'datatables.net-bs5';
 import 'datatables.net-responsive-bs5';
 import $ from 'jquery';
 import { API_BASE_URL } from '../url';
+import Registrarproductos from './Registrarproductos';
 
 
-
-export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
+export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
   const tableRef = useRef(null);
   const [isOpens, setIsOpens] = useState(false); // Aquí defines isOpen y setIsOpen
@@ -20,6 +20,8 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
     setIsOpens(true);
 
   };
+
+ 
 
   
 
@@ -75,7 +77,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
             style={{ maxHeight: '80vh', overflowY: 'auto' }} // Agregar altura máxima y scroll si el contenido excede el modal
           >
             <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
-              <h2 className="text-2xl font-bold mb-2">add</h2>
+              <h2 className="text-2xl font-bold mb-2">Categorías de productos</h2>
               <p className="text-sm opacity-80">Consulta las categorías registradas para preparar recetas</p>
             </div>
             <button
@@ -155,6 +157,15 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
           </motion.div>
         </div>
       )}
+
+{isOpens && Registrarproductos && (
+   
+   <Registrarproductos
+  isOpen={isOpens}
+  setIsOpen={setIsOpens}
+  categoria={categoria}  // Pasamos la categoría al modal
+/>
+ )}
     </div>
   );
 }

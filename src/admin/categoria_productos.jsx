@@ -12,7 +12,7 @@ import "../styles/productos/cardcategorias_pro.css";
 // Importamos el modal personalizado
 import MdAgregarCateproductos from '../components/MdAgregarCatepro';
 import MdActualizarCate_producto from '../components/MdActualizarCate_producto';
-import Registrarproductos from '../components/registrarproductos';
+import Listaproductoscategoria from '../components/Listaproductoscategoria';
 
 
 const Categoria_productos = () => {
@@ -65,13 +65,12 @@ const Categoria_productos = () => {
 
   const openproductcateg = (categoria) => {
     setCategoriaSeleccionada(categoria);  // Al seleccionar la categoría, la guardamos en el estado
-    setIsOpens(true);  // Abrimos el modal
+    setIsOpens(true); 
   };
 
   return (
     <div className="container mt-5">
 
-      {/* Barra de búsqueda */}
       <div className="mb-4">
         <input
           type="text"
@@ -161,8 +160,8 @@ const Categoria_productos = () => {
       </div>
 
       {/* Modal de actualización, pasamos la categoría seleccionada */}
-      {isOpen && MdActualizarCate_producto && (
-        <Registrarproductos
+      {isOpen && Listaproductoscategoria && (
+        <Listaproductoscategoria
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           categoria={categoriaSeleccionada}  // Pasamos la categoría al modal
@@ -170,7 +169,7 @@ const Categoria_productos = () => {
       )}
 
 
-      {isOpens && Registrarproductos && (
+      {isOpens && MdActualizarCate_producto && (
         <MdActualizarCate_producto
           isOpen={isOpens}
           setIsOpen={setIsOpens}
