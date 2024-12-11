@@ -1,5 +1,5 @@
 .card-img-container {
-  height: 200px; /* Altura fija para las imágenes */
+  height: 150px; /* Altura fija para las imágenes */
   overflow: hidden;
 }
 .modal-dialog {
@@ -24,6 +24,8 @@ z-index: 1050 !important; /* Aseguramos que el backdrop también esté por encim
 
 .card-body {
   text-align: center;
+  flex-grow: 1; /* Hace que el cuerpo de la tarjeta crezca y ocupe el espacio disponible */
+
 }
 
 .card {
@@ -33,4 +35,21 @@ z-index: 1050 !important; /* Aseguramos que el backdrop también esté por encim
 }
 .card:hover {
   transform: translateY(-5px);
+}
+.card {
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos dentro de la tarjeta se organicen verticalmente */
+  height: 350px; /* Altura fija para todas las tarjetas */
+  max-height: 350px; /* Para evitar que crezcan más allá de un tamaño específico */
+  justify-content: space-between; /* Asegura que el contenido esté distribuido correctamente */
+}
+
+
+.card-img-container {
+  flex-shrink: 0; /* Evita que la imagen se encoja */
+  margin-bottom: 10px;
+}
+
+.card-footer {
+  flex-shrink: 0; /* Evita que el pie de la tarjeta se encoja */
 }

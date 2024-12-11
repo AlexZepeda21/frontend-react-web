@@ -49,7 +49,7 @@ function Sidebar() {
           <a href="../../register-form.jsx" className="nav-item">
             <i className="fas fa-users"></i>Usuarios
           </a>
-          <a href="#" className="nav-item">
+          <a href="./perfil" className="nav-item">
             <i className="fas fa-user"></i>Ver Perfil
           </a>
           {/* Botón para abrir el modal de cerrar sesión */}

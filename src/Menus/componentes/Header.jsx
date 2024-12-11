@@ -1,7 +1,7 @@
 import React from 'react';
 //import './Header.css';
 import "../../styles/Menuadmin/Header.css";
-
+const correo = localStorage.getItem("correo");
 function Header() {
   return (
     <header className="header">
@@ -12,7 +12,7 @@ function Header() {
           <i className="icon-search"></i>
         </div>
         <div className="user-info">
-          <span className="user-name">Julissa Díaz</span>
+          <span className="user-name">{correo}</span>
           <img src="/avatar.png" alt="User Avatar" className="user-avatar" />
         </div>
       </div>
