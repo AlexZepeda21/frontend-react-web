@@ -1,0 +1,143 @@
+/* Estilos mejorados */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(139, 35, 35, 0.9) 50%, rgba(205, 133, 63, 0.9) 50%);
+    padding: 2rem;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeIn 1s ease;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgba(139, 35, 35, 0.9);
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.input-container {
+    margin-bottom: 2rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.input-icon {
+    color: rgba(205, 133, 63, 0.8);
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 1rem; /* Separamos el icono a la derecha del campo de entrada */
+}
+
+.input-field {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(229, 231, 235, 0.7);
+    border-radius: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.6);
+    color: #333;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: rgba(205, 133, 63, 0.9);
+    box-shadow: 0 0 10px rgba(205, 133, 63, 0.5);
+}
+
+.input-field::placeholder {
+    color: rgba(75, 85, 99, 0.6); /* Ajustamos el color del placeholder */
+    font-weight: 400;
+}
+
+/* Estilos para el botón */
+.submit-button {
+    width: 100%;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(205, 133, 63, 0.9), rgba(139, 35, 35, 0.9));
+    color: white;
+    font-weight: 600;
+    font-size: 1.125rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambio en el fondo al hacer hover */
+.submit-button:hover {
+    background: linear-gradient(135deg, rgba(139, 35, 35, 1), rgba(205, 133, 63, 1));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo cuando el botón está en estado activo */
+.submit-button:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo cuando el botón está deshabilitado */
+.submit-button:disabled {
+    background: linear-gradient(135deg, rgba(205, 133, 63, 0.6), rgba(139, 35, 35, 0.6)); /* Ajustado el color del fondo deshabilitado */
+    color: rgba(255, 255, 255, 0.7); /* Asegura que el texto sea visible cuando el botón está deshabilitado */
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Asegúrate de que el texto del botón 'Iniciando sesión...' se vea correctamente */
+.submit-button[disabled] {
+    background: linear-gradient(135deg, rgba(205, 133, 63, 0.6), rgba(139, 35, 35, 0.6));
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(75, 85, 99, 0.9);
+    margin-bottom: 0.75rem;
+}
+
+/* Transiciones suaves y animación de entrada */
+* {
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
