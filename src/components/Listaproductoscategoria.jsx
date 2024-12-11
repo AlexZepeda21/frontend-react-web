@@ -20,11 +20,11 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleAdd = () => {
-    
+
   }
 
   const handleUpdate = () => {
-   
+
   }
 
 
@@ -33,9 +33,9 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
 
   };
 
- 
 
-  
+
+
 
 
   // Cargar datos desde el servidor
@@ -79,7 +79,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   return (
     <div>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -155,12 +155,12 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         })}
                       </td>
                       <td>
-                      <Button onClick={handleAdd} className="w-32">
-          <Plus className="mr-2 h-4 w-4" /> Add
-        </Button>
-        <Button onClick={handleUpdate} variant="outline" className="w-32">
-          <RefreshCw className="mr-2 h-4 w-4" /> Update
-        </Button>
+                        <Button onClick={handleAdd} className="w-32">
+                          <Plus className="mr-2 h-4 w-4" /> Add
+                        </Button>
+                        <Button onClick={handleUpdate} variant="outline" className="w-32">
+                          <RefreshCw className="mr-2 h-4 w-4" /> Update
+                        </Button>
 
 
 
@@ -171,7 +171,8 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
               </table>
 
               <div className="d-flex justify-content-end mt-4">
-                <Button variant="secondary" onClick={() => setIsOpen(false)}>
+
+                <Button onClick={() => setIsOpen(false)} variant="outline" className="w-32">
                   Cerrar
                 </Button>
               </div>
@@ -180,14 +181,14 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         </div>
       )}
 
-{isOpens && Registrarproductos && (
-   
-   <Registrarproductos
-  isOpen={isOpens}
-  setIsOpen={setIsOpens}
-  categoria={categoria}  // Pasamos la categoría al modal
-/>
- )}
+      {isOpens && Registrarproductos && (
+
+        <Registrarproductos
+          isOpen={isOpens}
+          setIsOpen={setIsOpens}
+          categoria={categoria}  // Pasamos la categoría al modal
+        />
+      )}
     </div>
   );
 }
