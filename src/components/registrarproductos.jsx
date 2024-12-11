@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { motion } from 'framer-motion';
 import "../styles/styleproduct.css";
 
-export default function Registrarproductos({ isOpen, setIsOpen }) {
+export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
     const [unidad_medida, setunidad_medida] = useState([]);
     const [formData, setFormData] = useState({
         nombre: '',
@@ -72,6 +72,7 @@ export default function Registrarproductos({ isOpen, setIsOpen }) {
                     nombre: formData.nombre,
                     descripcion: formData.descripcion,
                     id_unidad_medida: formData.id_unidad_medida,
+                    id_categoria_pro: categoria.id_categoria_pro,
                     id_usuario: id,
                 }),
             });
