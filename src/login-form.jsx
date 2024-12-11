@@ -9,6 +9,7 @@ import { Input } from './components/ui/input';
 import { MdEmail, MdLock } from "react-icons/md";
 import { API_BASE_URL } from './url';
 import './styles/login/estiloslogin.css';
+import Swal from 'sweetalert2'; // Importar SweetAlert2
 
 export default function Login() {
   const [correo, setEmail] = useState('');
@@ -38,8 +39,13 @@ export default function Login() {
         localStorage.setItem('correo', data.correo);
         localStorage.setItem('tipo_usuario', data.tipo_usuario);
 
-
-        alert('Inicio de sesión exitoso.');
+        // Usando SweetAlert2 para mostrar mensaje de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Inicio de sesión exitoso',
+          text: 'Bienvenido de nuevo',
+          confirmButtonText: 'Aceptar',
+        });
 
         if (data.tipo_usuario === 1) {
           navegar("/admin");
@@ -49,7 +55,13 @@ export default function Login() {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al iniciar sesión: ' + error.message);
+      // Usando SweetAlert2 para mostrar error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: error.message,
+        confirmButtonText: 'Aceptar',
+      });
     } finally {
       setIsLoading(false);
     }
