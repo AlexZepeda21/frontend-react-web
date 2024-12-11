@@ -4,7 +4,7 @@ import Header from './componentes/Header';
 import MainContent from './componentes/MainContent';
 //import './App.css';
 import "./../styles/Menuadmin/menu.css";
-alert(localStorage.getItem("correo"));
+localStorage.getItem("correo");
 const Layout = () => {
     return (
         <div className="app">

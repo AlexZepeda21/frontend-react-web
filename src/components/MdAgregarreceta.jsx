@@ -99,7 +99,7 @@ export default function MdAgregarRecetas({ setShowModal }) {
               )}
               <input
                 type="file"
-                className="form-control"
+                className="file-input"
                 accept="image/*"
                 onChange={handleFileChange}
               />
