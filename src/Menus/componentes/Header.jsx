@@ -1,8 +1,11 @@
 import React from 'react';
 //import './Header.css';
 import "../../styles/Menuadmin/Header.css";
-const correo = localStorage.getItem("correo");
+
 function Header() {
+
+  const correo = localStorage.getItem("correo");
+
   return (
     <header className="header">
       <h1 className="header-title">CAFETERÍA ITCA</h1>

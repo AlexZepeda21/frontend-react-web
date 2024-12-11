@@ -1,14 +1,15 @@
 .main-content {
     padding-top: 25px;
-    position: fixed;
+    position: fixed; 
     background-color: transparent;
     top: 0;
     right: 0;
     left: 240px; /* Margen izquierdo predeterminado */
-    z-index: 9995;
+    z-index: 10;
     color: rgba(0, 0, 0, 0.9);
-    overflow: auto;
     border-left: 1px solid rgba(0, 0, 0, 0.2);
+    height: 100%; /* Ocupa toda la altura */
+    overflow-y: auto; /* Activa el scroll vertical */
 }
 
 /* Ajustes para pantallas más pequeñas */
@@ -30,5 +31,7 @@
         left: 0; /* Sin margen izquierdo */
         top: 0; /* Ajusta la posición superior */
         border-left: none; /* Elimina la línea divisoria */
+        height: auto; /* Permite que crezca dinámicamente */
+        overflow-y: visible; /* Sin límite en scroll */
     }
 }

@@ -1,55 +1,76 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './styles/globals.css';
 
-// Rutas de inicio de sesión
+// Componentes
 import Login from './login-form';
 import Register from './register-form';
-
-// Layout que contiene el menú de administración
 import Layout from './Menus/Menuadmin';
-import UserProfile from './admin/userProfile';
 import Profile from './perfil';
-//eligiendo pro
 import ProductoCard from './admin/eligiendo_pro';
 import RecetasList from './admin/recetas';
-
-// Rutas de categorías
 import Categoria_recetas from './admin/categoria_recetas';
 import Categoria_productos from './admin/categoria_productos';
 import Productos from './admin/productos';
 
-
-// Importando rutas de controles
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-
 function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* Ruta de autenticación (Login/Register) */}
-        <Route path="/admin" element={<Layout />} />
-        <Route path="/" element={<Login />} />
+  const location = useLocation();
+  const token = location.state?.token;
+  const tipoUsuario = location.state?.tipo_usuario;
 
-        {/* Ruta principal con Layout contenedor */}
-        <Route path="/" element={<Layout />}>
-          {/* Rutas que usan el Layout como contenedor */}
-          <Route path="admin/categoria_recetas" element={<Categoria_recetas />} />
-          <Route path="admin/categoria_productos" element={<Categoria_productos />} />
-          <Route path="admin/eligiendo_pro" element={<ProductoCard />} />
-          <Route path="admin/productos" element={<Productos />} />
+  if (token) localStorage.setItem('token', token);
+  if (tipoUsuario) localStorage.setItem('tipo_usuario', tipoUsuario);
+
+  const tokensession = localStorage.getItem('token');
+  const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
+
+  //localStorage.clear();
+
+  const renderRoutes = () => {
+    if (!tokensession || !tipoUsuarioSession) {
+      return (
+        <Routes>
+          <Route path="/" element={<Login />} />
           <Route path="/register-form" element={<Register />} />
-          <Route path="/admin/recetas/:categoriaId" element={<RecetasList />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      );
+    }
 
-          <Route path="/admin/userProfile" element={<UserProfile />} />
-          <Route path="/perfil" element={<Profile />} />
+    if (tipoUsuarioSession === '1') {
+      return (
+        <Routes>
+          <Route path="/admin" element={<Layout />}>
+            <Route path="categoria_recetas" element={<Categoria_recetas />} />
+            <Route path="categoria_productos" element={<Categoria_productos />} />
+            <Route path="eligiendo_pro" element={<ProductoCard />} />
+            <Route path="productos" element={<Productos />} />
+            <Route path="recetas/:categoriaId" element={<RecetasList />} />
+            <Route path="perfil" element={<Profile />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/admin" />} />
+        </Routes>
+      );
+    }
 
-        </Route>
+    if (tipoUsuarioSession === '2') {
+      return (
+        <Routes>
+          <Route path="/" element={<p>Bienvenido, Cliente.</p>} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      );
+    }
 
+    return (
+      <Routes>
+        <Route path="/" element={<p>Tipo de usuario no reconocido.</p>} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </Router>
-  );
+    );
+  };
+
+  return <div>{renderRoutes()}</div>;
 }
 
 export default App;

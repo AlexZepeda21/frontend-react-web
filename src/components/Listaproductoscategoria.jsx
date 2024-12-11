@@ -2,26 +2,40 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from 'react-bootstrap';
 import 'datatables.net-bs5';
 import 'datatables.net-responsive-bs5';
 import $ from 'jquery';
 import { API_BASE_URL } from '../url';
-import Registrarproductos from './registrarproductos'
+import Registrarproductos from './Registrarproductos';
+import { Button } from "../components/ui/button"
+import { Plus, RefreshCw } from 'lucide-react'
+
+
+
+
 export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
   const tableRef = useRef(null);
   const [isOpens, setIsOpens] = useState(false); // Aquí defines isOpen y setIsOpen
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  const handleAdd = () => {
+
+  }
+
+  const handleUpdate = () => {
+
+  }
+
+
   const add = (categoria) => {
     setIsOpens(true);
 
   };
 
- 
 
-  
+
+
 
 
   // Cargar datos desde el servidor
@@ -65,7 +79,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   return (
     <div>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -140,14 +154,25 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                           año: 'numeric',
                         })}
                       </td>
-                      <td></td>
+                      <td>
+                        <Button onClick={handleAdd} className="w-32">
+                          <Plus className="mr-2 h-4 w-4" /> Add
+                        </Button>
+                        <Button onClick={handleUpdate} variant="outline" className="w-32">
+                          <RefreshCw className="mr-2 h-4 w-4" /> Update
+                        </Button>
+
+
+
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div className="d-flex justify-content-end mt-4">
-                <Button variant="secondary" onClick={() => setIsOpen(false)}>
+
+                <Button onClick={() => setIsOpen(false)} variant="outline" className="w-32">
                   Cerrar
                 </Button>
               </div>
@@ -156,14 +181,14 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         </div>
       )}
 
-{isOpens && Registrarproductos && (
-   
-   <Registrarproductos
-  isOpen={isOpens}
-  setIsOpen={setIsOpens}
-  categoria={categoria}  // Pasamos la categoría al modal
-/>
- )}
+      {isOpens && Registrarproductos && (
+
+        <Registrarproductos
+          isOpen={isOpens}
+          setIsOpen={setIsOpens}
+          categoria={categoria}  // Pasamos la categoría al modal
+        />
+      )}
     </div>
   );
 }

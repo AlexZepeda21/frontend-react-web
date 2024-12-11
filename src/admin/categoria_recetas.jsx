@@ -20,7 +20,10 @@ const Categoria_recetas = () => {
       try {
         const response = await fetch(`${API_BASE_URL}/cate_recetas`);
         const data = await response.json();
-        setCategorias(data.categorias_recetas || []);
+        // Ordenar categorías en orden descendente por ID (asumimos que id_categoria_recetas es el ID)
+        const categoriasOrdenadas = data.categorias_recetas || [];
+        categoriasOrdenadas.sort((a, b) => b.id_categoria_recetas - a.id_categoria_recetas);
+        setCategorias(categoriasOrdenadas);
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
         setCategorias([]);
@@ -33,10 +36,12 @@ const Categoria_recetas = () => {
   const indexOfLastCategory = (currentPage + 1) * categoriasPorPagina;
   const indexOfFirstCategory = indexOfLastCategory - categoriasPorPagina;
 
+  // Filtrar categorías basadas en la búsqueda
   const filteredCategorias = categorias.filter(categoria =>
     categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Mostrar las categorías actuales basadas en la página y el filtro de búsqueda
   const currentCategorias = filteredCategorias.slice(indexOfFirstCategory, indexOfLastCategory);
   const pageCount = Math.ceil(filteredCategorias.length / categoriasPorPagina);
 
@@ -46,7 +51,7 @@ const Categoria_recetas = () => {
 
   // Función para agregar una categoría
   const handleAddCategory = (newCategory) => {
-    setCategorias((prevCategorias) => [...prevCategorias, newCategory]);
+    setCategorias((prevCategorias) => [newCategory, ...prevCategorias]); // Insertar la nueva categoría al principio
   };
 
   const openUpdateModal = (categoria) => {
@@ -54,9 +59,9 @@ const Categoria_recetas = () => {
     setIsOpen(true);
   };
 
-  // Función modificada para navegar a la página de recetas con el id de la categoría
+  // Función para navegar a la página de recetas con el id de la categoría
   const navegar = (categoriaId) => {
-    localStorage.setItem("id_categoria_recetas", categoriaId); 
+    localStorage.setItem("id_categoria_recetas", categoriaId);
     navigateNow(`/admin/recetas/${categoriaId}`);
   };
 

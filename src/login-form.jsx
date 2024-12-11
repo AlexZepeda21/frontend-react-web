@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Label } from '@radix-ui/react-label';
-import { Checkbox } from "./components/ui/checkbox";
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { MdEmail, MdLock } from "react-icons/md";
@@ -34,11 +33,6 @@ export default function Login() {
       const data = await response.json();
 
       if (data.token) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('id', data.id);
-        localStorage.setItem('correo', data.correo);
-        localStorage.setItem('tipo_usuario', data.tipo_usuario);
-
         // Usando SweetAlert2 para mostrar mensaje de éxito
         Swal.fire({
           icon: 'success',
@@ -47,10 +41,14 @@ export default function Login() {
           confirmButtonText: 'Aceptar',
         });
 
+        localStorage.setItem('id', data.id);
+        localStorage.setItem('correo', data.correo);
+
+        // Pasamos los datos al siguiente componente usando estado de navegación
         if (data.tipo_usuario === 1) {
-          navegar("/admin");
+          navegar("/admin", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
         } else if (data.tipo_usuario === 2) {
-          navegar("/menus/Menuuser");
+          navegar("/menus/Menuuser", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
         }
       }
     } catch (error) {

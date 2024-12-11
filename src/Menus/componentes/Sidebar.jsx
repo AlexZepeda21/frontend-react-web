@@ -1,25 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../../styles/Menuadmin/Siderbar.css";
 import logo from '../../img/logo.png';
-import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-
-
-Modal.setAppElement('#root'); // Asegúrate de que el ID del elemento raíz sea correcto
+import { API_BASE_URL } from '../../url';
+import Swal from 'sweetalert2'; // Importa SweetAlert2
 
 function Sidebar() {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
   const navigate = useNavigate();
-
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
 
   const handleLogout = () => {
-    // Lógica para cerrar sesión
-    localStorage.removeItem('userToken'); // Eliminar token del almacenamiento local
-    closeModal(); // Cerrar el modal
-    navigate('/'); // Redirigir al usuario a la página principal o inicio de sesión
+    // Usar SweetAlert2 para confirmar la acción de cerrar sesión
+    Swal.fire({
+      title: '¿Deseas cerrar sesión?',
+      text: 'Puedes volver cuando lo desees.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, proceder con el logout
+        setIsLoggedOut(true); // Cambia el estado de cierre de sesión
+      }
+    });
   };
+
+  useEffect(() => {
+    if (isLoggedOut) {
+      const fetchLogout = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/logout/${id}`);
+          const data = await response.json();
+
+          // Usar SweetAlert2 para mostrar un mensaje de éxito
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Sesión cerrada con éxito',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            localStorage.clear();
+            navigate('/'); // Redirigir al usuario a la página principal o inicio de sesión
+          });
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+
+          // Usar SweetAlert2 para mostrar un mensaje de error
+          Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al cerrar sesión. Inténtalo nuevamente.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+      };
+
+      fetchLogout();
+    }
+  }, [isLoggedOut, id]); // Se ejecuta cuando isLoggedOut cambia
 
   return (
     <>
@@ -46,14 +86,14 @@ function Sidebar() {
           <a href="#" className="nav-item">
             <i className="fas fa-calendar-check"></i>Reservas
           </a>
-          <a href="../../register-form.jsx" className="nav-item">
+          <a href="../admin/usuario" className="nav-item">
             <i className="fas fa-users"></i>Usuarios
           </a>
           <a href="./perfil" className="nav-item">
             <i className="fas fa-user"></i>Ver Perfil
           </a>
-          {/* Botón para abrir el modal de cerrar sesión */}
-          <button onClick={openModal} className="nav-item btn-logout">
+          {/* Botón para cerrar sesión usando SweetAlert */}
+          <button onClick={handleLogout} className="nav-item btn-logout">
             <i className="fas fa-sign-out-alt"></i>Cerrar Sesión
           </button>
         </nav>
@@ -72,30 +112,6 @@ function Sidebar() {
           </nav>
         </div>
       </aside>
-
-      {/* Modal de Confirmación */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        className="max-w-md z-50 p-6 mx-auto bg-white rounded-lg shadow-lg modal-content "
-        overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      >
-        <h1 className="mb-4 text-xl font-bold text-center">¿Deseas cerrar sesión?</h1>
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
-          >
-            Sí, cerrar sesión
-          </button>
-          <button
-            onClick={closeModal}
-            className="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg hover:bg-gray-400"
-          >
-            Cancelar
-          </button>
-        </div>
-      </Modal>
     </>
   );
 }
