@@ -2,17 +2,31 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from 'react-bootstrap';
 import 'datatables.net-bs5';
 import 'datatables.net-responsive-bs5';
 import $ from 'jquery';
 import { API_BASE_URL } from '../url';
-import Registrarproductos from './Registrarproductos'
+import Registrarproductos from './Registrarproductos';
+import { Button } from "../components/ui/button"
+import { Plus, RefreshCw } from 'lucide-react'
+
+
+
+
 export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
   const tableRef = useRef(null);
   const [isOpens, setIsOpens] = useState(false); // Aquí defines isOpen y setIsOpen
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const handleAdd = () => {
+    
+  }
+
+  const handleUpdate = () => {
+   
+  }
+
 
   const add = (categoria) => {
     setIsOpens(true);
@@ -140,7 +154,17 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                           año: 'numeric',
                         })}
                       </td>
-                      <td></td>
+                      <td>
+                      <Button onClick={handleAdd} className="w-32">
+          <Plus className="mr-2 h-4 w-4" /> Add
+        </Button>
+        <Button onClick={handleUpdate} variant="outline" className="w-32">
+          <RefreshCw className="mr-2 h-4 w-4" /> Update
+        </Button>
+
+
+
+                      </td>
                     </tr>
                   ))}
                 </tbody>
