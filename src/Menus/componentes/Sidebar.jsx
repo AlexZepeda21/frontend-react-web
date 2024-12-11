@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "../../styles/Menuadmin/Siderbar.css";
 import logo from '../../img/logo.png';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../url';
 
 
 Modal.setAppElement('#root'); // Asegúrate de que el ID del elemento raíz sea correcto
@@ -10,16 +11,53 @@ Modal.setAppElement('#root'); // Asegúrate de que el ID del elemento raíz sea 
 function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [isLoggedOut, setIsLoggedOut] = React.useState(false);
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
+  const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
+
+
   const handleLogout = () => {
-    // Lógica para cerrar sesión
-    localStorage.removeItem('userToken'); // Eliminar token del almacenamiento local
+    setIsLoggedOut(true); // Cambia el estado para indicar que el usuario ha cerrado sesión
+
+
     closeModal(); // Cerrar el modal
     navigate('/'); // Redirigir al usuario a la página principal o inicio de sesión
   };
+
+  useEffect(() => {
+    if (isLoggedOut) {
+      const fetchLogout = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/logout/${id}`);
+          const data = await response.json();
+
+          alert("Sesión cerrada con éxito");
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+          alert(`${API_BASE_URL}/logout/${id}`);
+        }
+      };
+
+      localStorage.clear();
+
+      fetchLogout();
+    }
+  }, [isLoggedOut, id]); // Se ejecuta cuando isLoggedOut cambia
+
+
+
+
+
+
+
+
+
+
+    
+  
 
   return (
     <>
