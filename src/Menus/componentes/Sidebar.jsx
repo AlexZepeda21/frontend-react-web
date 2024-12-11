@@ -89,7 +89,7 @@ function Sidebar() {
           <a href="../admin/usuario" className="nav-item">
             <i className="fas fa-users"></i>Usuarios
           </a>
-          <a href="./perfil" className="nav-item">
+          <a href="../admin/perfil" className="nav-item">
             <i className="fas fa-user"></i>Ver Perfil
           </a>
           {/* Botón para cerrar sesión usando SweetAlert */}
