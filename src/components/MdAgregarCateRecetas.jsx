@@ -95,7 +95,7 @@ export default function MdAgregarCateRecetas() {
                 )}
                 <input
                   type="file"
-                  className="file-input"
+                  className="form-control"
                   accept="image/*"
                   onChange={handleFileChange}
                 />
