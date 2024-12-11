@@ -71,7 +71,7 @@ const Categoria_recetas = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <MdAgregarCateRecetas handleAddCategory={handleAddCategory} />
-      </div>
+      </div >
 
       <div className="row">
         {currentCategorias.length > 0 ? (
