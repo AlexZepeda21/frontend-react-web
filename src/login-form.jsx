@@ -44,12 +44,26 @@ export default function Login() {
         localStorage.setItem('id', data.id);
         localStorage.setItem('correo', data.correo);
 
-        // Pasamos los datos al siguiente componente usando estado de navegación
-        if (data.tipo_usuario === 1) {
-          navegar("/admin", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
-        } else if (data.tipo_usuario === 2) {
-          navegar("/menus/Menuuser", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
+        alert(data.estado)
+        if(data.estado === 'true'){
+          if (data.tipo_usuario === 1) {
+            navegar("/admin", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
+          } else if (data.tipo_usuario === 2) {
+            navegar("/menus/Menuuser", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
+          }
         }
+        else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al iniciar sesión',
+            confirmButtonText: 'Aceptar',
+          });
+        }
+
+
+
+        // Pasamos los datos al siguiente componente usando estado de navegación
+        
       }
     } catch (error) {
       console.error('Error:', error);
