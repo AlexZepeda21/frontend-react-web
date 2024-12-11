@@ -1,83 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
-Modal.setAppElement('#root');
-
 function Profile() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simular obtención de datos del usuario desde el localStorage o API
-    const userData = JSON.parse(localStorage.getItem('userData')) || {
-      name: 'Juan Pérez',
-      email: 'juan.perez@ejemplo.com',
-      phone: '123-456-7890',
-      address: 'Calle Falsa 123',
-    };
+    const userData = JSON.parse(localStorage.getItem('userData')) || {};
     setUser(userData);
-    setName(userData.name);
-    setEmail(userData.email);
-    setPhone(userData.phone);
-    setAddress(userData.address);
+    setName(userData.name || 'Invitado');
+    setEmail(userData.email || '');
+    setPhone(userData.phone || '');
+    setAddress(userData.address || '');
   }, []);
 
   const openEditModal = () => setEditModalOpen(true);
   const closeEditModal = () => setEditModalOpen(false);
 
   const handleSave = () => {
-    const updatedUser = { ...user, name, email, phone, address };
+    const updatedUser = { name, email, phone, address };
     setUser(updatedUser);
-    localStorage.setItem('userData', JSON.stringify(updatedUser)); // Guardar cambios
+    localStorage.setItem('userData', JSON.stringify(updatedUser));
     closeEditModal();
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userToken'); // Eliminar token del almacenamiento local
-    navigate('/'); // Redirigir a la página de inicio de sesión
+    localStorage.removeItem('userToken');
+    navigate('/');
   };
+
   const styles = {
     page: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
       padding: '20px',
       fontFamily: 'Arial, sans-serif',
       color: '#333',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between', // Espaciado entre el contenido y el formulario
     },
     headerTitle: {
-      textAlign: 'center',
       fontSize: '28px',
       fontWeight: 'bold',
       marginBottom: '20px',
     },
     profileContainer: {
       display: 'flex',
-      alignItems: 'center',
       flexDirection: 'column',
-      flex: 1, // Toma todo el espacio disponible a la izquierda
+      alignItems: 'center',
+      marginBottom: '20px',
+    },
+    avatar: {
+      width: '150px',
+      height: '150px',
+      borderRadius: '50%',
+      marginBottom: '10px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     },
     userDetails: {
       textAlign: 'center',
-      marginTop: '10px',
     },
     actions: {
-      textAlign: 'center',
+      display: 'flex',
+      gap: '10px',
       marginTop: '20px',
     },
     button: {
       padding: '10px 20px',
-      margin: '5px',
       border: 'none',
       borderRadius: '5px',
       cursor: 'pointer',
       fontSize: '16px',
+      transition: 'background-color 0.3s ease',
     },
     editButton: {
       backgroundColor: '#007bff',
@@ -88,19 +87,29 @@ function Profile() {
       color: '#fff',
     },
     editSection: {
-      flexBasis: '30%', // El formulario ocupa el 30% del espacio
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
       padding: '20px',
       border: '1px solid #ccc',
       borderRadius: '8px',
-      backgroundColor: '#f9f9f9',
-      alignSelf: 'flex-start', // Se alinea al inicio de la página
+      backgroundColor: '#fff',
+      boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+      width: '350px',
+      textAlign: 'left',
     },
     formGroup: {
       marginBottom: '15px',
     },
+    label: {
+      display: 'block',
+      marginBottom: '5px',
+      fontWeight: 'bold',
+    },
     input: {
       width: '100%',
-      padding: '8px',
+      padding: '10px',
       fontSize: '14px',
       borderRadius: '4px',
       border: '1px solid #ccc',
@@ -111,14 +120,10 @@ function Profile() {
       marginTop: '20px',
     },
   };
-  
-  
+
   return (
     <div style={styles.page}>
-      {/* Encabezado principal */}
       <h2 style={styles.headerTitle}>Perfil</h2>
-  
-      {/* Contenedor de la imagen y detalles del usuario */}
       <div style={styles.profileContainer}>
         <img
           src="https://via.placeholder.com/150"
@@ -126,18 +131,16 @@ function Profile() {
           style={styles.avatar}
         />
         <div style={styles.userDetails}>
-          <h1 style={styles.name}>{user?.name}</h1>
-          <p style={styles.email}>{user?.email}</p>
+          <h3>{user?.name || 'Invitado'}</h3>
+          <p>{user?.email || 'Correo no disponible'}</p>
         </div>
       </div>
-  
-      {/* Botones */}
       <div style={styles.actions}>
         <button
-          onClick={() => setEditModalOpen(!isEditModalOpen)}
+          onClick={openEditModal}
           style={{ ...styles.button, ...styles.editButton }}
         >
-          {isEditModalOpen ? "Cerrar Edición" : "Editar Perfil"}
+          Editar Perfil
         </button>
         <button
           onClick={handleLogout}
@@ -146,13 +149,12 @@ function Profile() {
           Cerrar Sesión
         </button>
       </div>
-  
-      {/* Formulario Inline para editar perfil */}
+
       {isEditModalOpen && (
         <div style={styles.editSection}>
-          <h2 className="text-center">Editar Perfil</h2>
+          <h3>Editar Perfil</h3>
           <div style={styles.formGroup}>
-            <label>Nombre</label>
+            <label style={styles.label}>Nombre</label>
             <input
               type="text"
               value={name}
@@ -161,7 +163,7 @@ function Profile() {
             />
           </div>
           <div style={styles.formGroup}>
-            <label>Correo Electrónico</label>
+            <label style={styles.label}>Correo Electrónico</label>
             <input
               type="email"
               value={email}
@@ -170,7 +172,7 @@ function Profile() {
             />
           </div>
           <div style={styles.formGroup}>
-            <label>Teléfono</label>
+            <label style={styles.label}>Teléfono</label>
             <input
               type="text"
               value={phone}
@@ -179,11 +181,20 @@ function Profile() {
             />
           </div>
           <div style={styles.formGroup}>
-            <label>Dirección</label>
+            <label style={styles.label}>Dirección</label>
             <input
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Contraseña</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
             />
           </div>
@@ -195,7 +206,7 @@ function Profile() {
               Guardar
             </button>
             <button
-              onClick={() => setEditModalOpen(false)}
+              onClick={closeEditModal}
               style={{ ...styles.button, ...styles.logoutButton }}
             >
               Cancelar
@@ -205,9 +216,6 @@ function Profile() {
       )}
     </div>
   );
-  
-  
-  
 }
 
 export default Profile;
