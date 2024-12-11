@@ -57,11 +57,11 @@ const Categoria_recetas = () => {
   // Función modificada para navegar a la página de recetas con el id de la categoría
   const navegar = (categoriaId) => {
     localStorage.setItem("id_categoria_recetas", categoriaId); 
-    navigateNow(`/admin/recetas/${categoriaId}`); // Pasamos el id de la categoría
+    navigateNow(`/admin/recetas/${categoriaId}`);
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 overflow-y-auto max-h-[80vh]">
       <div className="mb-4">
         <input
           type="text"
@@ -71,7 +71,7 @@ const Categoria_recetas = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <MdAgregarCateRecetas handleAddCategory={handleAddCategory} />
-      </div>
+      </div >
 
       <div className="row">
         {currentCategorias.length > 0 ? (

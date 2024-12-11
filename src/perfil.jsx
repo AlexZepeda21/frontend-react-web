@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import "../../styles/Profile/Profile.css"; // Crea este archivo CSS para estilizar
-import profileImg from '../../img/profile-placeholder.png'; // Imagen predeterminada para el perfil
+import "./styles/Perfil/perfil.css" // Crea este archivo CSS para estilizar
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +17,6 @@ function Profile() {
     const userData = JSON.parse(localStorage.getItem('userData')) || {
       name: "Usuario Invitado",
       email: "correo@ejemplo.com",
-      avatar: profileImg,
     };
     setUser(userData);
     setName(userData.name);
@@ -44,7 +42,7 @@ function Profile() {
     <div className="profile-page">
       <div className="profile-header">
         <img
-          src={user?.avatar || profileImg}
+          src=""
           alt="Foto de perfil"
           className="profile-avatar"
         />

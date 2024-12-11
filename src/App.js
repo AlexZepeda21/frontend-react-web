@@ -8,7 +8,8 @@ import Register from './register-form';
 
 // Layout que contiene el menú de administración
 import Layout from './Menus/Menuadmin';
-
+import UserProfile from './admin/userProfile';
+import Profile from './perfil';
 //eligiendo pro
 import ProductoCard from './admin/eligiendo_pro';
 import RecetasList from './admin/recetas';
@@ -39,8 +40,11 @@ function App() {
           <Route path="admin/eligiendo_pro" element={<ProductoCard />} />
           <Route path="admin/productos" element={<Productos />} />
           <Route path="/register-form" element={<Register />} />
-          <Route path="/login-form" element={<Login />} />
           <Route path="/admin/recetas/:categoriaId" element={<RecetasList />} />
+
+          <Route path="/admin/userProfile" element={<UserProfile />} />
+          <Route path="/perfil" element={<Profile />} />
+
         </Route>
 
       </Routes>

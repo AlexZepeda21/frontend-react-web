@@ -8,8 +8,6 @@ import 'datatables.net-responsive-bs5';
 import $ from 'jquery';
 import { API_BASE_URL } from '../url';
 import Registrarproductos from './Registrarproductos';
-
-
 export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
   const tableRef = useRef(null);

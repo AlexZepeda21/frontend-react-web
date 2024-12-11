@@ -38,7 +38,7 @@ export default function MdAgregarRecetas({ setShowModal }) {
     descripcion: '',
     tiempo_preparacion: '',
     numero_porciones: '',
-    dificultad: '',  
+    dificultad: '',
     foto: '',
   });
 
@@ -99,7 +99,7 @@ export default function MdAgregarRecetas({ setShowModal }) {
               )}
               <input
                 type="file"
-                className="file-input"
+                className="form-control"
                 accept="image/*"
                 onChange={handleFileChange}
               />
