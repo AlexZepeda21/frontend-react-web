@@ -1,11 +1,15 @@
 'use client';
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Label } from '@radix-ui/react-label';
 import { Checkbox } from "./components/ui/checkbox";
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
+import { MdEmail, MdLock } from "react-icons/md";
 import { API_BASE_URL } from './url';
+import './styles/login/estiloslogin.css';
+import Swal from 'sweetalert2'; // Importar SweetAlert2
 
 export default function Login() {
   const [correo, setEmail] = useState('');
@@ -35,97 +39,77 @@ export default function Login() {
         localStorage.setItem('correo', data.correo);
         localStorage.setItem('tipo_usuario', data.tipo_usuario);
 
+        // Usando SweetAlert2 para mostrar mensaje de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Inicio de sesión exitoso',
+          text: 'Bienvenido de nuevo',
+          confirmButtonText: 'Aceptar',
+        });
 
-        alert('Inicio de sesión exitoso.');
-
-        if (data.tipo_usuario == 1) {
-          navegar("./admin");
+        if (data.tipo_usuario === 1) {
+          navegar("/admin");
+        } else if (data.tipo_usuario === 2) {
+          navegar("/menus/Menuuser");
         }
-        } else if (data.tipo_usuario == 2) {
-          navegar("./menus/Menuuser");
-        
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al iniciar sesión: ' + error.message);
+      // Usando SweetAlert2 para mostrar error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: error.message,
+        confirmButtonText: 'Aceptar',
+      });
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-red-700 to-black">
-      <div className="w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto p-8 space-y-6 bg-black rounded-2xl shadow-lg">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-red-500">Bienvenidos</h1>
-          <p className="text-sm text-gray-400">Al sistema de la cafetería</p>
-        </div>
-
-        <form onSubmit={onSubmit} className="space-y-6">
-          {/* Campo de email */}
-          <div className="space-y-2">
-            <Label htmlFor="correo" className="text-red-300 font-medium">Correo Electrónico</Label>
-            <Input
-              id="correo"
-              placeholder="Ingrese su correo electrónico"
-              required
-              type="email"
-              value={correo}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
-              className="border border-gray-700 bg-gray-800 rounded-lg p-3 text-gray-200 focus:ring focus:ring-red-500"
-            />
-          </div>
-
-          {/* Campo de contraseña */}
-          <div className="space-y-2">
-            <Label htmlFor="clave" className="text-red-300 font-medium">Contraseña</Label>
-            <Input
-              id="clave"
-              placeholder="Ingrese su contraseña"
-              required
-              type="password"
-              value={clave}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              className="border border-gray-700 bg-gray-800 rounded-lg p-3 text-gray-200 focus:ring focus:ring-red-500"
-            />
-          </div>
-
-          {/* Botón de "Recordarme" */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="remember"
-                className="peer h-5 w-5 border border-gray-700 rounded-md checked:bg-red-600"
+    <div className="login-container">
+      <div className="login-card">
+        <h1 className="login-title">Bienvenidos</h1>
+        <form onSubmit={onSubmit}>
+          <div className="input-container">
+            <Label htmlFor="correo">Correo Electrónico</Label>
+            <div className="input-wrapper">
+              <MdEmail className="input-icon" />
+              <Input
+                id="correo"
+                type="email"
+                value={correo}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-field"
+                placeholder="Ingrese su correo"
+                required
               />
-              <label
-                htmlFor="remember"
-                className="text-sm text-gray-400 leading-none peer-disabled:opacity-70"
-              >
-                Recordarme
-              </label>
             </div>
-            <a href="#" className="text-sm text-red-500 hover:underline">¿Olvidaste tu contraseña?</a>
           </div>
-
-          {/* Botón de inicio de sesión */}
+          <div className="input-container">
+            <Label htmlFor="clave">Contraseña</Label>
+            <div className="input-wrapper">
+              <MdLock className="input-icon" />
+              <Input
+                id="clave"
+                type="password"
+                value={clave}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="Ingrese su contraseña"
+                required
+              />
+            </div>
+          </div>
           <Button
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition duration-300"
-            disabled={isLoading}
             type="submit"
+            className="submit-button"
+            disabled={isLoading}
           >
             {isLoading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}
           </Button>
         </form>
-
-        {/* Texto de pie */}
-        <div className="text-center">
-          <p className="text-sm text-gray-400">
-            ¿No tienes una cuenta?{' '}
-            <a href="#" className="text-red-500 font-medium hover:underline">Regístrate aquí</a>
-          </p>
-        </div>
       </div>
     </div>
   );
