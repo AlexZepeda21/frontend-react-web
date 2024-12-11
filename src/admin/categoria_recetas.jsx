@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import { AiOutlineReconciliation } from "react-icons/ai";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "../styles/Cardcategorias.css";
 import { API_BASE_URL } from '../url';
-import { useNavigate } from 'react-router-dom';
- 
-// Importamos el modal personalizado
-import MdAgregarCateRecetas from '../components/MdAgregarCateRecetas';
 import MdActualizarCateRecetas from '../components/MdActualizarCateRecetas';
+import MdAgregarCateRecetas from '../components/MdAgregarCateRecetas';
+import { useNavigate } from 'react-router-dom';
 
 const Categoria_recetas = () => {
   const [categorias, setCategorias] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [categoriasPorPagina, setCategoriasPorPagina] = useState(8);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false); // Aquí defines isOpen y setIsOpen
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); // Estado para guardar la categoría seleccionada
+  const [isOpen, setIsOpen] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const navigateNow = useNavigate();
 
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/cate_recetas`);
         const data = await response.json();
-        setCategorias(data.categoria_recetas || []); // Asegúrate de que sea un array
+        setCategorias(data.categorias_recetas || []);
       } catch (error) {
         console.error('Error al obtener las categorías:', error);
-        setCategorias([]); // Si hay error, asignamos un array vacío
+        setCategorias([]);
       }
     };
 
@@ -48,17 +44,24 @@ const Categoria_recetas = () => {
     setCurrentPage(event.selected);
   };
 
-  // Función para abrir el modal y cargar la categoría seleccionada
+  // Función para agregar una categoría
+  const handleAddCategory = (newCategory) => {
+    setCategorias((prevCategorias) => [...prevCategorias, newCategory]);
+  };
+
   const openUpdateModal = (categoria) => {
-    setCategoriaSeleccionada(categoria);  // Al seleccionar la categoría, la guardamos en el estado
-    setIsOpen(true);  // Abrimos el modal
+    setCategoriaSeleccionada(categoria);
+    setIsOpen(true);
+  };
+
+  // Función modificada para navegar a la página de recetas con el id de la categoría
+  const navegar = (categoriaId) => {
+    localStorage.setItem("id_categoria_recetas", categoriaId); 
+    navigateNow(`/admin/recetas/${categoriaId}`); // Pasamos el id de la categoría
   };
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4 text-center">Listado de Categorías</h1>
-
-      {/* Barra de búsqueda */}
       <div className="mb-4">
         <input
           type="text"
@@ -67,44 +70,34 @@ const Categoria_recetas = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <br />
-        {/* Aquí está el modal personalizado que llamamos desde otro archivo */}
-        <div>
-          <MdAgregarCateRecetas isOpen={isOpen} setIsOpen={setIsOpen} />
-        </div>
-
+        <MdAgregarCateRecetas handleAddCategory={handleAddCategory} />
       </div>
 
       <div className="row">
         {currentCategorias.length > 0 ? (
           currentCategorias.map((categoria) => (
             <div className="col-md-3 mb-4" key={categoria.id_categoria_recetas}>
-              <Card className="h-100 d-flex justify-content-center align-items-center">
-                <Card.Body className="text-center">
-                  <div className="d-flex justify-content-center">
-                    {/* Icono para representar la categoría */}
-                    <AiOutlineReconciliation size={80} color="#007bff" />
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title text-center">{categoria.nombre}</h5>
+                  <div className="card-img-container">
+                    <img
+                      src={`data:image/png;base64,${categoria.foto}`}
+                      alt={categoria.nombre}
+                      className="card-img-top rounded"
+                    />
                   </div>
-
-                  {/* Mostramos el nombre de la categoría */}
-                  <Card.Title>
-                    {categoria.nombre}
-                  </Card.Title>
-
-                  {/* Mostramos la descripción de la categoría */}
-                  <Card.Text>{categoria.descripcion}</Card.Text>
-
-                  <div className="d-flex justify-content-center">
-                    {/* Al hacer clic en el botón de "Actualizar", se pasa la categoría seleccionada */}
-                    <Button
-                      onClick={() => openUpdateModal(categoria)} // Abrimos el modal y pasamos la categoría
-                      className="btn btn-primary"
-                    >
+                  <h8 className="card-title text-center">{categoria.descripcion}</h8>
+                  <div className="card-footer text-center">
+                    <button onClick={() => openUpdateModal(categoria)} className="btn btn-primary">
                       Actualizar
-                    </Button>
+                    </button>
+                    <button onClick={() => navegar(categoria.id_categoria_recetas)} className="btn btn-primary m-1">
+                      Ver recetas
+                    </button>
                   </div>
-                </Card.Body>
-              </Card>
+                </div>
+              </div>
             </div>
           ))
         ) : (
@@ -114,7 +107,6 @@ const Categoria_recetas = () => {
         )}
       </div>
 
-      {/* Paginación */}
       <div className="d-flex justify-content-center mt-4">
         <ReactPaginate
           previousLabel={'Anterior'}
@@ -135,12 +127,11 @@ const Categoria_recetas = () => {
         />
       </div>
 
-      {/* Modal de actualización, pasamos la categoría seleccionada */}
       {isOpen && categoriaSeleccionada && (
         <MdActualizarCateRecetas
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          categoria={categoriaSeleccionada}  // Pasamos la categoría al modal
+          categoria={categoriaSeleccionada}
         />
       )}
     </div>

@@ -9,10 +9,34 @@ import { Textarea } from "./ui/textarea"
 import { API_BASE_URL } from '../url'
 
 export default function MdAgregarCateRecetas() {
+  const [image, setImage] = useState(null);
+  
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Convertir la imagen a base64 y almacenarla en el estado
+        setFormData((prevData) => ({
+          ...prevData,
+          imagenBase64: reader.result.split(',')[1], // Extraemos solo la parte base64 de la URL
+        }));
+      };
+      reader.readAsDataURL(file); // Leer el archivo como URL base64
+    }
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const [isOpen, setIsOpen] = useState(false)
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
+    foto: ''
   })
 
   const handleSubmit = async (e) => {
@@ -25,7 +49,8 @@ export default function MdAgregarCateRecetas() {
         },
         body: JSON.stringify({
           nombre: formData.nombre,
-          descripcion: formData.descripcion
+          descripcion: formData.descripcion,
+          foto: formData.imagenBase64,
         }),
       })
       if (response.ok) {
@@ -36,13 +61,15 @@ export default function MdAgregarCateRecetas() {
       }
     } catch (error) {
       console.error('Error:', error)
-      alert('Hubo un error al crear la categoría')
+      alert(error)
     }
   }
 
   return (
     <div>
-      <Button onClick={() => setIsOpen(true)}>Agregar Categoria</Button>
+      <div class="m-3">
+        <Button onClick={() => setIsOpen(true)}>Agregar Categoria de recetas</Button>
+      </div>
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <motion.div
@@ -53,10 +80,26 @@ export default function MdAgregarCateRecetas() {
             className="bg-white rounded-lg shadow-xl w-full max-w-lg"
           >
             <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
-              <h2 className="text-2xl font-bold mb-2">Nueva Categoría de Receta</h2>
-              <p className="text-sm opacity-80">Añade una nueva categoría para tus deliciosas recetas</p>
+              <h2 className="text-2xl font-bold mb-2">Categoria de recetas</h2>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto max-h-[80vh]">
+              <label className="image-upload">
+                {image ? (
+                  <img
+                    src={image}
+                    alt="Previsualización de imagen"
+                    className="upload-preview"
+                  />
+                ) : (
+                  <span className="upload-placeholder text-center">Click aqui para subir imagen</span>
+                )}
+                <input
+                  type="file"
+                  className="file-input"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </label>
               <div className="space-y-2">
                 <Label htmlFor="nombre" className="text-lg font-medium">Nombre</Label>
                 <Input
@@ -75,7 +118,7 @@ export default function MdAgregarCateRecetas() {
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                   className="w-full p-2 border rounded focus:ring-2 focus:ring-orange-500"
-                  placeholder="Ej: Recetas para hacer postres"
+                  placeholder="Ej: Recetas para hacer postres de frutas"
                   required
                 />
               </div>
