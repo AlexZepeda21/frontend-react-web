@@ -6,12 +6,13 @@ import './styles/globals.css';
 import Login from './login-form';
 import Register from './register-form';
 import Layout from './Menus/Menuadmin';
-import Profile from './perfil';
+import Profile from './admin/perfil';
 import ProductoCard from './admin/eligiendo_pro';
 import RecetasList from './admin/recetas';
 import Categoria_recetas from './admin/categoria_recetas';
 import Categoria_productos from './admin/categoria_productos';
 import Productos from './admin/productos';
+import UserTable from './admin/usuario';
 
 function App() {
   const location = useLocation();
@@ -23,6 +24,8 @@ function App() {
 
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
+
+  //localStorage.clear();
 
   const renderRoutes = () => {
     if (!tokensession || !tipoUsuarioSession) {
@@ -45,6 +48,7 @@ function App() {
             <Route path="productos" element={<Productos />} />
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
             <Route path="perfil" element={<Profile />} />
+            <Route path="usuario" element={<UserTable />} />
           </Route>
           <Route path="*" element={<Navigate to="/admin" />} />
         </Routes>
