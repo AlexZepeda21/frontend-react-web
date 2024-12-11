@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react'
 import { motion } from './framer-motion/motion'
 import { Button } from 'react-bootstrap'
@@ -7,30 +5,31 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Textarea } from "./ui/textarea"
 import { API_BASE_URL } from '../url'
+import Swal from 'sweetalert2'  // Import SweetAlert2
 
 export default function MdAgregarCateproductos() {
-    const [image, setImage] = useState(null);
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            // Convertir la imagen a base64 y almacenarla en el estado
-            setFormData((prevData) => ({
-              ...prevData,
-              imagenBase64: reader.result.split(',')[1], // Extraemos solo la parte base64 de la URL
-            }));
-          };
-          reader.readAsDataURL(file); // Leer el archivo como URL base64
-        }
-        if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setImage(reader.result);
-          };
-          reader.readAsDataURL(file);
-        }
+  const [image, setImage] = useState(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          imagenBase64: reader.result.split(',')[1],
+        }));
       };
+      reader.readAsDataURL(file);
+    }
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const [isOpen, setIsOpen] = useState(false)
   const [formData, setFormData] = useState({
     nombre: '',
@@ -47,20 +46,33 @@ export default function MdAgregarCateproductos() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            nombre_categoria: formData.nombre,
+          nombre_categoria: formData.nombre,
           descripcion: formData.descripcion,
           foto: formData.imagenBase64,
         }),
       })
+
       if (response.ok) {
-        alert('Categoría de receta creada con éxito!')
+        // Reemplazamos el alert con SweetAlert2
+        Swal.fire({
+          title: 'Éxito!',
+          text: 'Categoría de receta creada con éxito!',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        });
         setIsOpen(false)
       } else {
-        throw new Error('Error al crear la categoría')
+        throw new Error('El nombre de la categoria no puede repetirse')
       }
     } catch (error) {
       console.error('Error:', error)
-      alert(error)
+      // Reemplazamos el alert con SweetAlert2 para mostrar el error
+      Swal.fire({
+        title: 'Error',
+        text: error.message,
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      });
     }
   }
 
@@ -81,7 +93,7 @@ export default function MdAgregarCateproductos() {
               <p className="text-sm opacity-80">Añade una nueva categoría de productos para preparar deliciosas recetas</p>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <label className="image-upload">
+              <label className="image-upload">
                 {image ? (
                   <img
                     src={image}

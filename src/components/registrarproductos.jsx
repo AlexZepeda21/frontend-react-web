@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../url';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { motion } from 'framer-motion';
+import Swal from 'sweetalert2';  // Import SweetAlert2
 import "../styles/styleproduct.css";
 
 export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
@@ -59,7 +60,13 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('Enviando datos...');
+        Swal.fire({
+            title: 'Enviando datos...',
+            text: 'Por favor, espere...',
+            icon: 'info',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+        });
 
         try {
             const response = await fetch(`${API_BASE_URL}/productos`, {
@@ -79,14 +86,29 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
 
             const result = await response.json();
             if (response.ok) {
-                alert('Producto registrado con éxito');
-                closeModal(); // Cierra el modal después de guardar
+                Swal.fire({
+                    title: 'Producto registrado con éxito',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                }).then(() => {
+                    closeModal(); // Cierra el modal después de guardar
+                });
             } else {
-                alert('Error al registrar el producto');
+                Swal.fire({
+                    title: 'Error al registrar el producto',
+                    text: result.message || 'Hubo un problema al registrar el producto.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar nuevamente',
+                });
             }
         } catch (error) {
             console.error('Error al enviar los datos:', error);
-            alert('Ocurrió un error al enviar los datos');
+            Swal.fire({
+                title: 'Error al enviar los datos',
+                text: 'Ocurrió un error al intentar registrar el producto.',
+                icon: 'error',
+                confirmButtonText: 'Cerrar',
+            });
         }
     };
 

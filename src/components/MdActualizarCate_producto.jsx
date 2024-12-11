@@ -6,6 +6,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { API_BASE_URL } from '../url';
 import { Switch } from './ui/Switch';
+import Swal from 'sweetalert2';  // Importa SweetAlert2
 
 export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria }) {
   const [formData, setFormData] = useState({
@@ -31,8 +32,6 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
       reader.readAsDataURL(file); // Leer el archivo como URL base64
     }
   };
-  
-
 
   useEffect(() => {
     if (categoria) {
@@ -56,21 +55,30 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
       });
 
       if (response.ok) {
-        alert('Categoría de receta actualizada con éxito!');
+        // Usamos SweetAlert2 para mostrar el mensaje de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Categoría actualizada',
+          text: 'La categoría de receta se ha actualizado con éxito!',
+        });
         setIsOpen(false);  // Cerrar modal al guardar
       } else {
         throw new Error('Error al actualizar la categoría');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Hubo un error al actualizar la categoría');
+      // Usamos SweetAlert2 para mostrar el mensaje de error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al actualizar la categoría',
+      });
     }
   };
 
   return (
     <div>
       {isOpen && (
-        //esta propiedad hace que no se levante el la paginacion tambien
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center ">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -91,12 +99,12 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
                     alt="Previsualización de imagen"
                     className="upload-preview"
                     style={{
-                width: "450px",       
-                height: "175px",      
-                objectFit: "contain",
-                borderRadius: "8px",  
-                backgroundColor: "#f5f5f6", 
-              }}
+                      width: "450px",       
+                      height: "175px",      
+                      objectFit: "contain",
+                      borderRadius: "8px",  
+                      backgroundColor: "#f5f5f6", 
+                    }}
                   />
                 ) : (
                   <span className="upload-placeholder text-center">Subir Imagen</span>
