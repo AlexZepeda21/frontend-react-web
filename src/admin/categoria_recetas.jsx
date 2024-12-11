@@ -57,7 +57,7 @@ const Categoria_recetas = () => {
   // Función modificada para navegar a la página de recetas con el id de la categoría
   const navegar = (categoriaId) => {
     localStorage.setItem("id_categoria_recetas", categoriaId); 
-    navigateNow(`/admin/recetas/${categoriaId}`); // Pasamos el id de la categoría
+    navigateNow(`/admin/recetas/${categoriaId}`);
   };
 
   return (

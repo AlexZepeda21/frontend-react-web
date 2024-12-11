@@ -35,6 +35,7 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
         body: JSON.stringify(formData),
       });
 
+
       if (response.ok) {
         alert('Categoría de receta actualizada con éxito!');
         setIsOpen(false);  // Cerrar modal al guardar
@@ -103,6 +104,6 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
           </motion.div>
         </div>
       )}
-    </div>
-  );
+ </div>
+);
 }

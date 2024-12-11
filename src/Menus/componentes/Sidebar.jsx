@@ -77,7 +77,7 @@ function Sidebar() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg modal-content"
+        className="max-w-md z-50 p-6 mx-auto bg-white rounded-lg shadow-lg modal-content "
         overlayClassName="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
         <h1 className="mb-4 text-xl font-bold text-center">¿Deseas cerrar sesión?</h1>

@@ -89,13 +89,12 @@ const RecetasList = () => {
                   <TableCell>{receta.numero_porciones}</TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        receta.dificultad === "Fácil"
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${receta.dificultad === "Fácil"
                           ? "bg-green-100 text-green-800"
                           : receta.dificultad === "Medio"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
                     >
                       {receta.dificultad}
                     </span>
@@ -107,15 +106,15 @@ const RecetasList = () => {
                         alt={receta.nombre_receta}
                         className="h-full w-full object-cover transition-transform hover:scale-110"
                       />
+
                     </div>
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        receta.estado
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${receta.estado
                           ? "bg-green-100 text-green-800"
                           : "bg-gray-100 text-gray-800"
-                      }`}
+                        }`}
                     >
                       {receta.estado ? "Activo" : "Inactivo"}
                     </span>
