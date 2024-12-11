@@ -9,10 +9,9 @@ import Register from './register-form';
 // Layout que contiene el menú de administración
 import Layout from './Menus/Menuadmin';
 
-
 //eligiendo pro
 import ProductoCard from './admin/eligiendo_pro';
-
+import RecetasList from './admin/recetas';
 
 // Rutas de categorías
 import Categoria_recetas from './admin/categoria_recetas';
@@ -41,7 +40,7 @@ function App() {
           <Route path="admin/productos" element={<Productos />} />
           <Route path="/register-form" element={<Register />} />
           <Route path="/login-form" element={<Login />} />
-
+          <Route path="/admin/recetas/:categoriaId" element={<RecetasList />} />
         </Route>
 
       </Routes>

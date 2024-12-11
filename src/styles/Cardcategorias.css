@@ -1,0 +1,38 @@
+.card-img-container {
+    height: 200px; /* Altura fija para las imágenes */
+    overflow: hidden;
+  }
+.modal-dialog {
+  z-index: 1051 !important; /* Aseguramos que el modal esté por encima de todo */
+}
+
+.modal-backdrop {
+  z-index: 1050 !important; /* Aseguramos que el backdrop también esté por encima de los elementos detrás del modal */
+}
+
+  
+  .card-img-top {
+    object-fit: cover; /* Ajusta la imagen sin deformarla */
+    height: 100%; /* Ajusta la altura al contenedor */
+    width: 100%; /* Ajusta el ancho al contenedor */
+    border-radius: 5px; /* Opcional, agrega bordes redondeados a la imagen */
+  }
+  
+  .card-footer {
+    padding: 1rem;
+  }
+  
+  .card-body {
+    text-align: center;
+  }
+  
+  .card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  

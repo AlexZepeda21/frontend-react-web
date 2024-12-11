@@ -1,0 +1,132 @@
+
+
+/* Estilos generales para la página de perfil */
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  /* Encabezado del perfil */
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    margin-bottom: 15px;
+  }
+  
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+  
+  .profile-email {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+  }
+  
+  /* Acciones del perfil */
+  .profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .btn-edit, .btn-logout {
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-edit {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .btn-edit:hover {
+    background-color: #45A049;
+  }
+  
+  .btn-logout {
+    background-color: #F44336;
+    color: white;
+  }
+  
+  .btn-logout:hover {
+    background-color: #E53935;
+  }
+  
+  /* Estilos para el modal */
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Estilos de los inputs en el modal */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  input[type="text"]:focus, input[type="email"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  }
+  
+  /* Botones dentro del modal */
+  button {
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  

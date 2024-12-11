@@ -62,7 +62,7 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
               <h2 className="text-2xl font-bold mb-2">Actualizar esta categoría de receta</h2>
               <p className="text-sm opacity-80">Actualiza según tus preferencias</p>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto max-h-[80vh]">
               <div className="space-y-2">
                 <Label htmlFor="nombre" className="text-lg font-medium">Nombre</Label>
                 <Input
