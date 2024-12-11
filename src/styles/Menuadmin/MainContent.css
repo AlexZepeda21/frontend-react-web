@@ -1,6 +1,6 @@
 .main-content {
     padding-top: 25px;
-    position: fixed; /* Esto lo cambiaremos para permitir el desplazamiento */
+    position: fixed; 
     background-color: transparent;
     top: 0;
     right: 0;
