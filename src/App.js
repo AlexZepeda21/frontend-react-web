@@ -1,12 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './styles/globals.css';
 
-// Rutas de inicio de sesión
+// Componentes
 import Login from './login-form';
 import Register from './register-form';
-
-// Layout que contiene el menú de administración
 import Layout from './Menus/Menuadmin';
 import Profile from './perfil';
 import ProductoCard from './admin/eligiendo_pro';
@@ -14,30 +12,19 @@ import RecetasList from './admin/recetas';
 import Categoria_recetas from './admin/categoria_recetas';
 import Categoria_productos from './admin/categoria_productos';
 import Productos from './admin/productos';
-import VerReceta from './admin/VerReceta';
-
-// Importando rutas de controles
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function App() {
   const location = useLocation();
   const token = location.state?.token;
   const tipoUsuario = location.state?.tipo_usuario;
 
-  if (token) {
-    localStorage.setItem('token', token);
-  }
-
-  if (tipoUsuario) {
-    localStorage.setItem('tipo_usuario', tipoUsuario);
-  }
+  if (token) localStorage.setItem('token', token);
+  if (tipoUsuario) localStorage.setItem('tipo_usuario', tipoUsuario);
 
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
 
   const renderRoutes = () => {
-    // Si no hay token o tipo de usuario, redirige al Login
     if (!tokensession || !tipoUsuarioSession) {
       return (
         <Routes>
@@ -48,7 +35,6 @@ function App() {
       );
     }
 
-    // Renderizado para usuarios tipo 1 (Administrador)
     if (tipoUsuarioSession === '1') {
       return (
         <Routes>
@@ -58,7 +44,6 @@ function App() {
             <Route path="eligiendo_pro" element={<ProductoCard />} />
             <Route path="productos" element={<Productos />} />
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
-            <Route path="recetas/:recetaId" element={<VerReceta />} />
             <Route path="perfil" element={<Profile />} />
           </Route>
           <Route path="*" element={<Navigate to="/admin" />} />
@@ -66,7 +51,6 @@ function App() {
       );
     }
 
-    // Renderizado para usuarios tipo 2 (Cliente)
     if (tipoUsuarioSession === '2') {
       return (
         <Routes>
@@ -76,7 +60,6 @@ function App() {
       );
     }
 
-    // Caso predeterminado si el tipo de usuario no es reconocido
     return (
       <Routes>
         <Route path="/" element={<p>Tipo de usuario no reconocido.</p>} />
@@ -85,11 +68,7 @@ function App() {
     );
   };
 
-  return (
-    <Router>
-      {renderRoutes()}
-    </Router>
-  );
+  return <div>{renderRoutes()}</div>;
 }
 
 export default App;
