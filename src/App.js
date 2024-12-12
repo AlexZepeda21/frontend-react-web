@@ -13,6 +13,8 @@ import Categoria_recetas from './admin/categoria_recetas';
 import Categoria_productos from './admin/categoria_productos';
 import Productos from './admin/productos';
 import UserTable from './admin/usuario';
+import VerReceta from './admin/VerReceta';
+
 
 function App() {
   const location = useLocation();
@@ -49,6 +51,9 @@ function App() {
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
             <Route path="perfil" element={<Profile />} />
             <Route path="usuario" element={<UserTable />} />
+            <Route path="VerReceta/:idReceta" element={<VerReceta />} />
+
+            
           </Route>
           <Route path="*" element={<Navigate to="/admin" />} />
         </Routes>

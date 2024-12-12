@@ -63,8 +63,7 @@ const RecetasList = () => {
   };
 
   const handleVerReceta = (idReceta) => {
-    localStorage.setItem("id_recetas")
-    navigate(`/recetas/${idReceta}`);  // Navega a la ruta de detalles con el ID de la receta
+    navigate(`/admin/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
   // Función para abrir el modal "Editar"
@@ -102,7 +101,6 @@ const RecetasList = () => {
         <MdAgregarRecetas showModal={showModal} setShowModal={setShowModal} />
       )}
 
-
       {showModalEditar && recetaSeleccionada && (
         <MdEditarReceta
           showModalEditar={showModalEditar}
@@ -115,7 +113,7 @@ const RecetasList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">#</TableHead> {/* Cambié el ID por un número secuencial */}
+              <TableHead className="w-[100px]">#</TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead className="max-w-[300px]">Descripción</TableHead>
               <TableHead>Tiempo</TableHead>
@@ -130,7 +128,7 @@ const RecetasList = () => {
             {currentRecetas.length > 0 ? (
               currentRecetas.map((receta, index) => (
                 <TableRow key={receta.id_recetas} className="hover:bg-muted/50 transition-colors">
-                  <TableCell className="font-medium">{index + 1}</TableCell> {/* Índice de la receta */}
+                  <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell>{receta.nombre_receta}</TableCell>
                   <TableCell className="max-w-[300px]">
                     <p className="truncate" title={receta.descripcion}>
@@ -166,7 +164,7 @@ const RecetasList = () => {
                   </TableCell>
                   <TableCell>
                     <button className="form-control primary m-1" onClick={() => openModalEditar(receta)}>Editar</button>
-                    <button className="form-control primary m-1" onClick={() => handleVerReceta(receta.id_recetas)}>Ver</button> {/* Agregado el manejo de click aquí */}
+                    <button className="form-control primary m-1" onClick={() => handleVerReceta(receta.id_recetas)}>Ver</button>
                   </TableCell>
                 </TableRow>
               ))
