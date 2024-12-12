@@ -14,11 +14,13 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
     descripcion: "",
     id_usuario: "",
     id_categoria_pro: "",
-    foto: null,
+    foto: '',
     imagenBase64: '',
     nombre: '',
     estado: false,
   });
+
+
   const [image, setImage] = useState(null);
   const [catepro, setcatepro] = useState([]);
   const [unidad_medida, setunidad_medida] = useState([]);
@@ -30,7 +32,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
       reader.onloadend = () => {
         setFormData((prevData) => ({
           ...prevData,
-          imagenBase64: reader.result.split(',')[1],
+          foto: reader.result.split(',')[1],
         }));
         setImage(reader.result); // Mostrar previsualización de la imagen
       };
@@ -38,17 +40,11 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
     }
   };
 
+  const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
+
+
   useEffect(() => {
-    const fetchcatepro = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/listasolo1`);
-        const data = await response.json();
-        setcatepro(data.categorias_productos || []);
-      } catch (error) {
-        console.error('Error al obtener las categorías:', error);
-        setcatepro([]);
-      }
-    };
+    
 
     const fetchUnidadesMedida = async () => {
       try {
@@ -61,7 +57,6 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
       }
     };
 
-    fetchcatepro();
     fetchUnidadesMedida();
   }, []);
 
@@ -71,13 +66,16 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
         nombre: producto.nombre,
         descripcion: producto.descripcion,
         id_unidad_medida: producto.id_unidad_medida || "",
-        id_categoria_pro: producto.id_categoria_pro || "",
+        id_usuario: id,
         estado: producto.estado || false,
-        imagenBase64: producto.imagenBase64 || "",
+        foto: producto.imagenBase64 || producto.foto,
+
+      
       });
       setImage(producto.imagenBase64 ? `${API_BASE_URL}/images/${producto.imagenBase64}` : null);
     }
   }, [producto]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,36 +96,37 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Hubo un error al actualizar el producto');
+      alert(error);
     }
   };
 
   return (
     <div>
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-2">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white rounded-lg shadow-xl overflow-hidden max-w-md w-full"
+            className="bg-white rounded-lg shadow-xl w-full max-w-lg"
+            style={{ maxHeight: '60vh', overflowY: 'auto' }}
           >
-            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white">
-              <h2 className="text-2xl font-bold mb-2">Actualizar este producto</h2>
-              <p className="text-sm opacity-80">Actualiza según tus preferencias</p>
+            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-4 text-white">
+              <h2 className="text-xl font-bold mb-1">Actualizar Producto</h2>
+              <p className="text-xs opacity-80">Actualiza según tus preferencias</p>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 space-y-3">
               <div className="form-group">
                 <label className="image-upload">
-                  {image ? (
+                  {image || producto.foto ? (
                     <img
-                      src={image}
+                      src={image ? image : `data:image/png;base64,${producto.foto}`}
                       alt="Previsualización de imagen"
-                      className="upload-preview"
+                      className="upload-preview w-20 h-20 object-cover rounded"
                     />
                   ) : (
-                    <span className="upload-placeholder text-center">Subir Imagen</span>
+                    <span className="upload-placeholder text-center text-sm">Subir Imagen</span>
                   )}
                   <input
                     type="file"
@@ -139,61 +138,45 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
               </div>
 
               <div className="form-group">
-                <label>Nombre</label>
+                <label className="text-sm">Nombre</label>
                 <input
                   type="text"
                   name="nombre"
                   placeholder="Nombre del producto"
                   value={formData.nombre}
                   onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                  className="form-control"
+                  className="form-control text-sm"
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Unidad de Medida</label>
-                  <select
-                    name="id_unidad_medida"
-                    value={formData.id_unidad_medida}
-                    onChange={(e) => setFormData({ ...formData, id_unidad_medida: e.target.value })}
-                    className="form-control"
-                  >
-                    <option value="">Seleccionar unidad</option>
-                    {unidad_medida.map((unidad) => (
-                      <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
-                        {unidad.nombre_unidad}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Categoría del Producto</label>
-                  <select
-                    name="id_categoria_pro"
-                    value={formData.id_categoria_pro}
-                    onChange={(e) => setFormData({ ...formData, id_categoria_pro: e.target.value })}
-                    className="form-control"
-                  >
-                    <option value="">Seleccionar una categoria</option>
-                    {catepro.map((cate_pro) => (
-                      <option key={cate_pro.id_categoria_pro} value={cate_pro.id_categoria_pro}>
-                        {cate_pro.nombre_categoria}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group flex-1">
+                <label>Unidad de Medida</label>
+                <select
+                  name="id_unidad_medida"
+                  value={formData.id_unidad_medida || ""}
+                  onChange={(e) => setFormData({ ...formData, id_unidad_medida: e.target.value })}
+                  className="form-control text-sm"
+                >
+                  <option value="">Seleccionar unidad</option>
+                  {unidad_medida.map((unidad) => (
+                    <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
+                      {unidad.nombre_unidad}
+                    </option>
+                  ))}
+                </select>
               </div>
 
+
+
               <div className="form-group">
-                <label>Descripción</label>
+                <label className="text-sm">Descripción</label>
                 <textarea
                   name="descripcion"
                   placeholder="Describe el producto..."
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                  className="form-control"
-                  style={{ resize: 'vertical', minHeight: '100px' }}
+                  className="form-control text-sm"
+                  style={{ resize: 'vertical', minHeight: '80px' }}
                 ></textarea>
               </div>
 
@@ -203,12 +186,17 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
                   checked={formData.estado}
                   onCheckedChange={(checked) => setFormData({ ...formData, estado: checked })}
                 />
-                <Label htmlFor="estado" className="text-lg font-medium">Activo</Label>
+                <Label htmlFor="estado" className="text-sm font-medium">Activo</Label>
               </div>
 
-              <div className="flex justify-end space-x-2 mt-6">
-                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+              <div className="flex justify-end space-x-2 mt-4">
+                <Button type="button" variant="outline" onClick={() => setIsOpen(false)} className="text-sm">
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-gradient-to-r from-pink-500 to-orange-500 text-white text-sm"
+                >
                   Guardar Producto
                 </Button>
               </div>
@@ -217,5 +205,6 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
         </div>
       )}
     </div>
+
   );
 }

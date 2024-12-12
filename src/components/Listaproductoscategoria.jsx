@@ -10,26 +10,30 @@ import Registrarproductos from './Registrarproductos';
 import { Button } from "../components/ui/button"
 import { Plus, RefreshCw } from 'lucide-react'
 
-
-
+import MdActializarproducto from './MdActializarproducto';
 
 export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
+  const [productoseleccionado, setProductoseleccionado] = useState([]);
   const tableRef = useRef(null);
   const [isOpens, setIsOpens] = useState(false); // Aquí defines isOpen y setIsOpen
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isOpeningreso, setIsOpeningreso] = useState(false); // Aquí defines isOpen y setIsOpen
+  const [isOpenupdate, setIsOpenupdate] = useState(false); // Aquí defines isOpen y setIsOpen
 
   const handleAdd = () => {
 
   }
 
-  const handleUpdate = () => {
+  const updateproducto = (producto) => {
+    setIsOpenupdate(true);
+    setProductoseleccionado(producto);
 
   }
 
 
   const add = (categoria) => {
     setIsOpens(true);
+
 
   };
 
@@ -158,7 +162,10 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         <Button onClick={handleAdd} className="w-32">
                           <Plus className="mr-2 h-4 w-4" /> Add
                         </Button>
-                        <Button onClick={handleUpdate} variant="outline" className="w-32">
+                        <Button onClick={() => {
+                          setIsOpenupdate(true);
+                          updateproducto(producto);
+                        }} variant="outline" className="w-32">
                           <RefreshCw className="mr-2 h-4 w-4" /> Update
                         </Button>
 
@@ -182,13 +189,22 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
       )}
 
       {isOpens && Registrarproductos && (
-
         <Registrarproductos
           isOpen={isOpens}
           setIsOpen={setIsOpens}
           categoria={categoria}  // Pasamos la categoría al modal
         />
       )}
+
+      {isOpenupdate && MdActializarproducto && (
+        <MdActializarproducto
+        isOpen={isOpenupdate}
+        setIsOpen={setIsOpenupdate}
+          producto={productoseleccionado}  // Pasamos la categoría al modal
+        />
+      )}
+
+
     </div>
   );
 }

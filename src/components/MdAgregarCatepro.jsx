@@ -87,6 +87,7 @@ export default function MdAgregarCateproductos() {
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="bg-white rounded-lg shadow-xl w-full max-w-lg"
+            style={{ maxHeight: '80vh', overflowY: 'auto' }}
           >
             <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
               <h2 className="text-2xl font-bold mb-2">Nueva Categoría de productos</h2>

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';  // Import SweetAlert2
 import "../styles/styleproduct.css";
 
-export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
+export default function Ingresoproductos({ isOpen, setIsOpen, categoria }) {
 
     const [unidad_medida, setunidad_medida] = useState([]);
     const [formData, setFormData] = useState({
