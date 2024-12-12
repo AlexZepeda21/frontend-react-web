@@ -37,6 +37,9 @@ function Profile() {
     });
   };
 
+  const correo = localStorage.getItem("correo");
+
+
   return (
     <>
     <br />
@@ -56,7 +59,7 @@ function Profile() {
           />
         </div>
         <h1 className="profile-name">{user?.name}</h1>
-        <p className="profile-email">{user?.email}</p>
+        <p className="profile-email">{correo}</p>
         <div className="profile-actions">
           <button className="edit-button">
             <span className="button-icon">✎</span>
