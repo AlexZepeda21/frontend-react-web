@@ -8,8 +8,8 @@
     z-index: 10;
     color: rgba(0, 0, 0, 0.9);
     border-left: 1px solid rgba(0, 0, 0, 0.2);
-    height: 100%; /* Ocupa toda la altura */
-    overflow-y: auto; /* Activa el scroll vertical */
+    max-height: 100vh; /* Establece la altura máxima en la altura de la ventana */
+    overflow-y: auto; /* Mostrar barra de desplazamiento solo cuando sea necesario */
 }
 
 /* Ajustes para pantallas más pequeñas */
@@ -31,7 +31,7 @@
         left: 0; /* Sin margen izquierdo */
         top: 0; /* Ajusta la posición superior */
         border-left: none; /* Elimina la línea divisoria */
-        height: auto; /* Permite que crezca dinámicamente */
+        max-height: none; /* Elimina la altura máxima */
         overflow-y: visible; /* Sin límite en scroll */
     }
 }

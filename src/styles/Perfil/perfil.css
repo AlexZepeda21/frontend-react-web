@@ -1,31 +1,33 @@
+/* Estilos.css */
+
+
+/* Estilos para el contenedor del perfil */
 .profile-container {
   width: 100%;
   max-width: 500px;
-  margin: 271px auto; 
+  margin: 0 auto;
   background: white;
-  border-radius: 12px; /* Incrementar el borde redondeado para un efecto más suave */
-  border: 3px solid black; /* Borde negro alrededor del contenedor */
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra más grande para efecto elevado */
+  border-radius: 12px;
+  border: 3px solid black;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transform: translateY(-10px); /* Ligeramente elevado */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Suavizar las transiciones */
+  transform: translateY(-10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .profile-container:hover {
   transform: translateY(-20px); /* Elevar más al pasar el mouse */
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 6px 10px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
 }
 
+/* Estilos para el banner del perfil */
 .profile-banner {
-
   height: 250px;
   background: url('/src/img/cafeteria.png') no-repeat center; /* Centrar imagen */
   background-size: cover; /* La imagen ocupa exactamente el tamaño del contenedor */
   background-repeat: no-repeat; /* Asegura que no se repita */
 }
 
-
-
+/* Estilos para el contenido del perfil */
 .profile-content {
   position: relative;
   padding: 20px;
@@ -35,6 +37,7 @@
   margin-top: -100px; /* Ajustar para superponer el avatar más arriba */
 }
 
+/* Estilos para el avatar del perfil */
 .profile-avatar {
   position: absolute; /* Permite superponer el avatar */
   top: -50px; /* Ajusta la posición hacia arriba para que se superponga al banner */
@@ -47,6 +50,7 @@
   z-index: 1; /* Asegura que el avatar esté por encima del fondo */
 }
 
+/* Estilos para la imagen del avatar */
 .avatar-image {
   width: 100%;
   height: 100%;
@@ -54,8 +58,8 @@
   object-fit: cover;
 }
 
-.profile-content .profile-name
-{
+/* Estilos para el nombre del perfil */
+.profile-content .profile-name {
   margin-top: 100px; /* Ajusta el contenido para compensar el desplazamiento del avatar */
 }
 
@@ -66,17 +70,20 @@
   color: #333;
 }
 
+/* Estilos para el correo electrónico del perfil */
 .profile-email {
   font-size: 16px;
   color: #666;
   margin: 8px 0 20px 0;
 }
 
+/* Estilos para las acciones del perfil */
 .profile-actions {
   display: flex;
   gap: 12px;
 }
 
+/* Estilos para el botón de editar perfil */
 .edit-button,
 .logout-button {
   padding: 8px 16px;

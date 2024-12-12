@@ -38,7 +38,14 @@ function Profile() {
   };
 
   return (
+    <>
+    <br />
+      <br />
+      <br />
+      <br />
+      <br />
     <div className="profile-container">
+      
       <div className="profile-banner"></div>
       <div className="profile-content">
         <div className="profile-avatar">
@@ -62,6 +69,7 @@ function Profile() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
