@@ -35,6 +35,8 @@ export default function Mdinformacionproductos({ isOpen, setIsOpen, producto }) 
       exit={{ scale: 0.8, opacity: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className="bg-white rounded-lg shadow-xl w-full max-w-lg"
+      style={{ maxHeight: '80vh', overflowY: 'auto' }}
+
     >
       {/* Header */}
       <div className="bg-gradient-to-r from-green-500 to-blue-500 p-6 text-white rounded-t-lg">
@@ -58,6 +60,7 @@ export default function Mdinformacionproductos({ isOpen, setIsOpen, producto }) 
                 backgroundColor: "#f5f5f6", 
               }}
               className="w-48 h-48 object-cover rounded shadow-lg"
+              
             />
           </div>
         )}

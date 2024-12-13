@@ -21,6 +21,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   const [isOpens, setIsOpens] = useState(false);
   const [isOpeningreso, setIsOpeningreso] = useState(false);
   const [isOpenupdate, setIsOpenupdate] = useState(false);
+  const [isOpeninfoproducto, setIsOpeninfoproducto] = useState(false);
 
   const agregarstock = (producto) => {
     setIsOpeningreso(true);
@@ -33,7 +34,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   };
 
   const infoproducto = (producto) => {
-    setIsOpenupdate(true);
+    setIsOpeninfoproducto(true);
     setProductoseleccionado(producto);
   };
 
@@ -242,10 +243,10 @@ Info producto
         />
       )}
 
-  {isOpenupdate && Mdinformacionproductos && (
+  {isOpeninfoproducto && Mdinformacionproductos && (
         <Mdinformacionproductos
-          isOpen={isOpenupdate}
-          setIsOpen={setIsOpenupdate}
+          isOpen={isOpeninfoproducto}
+          setIsOpen={setIsOpeninfoproducto}
           producto={productoseleccionado}  // Pasamos la categoría al modal
         />
       )}
