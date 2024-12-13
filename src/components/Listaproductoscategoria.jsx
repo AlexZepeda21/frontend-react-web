@@ -12,6 +12,7 @@ import { Plus, RefreshCw } from 'lucide-react';
 import MdActializarproducto from './MdActializarproducto';
 import Ingresoproductos from './Ingresoproducto';
 import { X } from 'lucide-react';
+import Mdinformacionproductos from './Mdinformacionproductos';
 
 export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
@@ -27,6 +28,11 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   };
 
   const updateproducto = (producto) => {
+    setIsOpenupdate(true);
+    setProductoseleccionado(producto);
+  };
+
+  const infoproducto = (producto) => {
     setIsOpenupdate(true);
     setProductoseleccionado(producto);
   };
@@ -181,6 +187,18 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         >
                           <RefreshCw className="mr-2 h-4 w-4" /> Update
                         </Button>
+
+                        <Button
+  onClick={() => {
+    setIsOpenupdate(true);
+    infoproducto(producto);
+  }}
+  variant="outline"
+  className="w-32 text-gray-700 border-gray-300 hover:border-gray-500 hover:text-gray-900 rounded-lg transition duration-200"
+>
+Info producto
+</Button>
+
                       </td>
                     </tr>
                   ))}
@@ -220,6 +238,14 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         <Ingresoproductos
           isOpen={isOpeningreso}
           setIsOpen={setIsOpeningreso}
+          producto={productoseleccionado}  // Pasamos la categoría al modal
+        />
+      )}
+
+  {isOpenupdate && Mdinformacionproductos && (
+        <Mdinformacionproductos
+          isOpen={isOpenupdate}
+          setIsOpen={setIsOpenupdate}
           producto={productoseleccionado}  // Pasamos la categoría al modal
         />
       )}

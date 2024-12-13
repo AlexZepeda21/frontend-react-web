@@ -14,8 +14,6 @@ export default function Mdinformacionproductos({ isOpen, setIsOpen, producto }) 
         estado: false,
       });
 
-
-
   useEffect(() => {
     if (producto) {
       setFormData({
