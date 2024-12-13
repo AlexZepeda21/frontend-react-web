@@ -7,7 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { API_BASE_URL } from '../url';
 import { useNavigate } from 'react-router-dom';
 import "../styles/productos/cardcategorias_pro.css";
-
+import '../styles/Perfil/unidades.css';
 
 // Importamos el modal personalizado
 import MdAgregarCateproductos from '../components/MdAgregarCatepro';
@@ -18,7 +18,7 @@ import Listaproductoscategoria from '../components/Listaproductoscategoria';
 const Categoria_productos = () => {
   const [categorias, setCategorias] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [categoriasPorPagina, setCategoriasPorPagina] = useState(8);
+  const [categoriasPorPagina, setCategoriasPorPagina] = useState(4); // Modificamos el límite a 4
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false); // Aquí defines isOpen y setIsOpen
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); // Estado para guardar la categoría seleccionada
@@ -69,7 +69,8 @@ const Categoria_productos = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container di mt-5">
+      <h1 className="text-3xl titulo font-bold tracking-tight">Categorias de Productos</h1>
 
       <div className="mb-4">
         <input
