@@ -10,6 +10,7 @@ import ListarIngredientes from '../components/MdListarIngredientes';
 const Page = () => {
   const { idReceta } = useParams(); // Obtener el ID de la receta desde los parámetros
   const [receta, setReceta] = useState(null);
+  const [productos, setProductos] = useState([]); // Estado para los productos
   const [error, setError] = useState('');
   const [ShowModalAgregarIngrediente, setShowModalAgregarIngrediente] = useState(false);
 
@@ -37,6 +38,19 @@ const Page = () => {
       })
       .catch(() => {
         setError('Error en la respuesta del servidor.');
+      });
+
+    // Obtener productos para la receta
+    axios.get(`http://127.0.0.1:8000/api/receta-productos/${idReceta}`)
+      .then((response) => {
+        if (response.data && response.data.productos) {
+          setProductos(response.data.productos);
+        } else {
+          setError('No se encontraron productos para esta receta.');
+        }
+      })
+      .catch(() => {
+        setError('Error al obtener los productos.');
       });
 
   }, [idReceta]); // Dependencia en `idReceta` para que se ejecute cada vez que cambie el ID
@@ -127,8 +141,26 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Botón para abrir el modal de ingredientes */}
+      {/* Listar Ingredientes */}
       <div className="mt-8">
+        <div>
+          <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
+          <div>
+            {productos.length > 0 ? (
+              <ul className="space-y-4">
+                {productos.map((producto) => (
+                  <li key={producto.id_recetas_producto} className="text-gray-600">
+                    {producto.producto.nombre}: {producto.cantidad} unidades
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No hay productos para esta receta.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Botón para abrir el modal de ingredientes */}
         <Button onClick={abrirModalIngredientes} variant="outline">
           Agregar Ingredientes
         </Button>
