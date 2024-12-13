@@ -191,7 +191,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
 
                         <Button
   onClick={() => {
-    setIsOpenupdate(true);
+    setIsOpeninfoproducto(true);
     infoproducto(producto);
   }}
   variant="outline"
