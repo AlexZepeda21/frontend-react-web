@@ -1,0 +1,18 @@
+/* mstyles.css */
+
+.listado-ingredientes {
+  background: repeating-linear-gradient(white 0px, white 30px, #f3f4f6 30px, #f3f4f6 31px);
+  padding: 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.listado-ingredientes li {
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.listado-ingredientes li:last-child {
+  border-bottom: none;
+}

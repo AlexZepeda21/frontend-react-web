@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
 import ListarIngredientes from '../components/MdListarIngredientes';
+import "../styles/m/mstyles.css"
 
 const Page = () => {
   const { idReceta } = useParams(); // Obtener el ID de la receta desde los parámetros
@@ -141,16 +142,20 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Listar Ingredientes */}
       <div className="mt-8">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
-          <div>
+          <h3 className="text-2xl font-semibold text-gray-900" >Ingredientes</h3>
+          <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
             {productos.length > 0 ? (
-              <ul className="space-y-4">
+              <ul className="space-y-2">
                 {productos.map((producto) => (
-                  <li key={producto.id_recetas_producto} className="text-gray-600">
-                    {producto.producto.nombre}: {producto.cantidad} unidades
+                  <li
+                    key={producto.id_recetas_producto
+
+                    }                  >
+                    <div className="flex justify-between items-center">
+                      <span>{producto.producto.nombre}</span>: <span>{producto.cantidad} unidades</span>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -165,6 +170,7 @@ const Page = () => {
           Agregar Ingredientes
         </Button>
       </div>
+
 
       {/* Modal para agregar ingredientes */}
       {ShowModalAgregarIngrediente && (
