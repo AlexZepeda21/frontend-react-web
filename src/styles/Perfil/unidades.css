@@ -1,0 +1,98 @@
+/* General styles for the container */
+.p-8 {
+    margin-top: 100px;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Heading styles */
+ .titulo {
+    color: #CD853F;
+    margin-bottom: 1rem;
+  }
+  
+  
+/* Input de Búsqueda */
+input[type="text"].form-control {
+    border: 1px solid #CD853F;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    width: 50%;
+    box-sizing: border-box;
+  }
+  
+  
+  
+  /* Botones de Acción */
+  button.btn-edit, button.btn-danger {
+    width: 120px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+
+
+
+
+  button.btn-agregar{
+    background-color: #8B2323;
+    
+  }
+
+  button.btn-agregar:hover{
+    background-color: black;
+    color: white;
+    
+  }
+  
+  button.btn-edit {
+    background-color: #CD853F;
+  }
+  
+  button.btn-edit:hover {
+    background-color: black;
+    color: white;
+  }
+  
+  button.btn-danger {
+    background-color: #8B2323;
+  }
+  
+  button.btn-danger:hover {
+    background-color: black;
+    color: white;
+  }
+ 
+  
+ /* Paginación */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .pagination .active a {
+    background-color: #CD853F !important;
+    color: white !important;
+  }
+
+  .small-select {
+    width: 25%; /* Establece el ancho al 25% */
+    padding: 5px 10px; /* Ajusta el padding para hacerlo más pequeño */
+    font-size: 0.875rem; /* Ajusta el tamaño de la fuente */
+  }
+  
+   
+  

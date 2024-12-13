@@ -14,6 +14,7 @@ import Categoria_recetas from './admin/categoria_recetas';
 import Categoria_productos from './admin/categoria_productos';
 import Productos from './admin/productos';
 import UserTable from './admin/usuario';
+import UnidadMedidaList from './admin/uni_medidas';
 import VerReceta from './admin/VerReceta';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from './url';
@@ -124,6 +125,7 @@ function App() {
             <Route path="categoria_productos" element={<Categoria_productos />} />
             <Route path="eligiendo_pro" element={<ProductoCard />} />
             <Route path="productos" element={<Productos />} />
+            <Route path="uni_medidas" element={<UnidadMedidaList />} />
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
             <Route path="perfil" element={<Profile />} />
             <Route path="usuario" element={<UserTable />} />

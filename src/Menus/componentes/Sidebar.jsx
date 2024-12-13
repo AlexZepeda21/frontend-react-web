@@ -74,6 +74,9 @@ function Sidebar() {
           <a href="/../admin/categoria_productos" className="nav-item">
             <i className="fas fa-th-large"></i>Categorías
           </a>
+          <a href="/../admin/uni_medidas" className="nav-item">
+            <i className="fas fa-balance-scale"></i>Unidades Medida
+          </a>
           <a href="#" className="nav-item">
             <i className="fas fa-box"></i>Productos
           </a>
