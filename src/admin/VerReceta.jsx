@@ -4,15 +4,29 @@ import axios from 'axios';
 import { API_BASE_URL } from '../url';
 import { Button } from '../components/ui/button';
 import { Image } from 'react-bootstrap';
-import { Clock, ChefHat, Share2, Save } from 'lucide-react';
+import { Clock, ChefHat } from 'lucide-react';
+import ListarIngredientes from '../components/MdListarIngredientes';
 
 const Page = () => {
-  const { idReceta } = useParams();
+  const { idReceta } = useParams(); // Obtener el ID de la receta desde los parámetros
   const [receta, setReceta] = useState(null);
   const [error, setError] = useState('');
+  const [ShowModalAgregarIngrediente, setShowModalAgregarIngrediente] = useState(false);
+
+  // Función para abrir el modal de ingredientes
+  const abrirModalIngredientes = () => {
+    setShowModalAgregarIngrediente(true);
+  };
+
+  // Función para cerrar el modal de ingredientes
+  const cerrarModalIngredientes = () => {
+    setShowModalAgregarIngrediente(false);
+  };
 
   useEffect(() => {
-    setReceta(null);
+    setReceta(null);  // Limpiar receta al cargar un nuevo ID
+
+    // Obtener detalles de la receta por ID
     axios.get(`${API_BASE_URL}/recetas/${idReceta}`)
       .then((response) => {
         if (response.data && response.data.message) {
@@ -24,7 +38,8 @@ const Page = () => {
       .catch(() => {
         setError('Error en la respuesta del servidor.');
       });
-  }, [idReceta]);
+
+  }, [idReceta]); // Dependencia en `idReceta` para que se ejecute cada vez que cambie el ID
 
   if (!receta) {
     return <div className="text-center text-gray-500">{error ? error : 'Cargando receta...'}</div>;
@@ -36,14 +51,12 @@ const Page = () => {
     <div className="bg-gray-50 py-12 px-6 md:px-12">
       <div className="max-w-screen-xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-
-          {/* Columna de contenido con fondo ligeramente diferente */}
           <div className="space-y-8 bg-gray-100 p-8 rounded-lg shadow-md">
             <header className="text-center space-y-6">
               <h1 className="text-4xl font-bold text-gray-900">{nombre_receta}</h1>
               <div className="flex justify-center items-center">
                 <div className="w-32 h-1">
-                  <svg className="w-full h-full" >
+                  <svg className="w-full h-full">
                     <path
                       d="M0,5 Q25,0 500,5 T100,5"
                       fill="none"
@@ -87,7 +100,6 @@ const Page = () => {
               <p className="text-gray-600 text-lg leading-relaxed">{descripcion}</p>
             </div>
 
-            {/* Información de porciones y estado */}
             <div className="flex justify-between mt-8">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">Porciones</h2>
@@ -98,10 +110,8 @@ const Page = () => {
                 <p className="text-lg text-gray-600">{estado ? "Activo" : "Inactivo"}</p>
               </div>
             </div>
-
           </div>
 
-          {/* Columna de imagen */}
           <div className="flex justify-center items-center">
             <div className="relative w-full max-w-lg">
               {foto && (
@@ -114,9 +124,30 @@ const Page = () => {
               )}
             </div>
           </div>
-
         </div>
       </div>
+
+      {/* Botón para abrir el modal de ingredientes */}
+      <div className="mt-8">
+        <Button onClick={abrirModalIngredientes} variant="outline">
+          Agregar Ingredientes
+        </Button>
+      </div>
+
+      {/* Modal para agregar ingredientes */}
+      {ShowModalAgregarIngrediente && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Agregar Ingredientes a la Receta</h2>
+              <button onClick={cerrarModalIngredientes}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <ListarIngredientes idReceta={idReceta} /> {/* Se pasa el idReceta al componente de ListarIngredientes */}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

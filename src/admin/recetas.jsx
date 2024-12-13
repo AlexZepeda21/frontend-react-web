@@ -16,7 +16,6 @@ import MdAgregarRecetas from '../components/MdAgregarreceta';
 import MdEditarReceta from '../components/MdEditarReceta'; // Modal de Editar receta
 import { useParams } from 'react-router-dom';
 
-
 const RecetasList = () => {
   const { categoriaId } = useParams(); // Obtener el id de la categoría desde la URL
   const [recetas, setRecetas] = useState([]);
@@ -110,73 +109,75 @@ const RecetasList = () => {
       )}
 
       <div className="border rounded-lg bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">#</TableHead>
-              <TableHead>Nombre</TableHead>
-              <TableHead className="max-w-[300px]">Descripción</TableHead>
-              <TableHead>Tiempo</TableHead>
-              <TableHead>Porciones</TableHead>
-              <TableHead>Dificultad</TableHead>
-              <TableHead>Foto</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Opciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentRecetas.length > 0 ? (
-              currentRecetas.map((receta, index) => (
-                <TableRow key={receta.id_recetas} className="hover:bg-muted/50 transition-colors">
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell>{receta.nombre_receta}</TableCell>
-                  <TableCell className="max-w-[300px]">
-                    <p className="truncate" title={receta.descripcion}>
-                      {receta.descripcion}
-                    </p>
-                  </TableCell>
-                  <TableCell>{receta.tiempo_preparacion} min</TableCell>
-                  <TableCell>{receta.numero_porciones}</TableCell>
-                  <TableCell>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      receta.dificultad === "Fácil" ? "bg-green-100 text-green-800" :
-                      receta.dificultad === "Medio" ? "bg-yellow-100 text-yellow-800" :
-                      "bg-red-100 text-red-800"
-                    }`}>
-                      {receta.dificultad}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="relative h-16 w-16 overflow-hidden rounded-lg">
-                      <img
-                        src={`data:image/png;base64,${receta.foto}`}
-                        alt={receta.nombre_receta}
-                        className="h-full w-full object-cover transition-transform hover:scale-110"
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      receta.estado ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                    }`}>
-                      {receta.estado ? "Activo" : "Inactivo"}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <button className="form-control primary m-1" onClick={() => openModalEditar(receta)}>Editar</button>
-                    <button className="form-control primary m-1" onClick={() => handleVerReceta(receta.id_recetas)}>Ver</button>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">#</TableHead>
+                <TableHead>Nombre</TableHead>
+                <TableHead className="max-w-[300px]">Descripción</TableHead>
+                <TableHead>Tiempo</TableHead>
+                <TableHead>Porciones</TableHead>
+                <TableHead>Dificultad</TableHead>
+                <TableHead>Foto</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Opciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentRecetas.length > 0 ? (
+                currentRecetas.map((receta, index) => (
+                  <TableRow key={receta.id_recetas} className="hover:bg-muted/50 transition-colors">
+                    <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableCell>{receta.nombre_receta}</TableCell>
+                    <TableCell className="max-w-[300px]">
+                      <p className="truncate" title={receta.descripcion}>
+                        {receta.descripcion}
+                      </p>
+                    </TableCell>
+                    <TableCell>{receta.tiempo_preparacion} min</TableCell>
+                    <TableCell>{receta.numero_porciones}</TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        receta.dificultad === "Fácil" ? "bg-green-100 text-green-800" :
+                        receta.dificultad === "Medio" ? "bg-yellow-100 text-yellow-800" :
+                        "bg-red-100 text-red-800"
+                      }`}>
+                        {receta.dificultad}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="relative h-16 w-16 overflow-hidden rounded-lg">
+                        <img
+                          src={`data:image/png;base64,${receta.foto}`}
+                          alt={receta.nombre_receta}
+                          className="h-full w-full object-cover transition-transform hover:scale-110"
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        receta.estado ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                      }`}>
+                        {receta.estado ? "Activo" : "Inactivo"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <button className="form-control primary m-1" onClick={() => openModalEditar(receta)}>Editar</button>
+                      <button className="form-control primary m-1" onClick={() => handleVerReceta(receta.id_recetas)}>Ver</button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center text-muted-foreground">
+                    No hay recetas disponibles para esta categoría.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground">
-                  No hay recetas disponibles para esta categoría.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <div className="d-flex justify-content-center mt-4">
