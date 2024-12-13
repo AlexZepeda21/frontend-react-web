@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';  // Import SweetAlert2
 import "../styles/styleproduct.css";
+import { X } from 'lucide-react';
+
 
 export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
 
@@ -76,7 +78,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    foto: formData.imagenBase64,
+                    foto: formData.imagenBase64 || "Agrege una foto",
                     nombre: formData.nombre,
                     descripcion: formData.descripcion,
                     id_unidad_medida: formData.id_unidad_medida,
@@ -123,9 +125,16 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
                 className="bg-white rounded-lg shadow-xl w-full max-w-lg"
                 style={{ maxHeight: '80vh', overflowY: 'auto' }}
             >
-                <div className="p-4 border-b border-gray-200">
+                <div className="p-4 border-b border-gray-200 relative">
                     <h2 className="text-xl font-bold">Registro de Producto</h2>
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="text-gray-500 hover:text-gray-700 transition-colors absolute top-2 right-2"
+                    >
+                        <X size={24} />
+                    </button>
                 </div>
+
                 <form onSubmit={handleSubmit} className="p-4">
                     <div className="form-group mb-4 text-center">
                         <label className="image-upload">

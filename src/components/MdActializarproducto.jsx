@@ -6,6 +6,8 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { API_BASE_URL } from '../url';
 import { Switch } from './ui/Switch';
+import { X } from 'lucide-react';
+
 
 export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
   const [formData, setFormData] = useState({
@@ -32,7 +34,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
       reader.onloadend = () => {
         setFormData((prevData) => ({
           ...prevData,
-          foto: reader.result.split(',')[1],
+          imagenBase64: reader.result.split(',')[1],
         }));
         setImage(reader.result); // Mostrar previsualización de la imagen
       };
@@ -44,7 +46,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
 
 
   useEffect(() => {
-    
+
 
     const fetchUnidadesMedida = async () => {
       try {
@@ -70,7 +72,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
         estado: producto.estado || false,
         foto: producto.imagenBase64 || producto.foto,
 
-      
+
       });
       setImage(producto.imagenBase64 ? `${API_BASE_URL}/images/${producto.imagenBase64}` : null);
     }
@@ -110,12 +112,19 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="bg-white rounded-lg shadow-xl w-full max-w-lg"
-            style={{ maxHeight: '60vh', overflowY: 'auto' }}
+            style={{ maxHeight: '80vh', overflowY: 'auto' }}
           >
-            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-4 text-white">
+            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-4 text-white relative">
               <h2 className="text-xl font-bold mb-1">Actualizar Producto</h2>
               <p className="text-xs opacity-80">Actualiza según tus preferencias</p>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors absolute top-2 right-2"
+              >
+                <X size={24} />
+              </button>
             </div>
+
             <form onSubmit={handleSubmit} className="p-4 space-y-3">
               <div className="form-group">
                 <label className="image-upload">
