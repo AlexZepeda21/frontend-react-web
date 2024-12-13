@@ -76,7 +76,7 @@ function App() {
   function startTimeout() {
     setTimeout(() => {
       showConfirmation();
-    }, 60000); // Vuelve a mostrar el modal después de 1 minuto
+    }, 15 * 60 * 1000); // Vuelve a mostrar el modal después de 1 minuto
   }
   
   async function performLogout() {

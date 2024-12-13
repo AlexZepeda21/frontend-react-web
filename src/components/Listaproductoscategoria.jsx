@@ -141,7 +141,26 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                       <td>{producto.descripcion.length > 50 ? `${producto.descripcion.substring(0, 50)}...` : producto.descripcion}</td>
                       <td>{producto.stock}</td>
                       <td>{new Date(producto.created_at).toLocaleDateString('es-ES')}</td>
-                      <td>{producto.estado}</td>
+                      <td>
+                      {(() => {
+                      let claseEstado = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ";
+                      let textoEstado = "";
+
+                      if (Number(producto.estado) === 1) {
+                        claseEstado += "bg-green-100 text-green-800";
+                        textoEstado = "Activo";
+                      } else {
+                        claseEstado += "bg-red-100 text-gray-800";
+                        textoEstado = "Inactivo";
+                      }
+
+                      return (
+                        <span className={claseEstado}>
+                          {textoEstado}
+                        </span>
+                      );
+                    })()}
+                      </td>
                       <td className="flex space-x-2">
                         <Button
                           onClick={() => {
