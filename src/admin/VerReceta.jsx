@@ -40,7 +40,7 @@ const Page = () => {
       descripcion: nuevoPaso.descripcion,
     };
 
-    axios.post(`${API_BASE_URL}/pasos_receta/`, pasoData)
+    axios.post(`${API_BASE_URL}/pasos_receta`, pasoData)
       .then((response) => {
         if (response.status === 200 && response.data && response.data.paso) {
           setPasos((prevPasos) => [...prevPasos, response.data.paso]);
