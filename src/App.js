@@ -42,25 +42,15 @@ function App() {
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
 
-  let veces = 1; 
-  let timeoutStarted = false; 
-  
   function showConfirmation() {
-    const sessionDuration = 1 * 60 * 1000;
+    const sessionDuration = 15 * 60 * 1000; // Ejemplo: 15 minutos en milisegundos
     const sessionEndTime = new Date().getTime() + sessionDuration;
     let autoLogoutTimeout;
+    const veces = 1;
   
     function calculateRemainingTime() {
       const now = new Date().getTime();
       return Math.max(0, sessionEndTime - now); 
-    }
-  
-    if (calculateRemainingTime() === sessionDuration && veces === 1) {
-      veces = 1; 
-      autoLogoutTimeout = setTimeout(() => {
-        Swal.close();
-        performLogout();
-      }, calculateRemainingTime());
     }
   
     Swal.fire({
@@ -73,16 +63,16 @@ function App() {
       timer: calculateRemainingTime(),
       timerProgressBar: true,
     }).then((result) => {
+      clearTimeout(autoLogoutTimeout);
+  
       if (result.isConfirmed) {
-        veces = 1; 
-        startTimeout(); 
+        startTimeout();
       } else if (result.isDismissed) {
         performLogout();
       }
     });
   
-    if (calculateRemainingTime() === 0 || veces === 1) {
-      veces += 1; 
+    if(veces === 1){
       autoLogoutTimeout = setTimeout(() => {
         Swal.close();
         performLogout();
@@ -91,16 +81,10 @@ function App() {
   }
   
   function startTimeout() {
-    if (!timeoutStarted) {
-      timeoutStarted = true; 
-  
-      setTimeout(() => {
-        showConfirmation();
-        timeoutStarted = false; 
-      }, 1 * 60 * 1000); 
-    }
+    setTimeout(() => {
+      showConfirmation();
+    }, 15 * 60 * 1000); 
   }
-  
   
   async function performLogout() {
     try {
@@ -120,31 +104,40 @@ function App() {
       });
     }
   }
-  
 
   function detectarDispositivo() {
     const userAgent = navigator.userAgent.toLowerCase();
     const anchoPantalla = window.screen.width;
     const altoPantalla = window.screen.height;
 
+    // Priorizar la detección basada en userAgent para tablets conocidas
     if (/tablet|ipad|playbook|silk/.test(userAgent)) {
         return "Tablet";
     }
 
+    // Detectar teléfonos móviles basados en userAgent
     if (/mobile|android|iphone|ipod/.test(userAgent)) {
-        if (Math.max(anchoPantalla, altoPantalla) >= 720) {
-            return "Tablet";
+        // Considerar teléfonos con pantallas muy grandes como teléfonos
+        if (Math.max(anchoPantalla, altoPantalla) >= 900) {
+            return "Teléfono con pantalla grande";
         }
         return "Teléfono";
     }
 
+    // Detectar tablets por tamaño de pantalla si no se identificaron antes
+    if (Math.max(anchoPantalla, altoPantalla) >= 720 && Math.min(anchoPantalla, altoPantalla) > 480) {
+        return "Tablet";
+    }
+
+    // Si no coincide con ninguno, asumimos que es una PC
     return "PC";
 }
 
 
 
-  
 
+  
+//alert(detectarDispositivo())
  //localStorage.clear();
 
   const renderRoutes = () => {
