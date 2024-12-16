@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { API_BASE_URL } from '../url'; // Aquí se importa la constante API_BASE_URL
+import { API_BASE_URL } from '../url';
 import { Button } from '../components/ui/button';
 import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
@@ -11,29 +11,22 @@ import "../styles/m/mstyles.css";
 const Page = () => {
   const { idReceta } = useParams();
   const [receta, setReceta] = useState(null);
-  const [productos, setProductos] = useState([]); // Ingredientes
-  const [pasos, setPasos] = useState([]); // Pasos de la receta
+  const [productos, setProductos] = useState([]);
+  const [pasos, setPasos] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [ShowModalAgregarIngrediente, setShowModalAgregarIngrediente] = useState(false);
   const [ShowModalAgregarPaso, setShowModalAgregarPaso] = useState(false);
-  const [nuevoPaso, setNuevoPaso] = useState({
-    paso_numero: 0,
-    descripcion: '',
-  });
+  const [nuevoPaso, setNuevoPaso] = useState({ paso_numero: 0, descripcion: '' });
 
   const abrirModalIngredientes = () => setShowModalAgregarIngrediente(true);
   const cerrarModalIngredientes = () => setShowModalAgregarIngrediente(false);
-
   const abrirModalAgregarPaso = () => setShowModalAgregarPaso(true);
   const cerrarModalAgregarPaso = () => setShowModalAgregarPaso(false);
 
   const handlePasoChange = (e) => {
     const { name, value } = e.target;
-    setNuevoPaso((prevPaso) => ({
-      ...prevPaso,
-      [name]: value,
-    }));
+    setNuevoPaso((prevPaso) => ({ ...prevPaso, [name]: value }));
   };
 
   const agregarPaso = () => {
@@ -41,121 +34,62 @@ const Page = () => {
       alert("Por favor, complete todos los campos.");
       return;
     }
-
     const pasoData = {
       id_recetas: idReceta,
       paso_numero: nuevoPaso.paso_numero,
       descripcion: nuevoPaso.descripcion,
     };
 
-    axios
-      .post(`${API_BASE_URL}/pasos_receta/`, pasoData)
+    axios.post(`${API_BASE_URL}/pasos_receta/`, pasoData)
       .then((response) => {
         if (response.status === 200 && response.data && response.data.paso) {
-          // Evitar duplicados en los pasos
-          setPasos((prevPasos) => {
-            if (!prevPasos.some(paso => paso.paso_numero === response.data.paso.paso_numero)) {
-              return [...prevPasos, response.data.paso];
-            }
-            return prevPasos;
-          });
+          setPasos((prevPasos) => [...prevPasos, response.data.paso]);
           setNuevoPaso({ paso_numero: '', descripcion: '' });
           cerrarModalAgregarPaso();
           alert('Paso agregado correctamente.');
         } else {
           setError('Error al agregar el paso.');
-          cerrarModalAgregarPaso();
         }
       })
-      .catch((error) => {
-        setError('Error al agregar el paso.');
-        cerrarModalAgregarPaso();
-      });
+      .catch(() => setError('Error al agregar el paso.'));
   };
 
   const agregarIngrediente = () => {
-    const ingredienteData = {}; // Aquí debes agregar los datos para el ingrediente
-    axios
-      .post(`${API_BASE_URL}/ingredientes-receta/`, ingredienteData)
+    const ingredienteData = {}; 
+    axios.post(`${API_BASE_URL}/ingredientes-receta/`, ingredienteData)
       .then((response) => {
         if (response.status === 200 && response.data && response.data.ingrediente) {
-          // Evitar duplicados en los ingredientes
-          setProductos((prevProductos) => {
-            if (!prevProductos.some(producto => producto.id_recetas_producto === response.data.ingrediente.id_recetas_producto)) {
-              return [...prevProductos, response.data.ingrediente];
-            }
-            return prevProductos;
-          });
+          setProductos((prevProductos) => [...prevProductos, response.data.ingrediente]);
           cerrarModalIngredientes();
           alert('Ingrediente agregado correctamente.');
         } else {
           setError('Error al agregar el ingrediente.');
-          cerrarModalIngredientes();
         }
       })
-      .catch(() => {
-        setError('Error al agregar el ingrediente.');
-        cerrarModalIngredientes();
-      });
+      .catch(() => setError('Error al agregar el ingrediente.'));
   };
 
   const recargarDatos = () => {
     setLoading(true);
-
-    // Recargar receta
     axios.get(`${API_BASE_URL}/recetas/${idReceta}`)
-      .then((response) => {
-        if (response.data && response.data.message) {
-          setReceta(response.data.message);
-        } else {
-          setError('No se encontró la receta.');
-        }
-      })
-      .catch(() => {
-        setError('Error en la respuesta del servidor al obtener la receta.');
-      });
-
-    // Recargar productos
+      .then((response) => setReceta(response.data.message || {}))
+      .catch(() => setError('Error al obtener la receta.'));
     axios.get(`${API_BASE_URL}/receta-productos/${idReceta}`)
-      .then((response) => {
-        if (response.data && response.data.productos) {
-          setProductos(response.data.productos);
-        } else {
-          setError('No se encontraron productos para esta receta.');
-        }
-      })
-      .catch(() => {
-        setError('Error al obtener los productos.');
-      });
-
-    // Recargar pasos
+      .then((response) => setProductos(response.data.productos || []))
+      .catch(() => setError('Error al obtener los productos.'));
     axios.get(`${API_BASE_URL}/pasos-receta/${idReceta}`)
-      .then((response) => {
-        if (response.data && response.data.pasos) {
-          setPasos(response.data.pasos || []);
-        } else {
-          setError('No se encontraron pasos para esta receta.');
-        }
-      })
-      .catch(() => {
-        setError('Error al obtener los pasos.');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then((response) => setPasos(response.data.pasos || []))
+      .catch(() => setError('Error al obtener los pasos.'))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     recargarDatos();
   }, [idReceta]);
 
-  if (loading) {
-    return <div className="text-center text-gray-500">Cargando receta...</div>;
-  }
+  if (loading) return <div className="text-center text-gray-500">Cargando receta...</div>;
 
-  if (!receta) {
-    return <div className="text-center text-gray-500">{error ? error : 'Receta no encontrada.'}</div>;
-  }
+  if (!receta) return <div className="text-center text-gray-500">{error || 'Receta no encontrada.'}</div>;
 
   const { nombre_receta, descripcion, tiempo_preparacion, dificultad, foto, numero_porciones, estado } = receta;
 
@@ -166,25 +100,18 @@ const Page = () => {
           <div className="space-y-8 bg-gray-100 p-8 rounded-lg shadow-md">
             <header className="text-center space-y-6">
               <h1 className="text-4xl font-bold text-gray-900">{nombre_receta}</h1>
-              <div className="flex justify-center items-center">
-                <div className="w-32 h-1">
-                  <svg className="w-full h-full">
-                    <path
-                      d="M0,5 Q25,0 500,5 T100,5"
-                      fill="none"
-                      stroke="#EF4444"
-                      strokeWidth="10"
-                    />
-                  </svg>
-                </div>
+              <div className="w-32 h-1 mx-auto mb-6">
+                <svg className="w-full h-full">
+                  <path d="M0,5 Q25,0 500,5 T100,5" fill="none" stroke="#EF4444" strokeWidth="10" />
+                </svg>
               </div>
             </header>
 
             <div className="space-y-4">
-              <p className="text-base font-medium hover:underline cursor-pointer text-gray-600">
-                {receta.autor || "Autor desconocido"}
+              <p className="text-base font-medium cursor-pointer text-gray-600">
+                Que tal {localStorage.getItem("correo") || "Tu"} quieres preparar esta receta
               </p>
-              <time className="text-sm text-gray-500">{new Date().toLocaleDateString()}</time>
+              <time className="text-sm text-gray-500"> Hoy es {new Date().toLocaleDateString()}</time>
             </div>
 
             <div className="flex justify-center gap-12">
@@ -192,7 +119,7 @@ const Page = () => {
                 <div className="p-2 bg-gray-50 rounded-full">
                   <Clock className="w-5 h-5 text-gray-600" />
                 </div>
-                <div className="text-left">
+                <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide">Tiempo</p>
                   <p className="font-semibold">{tiempo_preparacion} min</p>
                 </div>
@@ -201,7 +128,7 @@ const Page = () => {
                 <div className="p-2 bg-gray-50 rounded-full">
                   <ChefHat className="w-5 h-5 text-gray-600" />
                 </div>
-                <div className="text-left">
+                <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide">Dificultad</p>
                   <p className="font-semibold">{dificultad}</p>
                 </div>
@@ -226,14 +153,7 @@ const Page = () => {
 
           <div className="flex justify-center items-center">
             <div className="relative w-full max-w-lg">
-              {foto && (
-                <Image
-                  src={`data:image/png;base64,${foto}`}
-                  alt={nombre_receta}
-                  fluid
-                  className="object-cover w-full h-auto rounded-lg shadow-lg"
-                />
-              )}
+              {foto && <Image src={`data:image/png;base64,${foto}`} alt={nombre_receta} fluid className="object-cover w-full h-auto rounded-lg shadow-lg" />}
             </div>
           </div>
         </div>
@@ -259,14 +179,14 @@ const Page = () => {
           </div>
         </div>
 
-        <Button onClick={abrirModalIngredientes} variant="outline">
+        <Button onClick={abrirModalIngredientes} variant="outline" className="mt-4">
           Agregar Ingredientes
         </Button>
       </div>
 
       <div className="mt-8">
         <h3 className="text-2xl font-semibold text-gray-900">Pasos</h3>
-        <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-pasos">
+        <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
           {pasos.length > 0 ? (
             <ul className="space-y-2">
               {pasos.map((paso) => (
@@ -282,10 +202,10 @@ const Page = () => {
           )}
         </div>
 
-        <Button onClick={abrirModalAgregarPaso} variant="outline">
+        <Button onClick={abrirModalAgregarPaso} variant="outline" className="mt-4">
           Agregar Paso
         </Button>
-        <Button onClick={recargarDatos} variant="outline">
+        <Button onClick={recargarDatos} variant="outline" className="mt-4">
           Actualizar Datos
         </Button>
       </div>
@@ -330,12 +250,11 @@ const Page = () => {
               <button onClick={cerrarModalIngredientes}>&times;</button>
             </div>
             <div className="modal-body">
-              <ListarIngredientes idReceta={idReceta} /> {/* Se pasa el idReceta al componente de ListarIngredientes */}
+              <ListarIngredientes idReceta={idReceta} />
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };
