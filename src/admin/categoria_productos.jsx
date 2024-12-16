@@ -120,7 +120,7 @@ const Categoria_productos = () => {
                   <button class="flex-1 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors"
                     onClick={() => openUpdateModal(categoria)} // Abrimos el modal y pasamos la categoría
                   >
-                    Ver más
+                    Productos
                   </button>
                   <button class="flex-1 bg-gray-200 text-gray-800 py-1 px-3 rounded hover:bg-gray-300 transition-colors"
                     onClick={() => openproductcateg(categoria)} // Abrimos el modal y pasamos la categoría

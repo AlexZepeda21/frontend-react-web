@@ -125,7 +125,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
             style={{ maxHeight: '80vh', overflowY: 'auto' }}
           >
             <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-4 text-white relative">
-              <h2 className="text-xl font-bold mb-1">Actualizar Producto</h2>
+              <h2 className="text-xl font-bold mb-1">Actualizar Producto con codigo #{producto.id_producto}</h2>
               <p className="text-xs opacity-80">Actualiza según tus preferencias</p>
               <button
                 onClick={() => setIsOpen(false)}

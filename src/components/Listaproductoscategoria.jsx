@@ -176,7 +176,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                           }}
                           className="w-32 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-200"
                         >
-                          <Plus className="mr-2 h-4 w-4" /> Add
+                          <Plus className="mr-2 h-4 w-4" /> Movimientos
                         </Button>
                         <Button
                           onClick={() => {
@@ -186,7 +186,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                           variant="outline"
                           className="w-32 text-gray-700 border-gray-300 hover:border-gray-500 hover:text-gray-900 rounded-lg transition duration-200"
                         >
-                          <RefreshCw className="mr-2 h-4 w-4" /> Update
+                          <RefreshCw className="mr-2 h-4 w-4" /> Actualizar
                         </Button>
 
                         <Button
