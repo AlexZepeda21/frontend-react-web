@@ -72,7 +72,7 @@ function App() {
       }
     });
   
-    if(veces === 1){
+    if(calculateRemainingTime() === 0 || veces === 1){
       autoLogoutTimeout = setTimeout(() => {
         Swal.close();
         performLogout();
@@ -109,35 +109,34 @@ function App() {
     const userAgent = navigator.userAgent.toLowerCase();
     const anchoPantalla = window.screen.width;
     const altoPantalla = window.screen.height;
+    const ratioPixel = window.devicePixelRatio || 1;
 
-    // Priorizar la detección basada en userAgent para tablets conocidas
+    // Detectar dispositivos por userAgent
     if (/tablet|ipad|playbook|silk/.test(userAgent)) {
         return "Tablet";
     }
 
-    // Detectar teléfonos móviles basados en userAgent
     if (/mobile|android|iphone|ipod/.test(userAgent)) {
-        // Considerar teléfonos con pantallas muy grandes como teléfonos
         if (Math.max(anchoPantalla, altoPantalla) >= 900) {
-            return "Teléfono con pantalla grande";
+            return "Tablet";
         }
         return "Teléfono";
     }
 
-    // Detectar tablets por tamaño de pantalla si no se identificaron antes
-    if (Math.max(anchoPantalla, altoPantalla) >= 720 && Math.min(anchoPantalla, altoPantalla) > 480) {
+    // Detectar tabletas basadas en dimensiones (si userAgent no lo detectó)
+    if (Math.max(anchoPantalla, altoPantalla) <= 1280 && Math.min(anchoPantalla, altoPantalla) >= 600) {
         return "Tablet";
     }
 
-    // Si no coincide con ninguno, asumimos que es una PC
+    // Detectar PCs por descarte
     return "PC";
 }
 
 
 
 
+
   
-//alert(detectarDispositivo())
  //localStorage.clear();
 
   const renderRoutes = () => {

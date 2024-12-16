@@ -1,23 +1,23 @@
-import React from 'react';
-//import './Header.css';
+import React, { useEffect, useState } from 'react';
 import "../../styles/Menuadmin/Header.css";
 
 function Header() {
-
+  const [isOpen, setIsOpen] = useState(false);
   const correo = localStorage.getItem("correo");
 
+  // Función para abrir/cerrar el sidebar
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <header className="header">
+      {/* Botón de hamburguesa */}
+      <div className="sidebar-toggle" onClick={toggleSidebar}>
+        <span className="hamburger">☰</span>
+      </div>
       <h1 className="header-title">CAFETERÍA ITCA</h1>
       <div className="header-right">
-        <div className="search-container">
-          <input type="text" placeholder="Buscar..." className="search-input" />
-          <i className="icon-search"></i>
-        </div>
-        <div className="user-info">
-          <span className="user-name">{correo}</span>
-          <img src="/avatar.png" alt="User Avatar" className="user-avatar" />
-        </div>
+        
       </div>
     </header>
   );

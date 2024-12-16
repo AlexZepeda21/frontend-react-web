@@ -34,7 +34,7 @@ const Subir_img = () => {
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-          alert(`Tamaño original (MB): ${(file.size / 1024 / 1024).toFixed(2)}`);
+         // alert(`Tamaño original (MB): ${(file.size / 1024 / 1024).toFixed(2)}`);
       
           try {
             const compressedFile = await imageCompression(file, {
@@ -43,7 +43,7 @@ const Subir_img = () => {
               useWebWorker: true, // Mejora el rendimiento
             });
       
-            alert(`Tamaño comprimido (MB): ${(compressedFile.size / 1024 / 1024).toFixed(2)}`);
+            //alert(`Tamaño comprimido (MB): ${(compressedFile.size / 1024 / 1024).toFixed(2)}`);
       
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -52,7 +52,7 @@ const Subir_img = () => {
                 imagenBase64: reader.result.split(",")[1],
               }));
               setImage(reader.result); 
-              alert("Imagen procesada correctamente.");
+             // alert("Imagen procesada correctamente.");
             };
             reader.readAsDataURL(compressedFile);
           } catch (error) {
