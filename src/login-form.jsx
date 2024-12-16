@@ -16,6 +16,9 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navegar = useNavigate();
 
+
+
+
   async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
@@ -33,7 +36,6 @@ export default function Login() {
       const data = await response.json();
 
       if (data.token) {
-        // Usando SweetAlert2 para mostrar mensaje de éxito
         Swal.fire({
           icon: 'success',
           title: 'Inicio de sesión exitoso',
@@ -45,10 +47,10 @@ export default function Login() {
         localStorage.setItem('correo', data.correo);
 
         if (data.estado === true) {
-          //alert(data.estado)
-          //alert(data.tipo_usuario)
+       
 
           if (data.tipo_usuario === 1) {
+            
             navegar("/admin", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
           } else if (data.tipo_usuario === 2) {
             navegar("/menus/Menuuser", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });

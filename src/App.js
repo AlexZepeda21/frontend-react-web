@@ -18,6 +18,7 @@ import UnidadMedidaList from './admin/uni_medidas';
 import VerReceta from './admin/VerReceta';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from './url';
+import Subir_img from './QR/Subir_img';
 
 
 function App() {
@@ -36,16 +37,30 @@ function App() {
   if (token) localStorage.setItem('token', token);
   if (tipoUsuario) localStorage.setItem('tipo_usuario', tipoUsuario);
 
+
+
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
+
+  let veces = 1; 
+  let timeoutStarted = false; 
+  
   function showConfirmation() {
-    const sessionDuration = 15 * 60 * 1000; // Ejemplo: 15 minutos en milisegundos
+    const sessionDuration = 1 * 60 * 1000;
     const sessionEndTime = new Date().getTime() + sessionDuration;
     let autoLogoutTimeout;
   
     function calculateRemainingTime() {
       const now = new Date().getTime();
-      return Math.max(0, sessionEndTime - now); // Tiempo restante en milisegundos
+      return Math.max(0, sessionEndTime - now); 
+    }
+  
+    if (calculateRemainingTime() === sessionDuration && veces === 1) {
+      veces = 1; 
+      autoLogoutTimeout = setTimeout(() => {
+        Swal.close();
+        performLogout();
+      }, calculateRemainingTime());
     }
   
     Swal.fire({
@@ -58,26 +73,34 @@ function App() {
       timer: calculateRemainingTime(),
       timerProgressBar: true,
     }).then((result) => {
-      clearTimeout(autoLogoutTimeout);
-  
       if (result.isConfirmed) {
-        startTimeout();
+        veces = 1; 
+        startTimeout(); 
       } else if (result.isDismissed) {
         performLogout();
       }
     });
   
-    autoLogoutTimeout = setTimeout(() => {
-      Swal.close();
-      performLogout();
-    }, calculateRemainingTime());
+    if (calculateRemainingTime() === 0 || veces === 1) {
+      veces += 1; 
+      autoLogoutTimeout = setTimeout(() => {
+        Swal.close();
+        performLogout();
+      }, calculateRemainingTime());
+    }
   }
   
   function startTimeout() {
-    setTimeout(() => {
-      showConfirmation();
-    }, 15 * 60 * 1000); // Vuelve a mostrar el modal después de 1 minuto
+    if (!timeoutStarted) {
+      timeoutStarted = true; 
+  
+      setTimeout(() => {
+        showConfirmation();
+        timeoutStarted = false; 
+      }, 1 * 60 * 1000); 
+    }
   }
+  
   
   async function performLogout() {
     try {
@@ -98,14 +121,48 @@ function App() {
     }
   }
   
-  
-  
 
+  function detectarDispositivo() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const anchoPantalla = window.screen.width;
+    const altoPantalla = window.screen.height;
+
+    if (/tablet|ipad|playbook|silk/.test(userAgent)) {
+        return "Tablet";
+    }
+
+    if (/mobile|android|iphone|ipod/.test(userAgent)) {
+        if (Math.max(anchoPantalla, altoPantalla) >= 720) {
+            return "Tablet";
+        }
+        return "Teléfono";
+    }
+
+    return "PC";
+}
+
+
+
+  
 
  //localStorage.clear();
 
   const renderRoutes = () => {
-    if (!tokensession || !tipoUsuarioSession) {
+
+
+    if(detectarDispositivo() === "Teléfono"){
+      return(
+        <Routes>
+          <Route path="/QR" element={<Subir_img />} />
+        </Routes>
+
+      );
+    }
+
+
+
+
+    if (!tokensession || !tipoUsuarioSession  ) {
       return (
         <Routes>
           <Route path="/" element={<Login />} />
@@ -115,9 +172,10 @@ function App() {
       );
     }
 
+    
+
     if (tipoUsuarioSession === '1') {
       startTimeout();
-
       return (
         <Routes>
           <Route path="/admin" element={<Layout />}>

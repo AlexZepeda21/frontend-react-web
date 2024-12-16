@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from './framer-motion/motion';
-import { Button } from 'react-bootstrap';
+import { Modal, Button, Form } from "react-bootstrap";
+
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
 import { API_BASE_URL } from '../url';
 import { Switch } from './ui/Switch';
 import { X } from 'lucide-react';
+import Generador_de_codigo from '../QR/Generador_de_codigo';
 
 
 export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
@@ -22,6 +23,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
     estado: false,
   });
 
+  const [isOpenGenerador, setIsOpenGenerador] = useState(null);
 
   const [image, setImage] = useState(null);
   const [catepro, setcatepro] = useState([]);
@@ -43,7 +45,6 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
   };
 
   const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
-
 
   useEffect(() => {
 
@@ -70,7 +71,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
         id_unidad_medida: producto.id_unidad_medida || "",
         id_usuario: id,
         estado: producto.estado || false,
-        foto: producto.imagenBase64 || producto.foto,
+        foto: formData.imagenBase64 || producto.foto,
 
 
       });
@@ -78,16 +79,25 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
     }
   }, [producto]);
 
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+
     try {
       const response = await fetch(`${API_BASE_URL}/productos/${producto.id_producto}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          foto: formData.imagenBase64 || producto.foto,
+          nombre: formData.nombre,
+          descripcion: formData.descripcion,
+          id_unidad_medida: formData.id_unidad_medida,
+          id_usuario: id,
+      }),
       });
 
       if (response.ok) {
@@ -126,7 +136,28 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
             </div>
 
             <form onSubmit={handleSubmit} className="p-4 space-y-3">
-              <div className="form-group">
+
+            <Form.Group controlId="formEstado" className="">
+            <Form.Label className="me-3 mb-0">Estado</Form.Label>
+            <Form.Check
+              type="switch"
+              id="estado-switch"
+              label={isOpenGenerador ? "Subir foto dede el celular" : "Elegir Foto"}
+              checked={isOpenGenerador}
+              onChange={() => setIsOpenGenerador(!isOpenGenerador)}
+            />
+            </Form.Group>
+
+            { isOpenGenerador === true ? (
+                <div className="form-group me-3 mb-0">
+                 <Generador_de_codigo
+                    id_producto= {producto.id_producto}
+                    id_usuario = {id}
+                    route = {"productos"}
+                  />
+                 </div>
+              ):(
+                <div className="form-group">
                 <label className="image-upload">
                   {image || producto.foto ? (
                     <img
@@ -145,6 +176,9 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
                   />
                 </label>
               </div>
+              )
+            }
+              
 
               <div className="form-group">
                 <label className="text-sm">Nombre</label>
