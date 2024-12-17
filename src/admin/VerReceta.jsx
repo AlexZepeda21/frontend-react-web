@@ -10,6 +10,7 @@ import "../styles/m/mstyles.css";
 
 const Page = () => {
   const { idReceta } = useParams();
+  localStorage.getItem(idReceta);
   const [receta, setReceta] = useState(null);
   const [productos, setProductos] = useState([]);
   const [pasos, setPasos] = useState([]);
@@ -47,6 +48,7 @@ const Page = () => {
           setNuevoPaso({ paso_numero: '', descripcion: '' });
           cerrarModalAgregarPaso();
           alert('Paso agregado correctamente.');
+          window.location.reload();
         } else {
           setError('Error al agregar el paso.');
         }
@@ -55,13 +57,14 @@ const Page = () => {
   };
 
   const agregarIngrediente = () => {
-    const ingredienteData = {}; 
+    const ingredienteData = {};
     axios.post(`${API_BASE_URL}/ingredientes-receta/`, ingredienteData)
       .then((response) => {
         if (response.status === 200 && response.data && response.data.ingrediente) {
           setProductos((prevProductos) => [...prevProductos, response.data.ingrediente]);
           cerrarModalIngredientes();
           alert('Ingrediente agregado correctamente.');
+          window.location.reload();
         } else {
           setError('Error al agregar el ingrediente.');
         }

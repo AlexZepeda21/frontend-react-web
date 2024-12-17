@@ -63,6 +63,8 @@ export default function MdAgregarRecetas({ setShowModal }) {
       });
       if (response.ok) {
         alert('Receta creada con éxito!');
+        window.location.reload();
+
         setShowModal(false);
       } else {
         throw new Error('Error al crear la receta');

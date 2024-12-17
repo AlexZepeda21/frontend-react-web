@@ -8,6 +8,7 @@ import { API_BASE_URL } from '../url';
 import { Switch } from './ui/Switch';
 
 export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }) {
+  
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -38,6 +39,7 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
 
       if (response.ok) {
         alert('Categoría de receta actualizada con éxito!');
+        window.location.reload();
         setIsOpen(false);  // Cerrar modal al guardar
       } else {
         throw new Error('Error al actualizar la categoría');

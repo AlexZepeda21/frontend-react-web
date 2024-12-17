@@ -55,6 +55,7 @@ export default function MdAgregarCateRecetas() {
       })
       if (response.ok) {
         alert('Categoría de receta creada con éxito!')
+        window.location.reload();
         setIsOpen(false)
       } else {
         throw new Error('Error al crear la categoría')
