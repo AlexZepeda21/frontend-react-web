@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';  // Import SweetAlert2
 import "../styles/styleproduct.css";
 import { X } from 'lucide-react';
-
+import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
 
 export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
-
+  const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
     const [unidad_medida, setunidad_medida] = useState([]);
     const [formData, setFormData] = useState({
         nombre: '',
@@ -17,6 +17,14 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
         foto: null,
         imagenBase64: '',
     });
+
+
+
+    const unidad_medida_modal = () => {
+        setIsOpenunidad_medida(true);
+    };
+    
+
     const [image, setImage] = useState(null);
 
     const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
@@ -170,21 +178,34 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
                         />
                     </div>
 
-                    <div className="form-group mb-4">
-                        <label>Unidad de Medida</label>
-                        <select
-                            name="id_unidad_medida"
-                            value={formData.id_unidad_medida}
-                            onChange={handleInputChange}
-                            className="form-control"
-                        >
-                            <option value="">Seleccionar unidad</option>
-                            {unidad_medida.map((unidad) => (
-                                <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
-                                    {unidad.nombre_unidad}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="form-group mb-4 ">
+                        <label>Unidad de Medida </label>
+                        <div className="d-flex align-items-center">
+
+                            <select
+                                name="id_unidad_medida"
+                                value={formData.id_unidad_medida}
+                                onChange={handleInputChange}
+                                className="form-control"
+                            >
+                                <option value="">Seleccionar unidad</option>
+                                {unidad_medida.map((unidad) => (
+                                    <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
+                                        {unidad.nombre_unidad}
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary ms-2"
+                                onClick={() => {
+                                    setIsOpenunidad_medida(true);
+                                    unidad_medida_modal();
+                                  }}
+                            >
+                                <i className="fa fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div className="form-group mb-4">
@@ -209,6 +230,14 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
                     </div>
                 </form>
             </motion.div>
+            {isOpeninunidad_medida && MdAgregarUnidadMedida && (
+                    <MdAgregarUnidadMedida
+                    showModal={isOpeninunidad_medida}
+                    setShowModal={setIsOpenunidad_medida}
+                    />
+                  )}
         </div>
+
+        
     );
 }
