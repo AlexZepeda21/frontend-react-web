@@ -22,7 +22,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
     const calcularTotal = () => {
         const cantidad = Number(formData.cantidad) || 0;
         const valorUnitario = parseFloat(formData.costo_unitario) || 0;
-        return cantidad * valorUnitario;
+        return Math.round((cantidad * valorUnitario) *100 ) /100;
     };
 
     const handleInputChange = (e) => {
@@ -32,6 +32,23 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
         const valorFiltrado = name === 'cantidad'
         ? value.replace(/^0+(?=[1-9])/, '') // Eliminar ceros iniciales antes de números del 1 al 9
         : value;
+
+
+        if (name === 'tipo_movimiento') {
+            if (value === 'Entrada') {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    cantidad: formData.cantidad ,
+                }));
+            } else if (value === 'Salida') {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    cantidad: producto.stock,
+                }));
+                
+            }
+        }
+
         setFormData((prevData) => ({
             ...prevData,
             [name]: valorFiltrado,
@@ -77,7 +94,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
             } else {
                 Swal.fire({
                     title: 'Error al ingresar el producto',
-                    text: result.message || 'Hubo un problema al registrar el producto.',
+                    text: result.error || 'Hubo un problema al registrar el producto.',
                     icon: 'error',
                     confirmButtonText: 'Intentar nuevamente',
                 });
@@ -146,7 +163,8 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
                             id="costo_unitario"
                             name="costo_unitario"
                             value={formData.costo_unitario}
-                            onChange={handleInputChange}
+                            min="0"
+                            step="0.01"                            onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Ej: 4"
                             required
@@ -154,13 +172,14 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
                     </div>
                     <div>
                         <label htmlFor="cantidad" className="block text-sm font-medium text-gray-700 mb-1">
-                            Cantidad de producto a ingresar
+                            Cantidad de producto en la unidad de medida {producto.unidad_medida}
                         </label>
                         <input
                             type="number"
                             id="cantidad"
                             name="cantidad"
-                            value={formData.cantidad}
+                            min="0"
+                            step="0.01"                            value={formData.cantidad}
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Ej: 4"
@@ -174,7 +193,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
                         <input
                             type="text"
                             name="total"
-                            value={calcularTotal()} // Calcula dinámicamente
+                            value={calcularTotal()} 
                             readOnly
                             placeholder="Total"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"

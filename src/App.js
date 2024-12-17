@@ -86,6 +86,17 @@ function App() {
     }, 15 * 60 * 1000); 
   }
   
+
+  function resetTimer() {
+    startTimeout();
+  }
+  
+  // Escucha eventos de actividad del usuario
+  window.addEventListener("mousemove", resetTimer);
+  window.addEventListener("keydown", resetTimer);
+  window.addEventListener("click", resetTimer);
+  window.addEventListener("scroll", resetTimer);
+
   async function performLogout() {
     try {
       const response = await fetch(`${API_BASE_URL}/logout/${id}`);
