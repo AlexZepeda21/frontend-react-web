@@ -19,7 +19,7 @@ import VerReceta from './admin/VerReceta';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from './url';
 import Subir_img from './QR/Subir_img';
-
+import Menu from './admin/Menu';
 
 function App() {
   
@@ -190,6 +190,7 @@ function App() {
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
             <Route path="perfil" element={<Profile />} />
             <Route path="usuario" element={<UserTable />} />
+            <Route path="Menu" element={<Menu />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
 
             
