@@ -58,7 +58,7 @@ export default function MdAgregarRecetas({ setShowModal }) {
           tiempo_preparacion: formData.tiempo_preparacion,
           numero_porciones: formData.numero_porciones,
           dificultad: formData.dificultad,
-          foto: formData.imagenBase64,
+          foto: formData.imagenBase64 || "Agrege una foto",
         }),
       });
       if (response.ok) {

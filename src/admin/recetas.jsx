@@ -150,7 +150,7 @@ const RecetasList = () => {
                       <div className="relative h-16 w-16 overflow-hidden rounded-lg">
                         <img
                           src={`data:image/png;base64,${receta.foto}`}
-                          alt={receta.nombre_receta}
+                          alt={receta.foto}
                           className="h-full w-full object-cover transition-transform hover:scale-110"
                         />
                       </div>
