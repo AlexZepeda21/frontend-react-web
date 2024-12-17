@@ -84,7 +84,7 @@ export default function Login() {
   }
 
   return (
-    <div className="login-container">
+    <div className="login-container cuerpo">
       <div className="login-card">
         <h1 className="login-title">Bienvenidos</h1>
         <form onSubmit={onSubmit}>
@@ -120,7 +120,7 @@ export default function Login() {
           </div>
           <Button
             type="submit"
-            className="submit-button"
+            className="btninicio"
             disabled={isLoading}
           >
             {isLoading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}

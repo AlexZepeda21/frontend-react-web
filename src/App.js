@@ -13,6 +13,7 @@ import RecetasList from './admin/recetas';
 import Categoria_recetas from './admin/categoria_recetas';
 import Categoria_productos from './admin/categoria_productos';
 import Productos from './admin/productos';
+import Registro from './admin/registro';
 import UserTable from './admin/usuario';
 import UnidadMedidaList from './admin/uni_medidas';
 import VerReceta from './admin/VerReceta';
@@ -189,6 +190,7 @@ function App() {
             <Route path="uni_medidas" element={<UnidadMedidaList />} />
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
             <Route path="perfil" element={<Profile />} />
+            <Route path="registro" element={<Registro />} />
             <Route path="usuario" element={<UserTable />} />
             <Route path="Menu" element={<Menu />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
