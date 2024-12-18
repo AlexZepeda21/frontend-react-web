@@ -27,10 +27,9 @@ export default function Registro() {
     const registroData = { 
       correo, 
       clave, 
-      id_tipo_usuario: tipoUsuario  // Enviar el tipo de usuario como número
+      id_tipo_usuario: tipoUsuario // Enviar el tipo de usuario como número
     };
 
-    
     try {
       const response = await fetch(`${API_BASE_URL}/user`, {
         method: 'POST',
@@ -49,8 +48,8 @@ export default function Registro() {
         confirmButtonText: 'Aceptar',
       });
 
-      // Navegar a la página de inicio de sesión u otra página
-      navigate('/');
+      // Redirigir a la ruta deseada
+      navigate('/admin/usuario');
     } catch (error) {
       console.error('Error:', error);
       Swal.fire({
