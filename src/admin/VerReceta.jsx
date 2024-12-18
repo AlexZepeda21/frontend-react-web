@@ -10,7 +10,6 @@ import "../styles/m/mstyles.css";
 
 const Page = () => {
   const { idReceta } = useParams();
-  localStorage.getItem(idReceta);
   const [receta, setReceta] = useState(null);
   const [productos, setProductos] = useState([]);
   const [pasos, setPasos] = useState([]);
@@ -43,12 +42,11 @@ const Page = () => {
 
     axios.post(`${API_BASE_URL}/pasos_receta`, pasoData)
       .then((response) => {
-        if (response.status === 200 && response.data && response.data.paso) {
-          setPasos((prevPasos) => [...prevPasos, response.data.paso]);
+        if (response.status === 201 && response.data) {
+          setPasos((prevPasos) => [...prevPasos, response.data]);
           setNuevoPaso({ paso_numero: '', descripcion: '' });
-          cerrarModalAgregarPaso();
           alert('Paso agregado correctamente.');
-          window.location.reload();
+          setShowModalAgregarPaso(false);
         } else {
           setError('Error al agregar el paso.');
         }
@@ -64,7 +62,6 @@ const Page = () => {
           setProductos((prevProductos) => [...prevProductos, response.data.ingrediente]);
           cerrarModalIngredientes();
           alert('Ingrediente agregado correctamente.');
-          window.location.reload();
         } else {
           setError('Error al agregar el ingrediente.');
         }
@@ -77,12 +74,26 @@ const Page = () => {
     axios.get(`${API_BASE_URL}/recetas/${idReceta}`)
       .then((response) => setReceta(response.data.message || {}))
       .catch(() => setError('Error al obtener la receta.'));
+
+    axios.get(`${API_BASE_URL}/pasos-receta/${idReceta}`)
+      .then((response) => {
+        if (response.status === 200) {
+          setPasos(response.data.pasos || []);
+        } else {
+          setPasos([]);
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          setPasos([]);
+        } else {
+          setError('Error al obtener los pasos.');
+        }
+      });
     axios.get(`${API_BASE_URL}/receta-productos/${idReceta}`)
       .then((response) => setProductos(response.data.productos || []))
-      .catch(() => setError('Error al obtener los productos.'));
-    axios.get(`${API_BASE_URL}/pasos-receta/${idReceta}`)
-      .then((response) => setPasos(response.data.pasos || []))
-      .catch(() => setError('Error al obtener los pasos.'))
+      .catch(() => setError('Error al obtener los productos.'))
+
       .finally(() => setLoading(false));
   };
 
