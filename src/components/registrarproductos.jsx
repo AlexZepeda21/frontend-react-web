@@ -7,7 +7,7 @@ import "../styles/styleproduct.css";
 import { X } from 'lucide-react';
 import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
 
-export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
+export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuevoProducto }) {
   const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
     const [unidad_medida, setunidad_medida] = useState([]);
     const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
 
     const [image, setImage] = useState(null);
 
-    const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
+    const id = localStorage.getItem('id'); 
 
     const closeModal = () => setIsOpen(false);
 
@@ -102,7 +102,9 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria }) {
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                 }).then(() => {
-                    closeModal(); // Cierra el modal después de guardar
+                    onNuevoProducto(result.message);
+                    
+                    closeModal(); 
                 });
             } else {
                 Swal.fire({

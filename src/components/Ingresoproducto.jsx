@@ -51,7 +51,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
 
         setFormData((prevData) => ({
             ...prevData,
-            [name]: valorFiltrado,
+            [name]: value,
         }));
     };
 

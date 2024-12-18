@@ -42,39 +42,32 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
     setIsOpens(true);
   };
 
-  useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        if (!categoria?.id_categoria_pro) return;
-        const response = await fetch(`${API_BASE_URL}/productoscategoria/${categoria.id_categoria_pro}`);
-        const data = await response.json();
-        setProductos(data.productos || []);
-      } catch (error) {
-        console.error('Error al obtener los productos:', error);
-        alert('No se pudo cargar la información.');
-        setProductos([]);
-      }
-    };
+  const agregarProducto = (nuevoProducto) => {
+    setProductos((prev) => [...prev, nuevoProducto]);
+  };
 
+
+  const ActualizarProducto = (nuevoProducto) => {
+    setProductos((prev) => [...prev, nuevoProducto]);
+  };
+
+  const fetchProductos = async () => {
+    try {
+      if (!categoria?.id_categoria_pro) return;
+      const response = await fetch(`${API_BASE_URL}/productoscategoria/${categoria.id_categoria_pro}`);
+      const data = await response.json();
+      setProductos(data.productos || []);
+    } catch (error) {
+      console.error('Error al obtener los productos:', error);
+      alert('No se pudo cargar la información.');
+      setProductos([]);
+    }
+  };
+
+  useEffect(() => {
     fetchProductos();
   }, [categoria?.id_categoria_pro]);
 
-  useEffect(() => {
-    if (productos.length > 0 && tableRef.current) {
-      $(tableRef.current).DataTable({
-        destroy: true,
-        responsive: true,
-        paging: true,
-        searching: true,
-        info: true,
-        pageLength: 5,
-        lengthMenu: [5, 10, 15],
-        language: {
-          url: "https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json",
-        },
-      });
-    }
-  }, [productos]);
 
   return (
     <div>
@@ -153,12 +146,13 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                       let claseEstado = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ";
                       let textoEstado = "";
 
-                      if (Number(producto.estado) === 1) {
-                        claseEstado += "bg-green-100 text-green-800";
-                        textoEstado = "Activo";
-                      } else {
+                      if (producto.estado === false) {
                         claseEstado += "bg-red-100 text-gray-800";
                         textoEstado = "Inactivo";
+                      } else {
+                        claseEstado += "bg-green-100 text-green-800";
+                        textoEstado = "Activo";
+                        
                       }
 
                       return (
@@ -167,6 +161,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         </span>
                       );
                     })()}
+
                       </td>
                       <td className="flex space-x-2">
                         <Button
@@ -190,16 +185,15 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         </Button>
 
                         <Button
-  onClick={() => {
-    setIsOpeninfoproducto(true);
-    infoproducto(producto);
-  }}
-  variant="outline"
-  className="w-32 text-gray-700 border-gray-300 hover:border-gray-500 hover:text-gray-900 rounded-lg transition duration-200"
->
-Info producto
-</Button>
-
+                          onClick={() => {
+                            setIsOpeninfoproducto(true);
+                            infoproducto(producto);
+                          }}
+                          variant="outline"
+                          className="w-32 text-gray-700 border-gray-300 hover:border-gray-500 hover:text-gray-900 rounded-lg transition duration-200"
+                        >
+                          Info producto
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -223,7 +217,8 @@ Info producto
         <Registrarproductos
           isOpen={isOpens}
           setIsOpen={setIsOpens}
-          categoria={categoria}  // Pasamos la categoría al modal
+          categoria={categoria} 
+          onNuevoProducto={agregarProducto}
         />
       )}
 
@@ -243,7 +238,7 @@ Info producto
         />
       )}
 
-  {isOpeninfoproducto && Mdinformacionproductos && (
+      {isOpeninfoproducto && Mdinformacionproductos && (
         <Mdinformacionproductos
           isOpen={isOpeninfoproducto}
           setIsOpen={setIsOpeninfoproducto}
@@ -251,6 +246,5 @@ Info producto
         />
       )}
     </div>
-
   );
 }
