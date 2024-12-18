@@ -23,7 +23,7 @@ export default function ListarIngredientes() {
     useEffect(() => {
         const fetchProductos = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/productos`);
+                const response = await axios.get(`${API_BASE_URL}/Productosactivos`);
                 const data = response.data;
 
                 if (data && Array.isArray(data.productos)) {
