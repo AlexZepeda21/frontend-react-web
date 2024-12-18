@@ -1,51 +1,113 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from './framer-motion/motion';
-import { Button } from 'react-bootstrap';
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
+import { Button, Form } from 'react-bootstrap';
 import { API_BASE_URL } from '../url';
+import Generador_de_codigo from '../QR/Generador_de_codigo';
 import { Switch } from './ui/Switch';
 
+const ImageUploader = ({ categoria, image, handleFileChange }) => (
+  <div className="form-group">
+    <label className="image-upload">
+      {image || categoria.foto ? (
+        <img
+          src={image ? image : `data:image/png;base64,${categoria.foto}`}
+          alt="Previsualización de imagen"
+          className="upload-preview w-20 h-20 object-cover rounded"
+        />
+      ) : (
+        <span className="upload-placeholder text-center text-sm">Subir Imagen</span>
+      )}
+      <input
+        type="file"
+        className="file-input"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </label>
+  </div>
+);
+
 export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }) {
-  
+  const id = localStorage.getItem('id');
+  const [image, setImage] = useState(null);
+  const [isOpenGenerador, setIsOpenGenerador] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
     estado: false,
+    imagenBase64: '',
   });
 
   useEffect(() => {
     if (categoria) {
       setFormData({
+        foto: categoria.foto,
         nombre: categoria.nombre,
         descripcion: categoria.descripcion,
-        estado: categoria.estado || false,  // Asegúrate de que "estado" exista en la categoría
+        estado: categoria.estado || false,
       });
     }
   }, [categoria]);
 
+  // File change handler with validation
+  const handleFileChange = useCallback((e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona una imagen.');
+        return;
+      }
+      if (file.size > 5000000) { 
+        alert('El archivo es demasiado grande. Elige una imagen de menos de 5MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          imagenBase64: reader.result.split(',')[1],
+        }));
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const updatedData = {};
+
+    // Update only the changed fields
+    if (formData.nombre !== categoria.nombre) updatedData.nombre = formData.nombre;
+    if (formData.descripcion !== categoria.descripcion) updatedData.descripcion = formData.descripcion;
+    if (formData.estado !== categoria.estado) updatedData.estado = formData.estado;
+    if (formData.imagenBase64 && formData.imagenBase64 !== categoria.foto) updatedData.foto = formData.imagenBase64;
+
+    if (Object.keys(updatedData).length === 0) {
+      alert('No se han realizado cambios.');
+      return;
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/cate_recetas/${categoria.id_categoria_recetas}`, {
-        method: 'PUT',  // Usamos PUT para la actualización
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatedData),
       });
-
 
       if (response.ok) {
         alert('Categoría de receta actualizada con éxito!');
         window.location.reload();
-        setIsOpen(false);  // Cerrar modal al guardar
+        setIsOpen(false);
       } else {
-        throw new Error('Error al actualizar la categoría');
+        const data = await response.json();
+        console.error('Error al actualizar la categoría:', data.message);
+        alert(data.message || 'Error al actualizar la categoría');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error al realizar la solicitud:', error);
       alert('Hubo un error al actualizar la categoría');
     }
   };
@@ -58,7 +120,7 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="bg-white rounded-lg shadow-xl overflow-hidden max-w-md w-full"
           >
             <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white">
@@ -66,9 +128,32 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
               <p className="text-sm opacity-80">Actualiza según tus preferencias</p>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto max-h-[80vh]">
+              <Form.Group controlId="formEstado">
+                <Form.Label className="me-3 mb-0">Estado</Form.Label>
+                <Form.Check
+                  type="switch"
+                  id="estado-switch"
+                  label={isOpenGenerador ? 'Subir foto desde el celular' : 'Elegir Foto'}
+                  checked={isOpenGenerador}
+                  onChange={() => setIsOpenGenerador(!isOpenGenerador)}
+                />
+              </Form.Group>
+
+              {isOpenGenerador ? (
+                <div className="form-group me-3 mb-0">
+                  <Generador_de_codigo
+                    id_producto={categoria.id_categoria_recetas}
+                    id_usuario={id}
+                    route="cate_recetas"
+                  />
+                </div>
+              ) : (
+                <ImageUploader categoria={categoria} image={image} handleFileChange={handleFileChange} />
+              )}
+
               <div className="space-y-2">
-                <Label htmlFor="nombre" className="text-lg font-medium">Nombre</Label>
-                <Input
+                <label htmlFor="nombre" className="text-lg font-medium">Nombre</label>
+                <input
                   id="nombre"
                   value={formData.nombre}
                   onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
@@ -77,9 +162,10 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
                   required
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="descripcion" className="text-lg font-medium">Descripción</Label>
-                <Textarea
+                <label htmlFor="descripcion" className="text-lg font-medium">Descripción</label>
+                <textarea
                   id="descripcion"
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
@@ -88,14 +174,16 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
                   required
                 />
               </div>
+
               <div className="flex items-center space-x-2">
+                <label htmlFor="estado" className="text-lg font-medium">Activo</label>
                 <Switch
                   id="estado"
                   checked={formData.estado}
                   onCheckedChange={(checked) => setFormData({ ...formData, estado: checked })}
                 />
-                <Label htmlFor="estado" className="text-lg font-medium">Activo</Label>
               </div>
+
               <div className="flex justify-end space-x-2 mt-6">
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
                 <Button type="submit" className="bg-gradient-to-r from-pink-500 to-orange-500 text-white">
@@ -106,6 +194,6 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
           </motion.div>
         </div>
       )}
- </div>
-);
+    </div>
+  );
 }

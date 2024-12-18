@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { useParams } from 'react-router-dom'; // Importar useParams
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/Dialog';
 import { Input } from '../components/ui/input';
+import axios from 'axios'; // Importar axios
 
 export default function ListarIngredientes() {
     const { idReceta } = useParams(); // Recuperar el idReceta desde los parámetros de la URL
@@ -18,12 +19,12 @@ export default function ListarIngredientes() {
     const [cantidades, setCantidades] = useState({}); // Objeto que guarda la cantidad de cada producto seleccionado
     const [dialogOpen, setDialogOpen] = useState(false); // Estado para abrir y cerrar el cuadro de diálogo
 
-    // Cargar datos desde el servidor
+    // Cargar datos desde el servidor con axios
     useEffect(() => {
         const fetchProductos = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/productos`);
-                const data = await response.json();
+                const response = await axios.get(`${API_BASE_URL}/productos`);
+                const data = response.data;
 
                 if (data && Array.isArray(data.productos)) {
                     setProductos(data.productos);
@@ -68,7 +69,7 @@ export default function ListarIngredientes() {
         });
     };
 
-    // Función para enviar los productos seleccionados
+    // Función para enviar los productos seleccionados con axios
     const manejarAgregarIngredientes = async () => {
         if (!idReceta) {
             alert("No se ha encontrado el id de la receta.");
@@ -91,15 +92,14 @@ export default function ListarIngredientes() {
 
         try {
             for (const producto of productosAAgregar) {
-                const response = await fetch(`${API_BASE_URL}/receta_producto`, {
-                    method: 'POST',
+                const response = await axios.post(`${API_BASE_URL}/receta_producto`, producto, {
                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(producto) // Enviamos el producto con los campos id_producto, id_receta y cantidad
+                    }
                 });
 
-                if (response.ok) {
+                if (response.status === 201) {
+                    window.location.reload();
                     alert("Ingrediente agregado a la receta.");
                 } else {
                     alert("Error al agregar el ingrediente.");
