@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import 'datatables.net-bs5';
@@ -13,6 +11,8 @@ import MdActializarproducto from './MdActializarproducto';
 import Ingresoproductos from './Ingresoproducto';
 import { X } from 'lucide-react';
 import Mdinformacionproductos from './Mdinformacionproductos';
+import '../styles/Perfil/perfil.css';
+
 
 export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
   const [productos, setProductos] = useState([]);
@@ -22,6 +22,9 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   const [isOpeningreso, setIsOpeningreso] = useState(false);
   const [isOpenupdate, setIsOpenupdate] = useState(false);
   const [isOpeninfoproducto, setIsOpeninfoproducto] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // Filtro por nombre
+  const [currentPage, setCurrentPage] = useState(1); // Página actual
+  const [itemsPerPage] = useState(3); // Número de productos por página
 
   const agregarstock = (producto) => {
     setIsOpeningreso(true);
@@ -46,7 +49,6 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
     setProductos((prev) => [...prev, nuevoProducto]);
   };
 
-
   const ActualizarProducto = (nuevoProducto) => {
     setProductos((prev) => [...prev, nuevoProducto]);
   };
@@ -68,6 +70,18 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
     fetchProductos();
   }, [categoria?.id_categoria_pro]);
 
+  // Filtrar los productos por el nombre
+  const filteredProducts = productos.filter((producto) =>
+    producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Obtener los productos a mostrar en la página actual
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div>
@@ -92,11 +106,18 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
               </button>
             </div>
 
-            <div className="flex justify-end p-3">
+            <div className="flex justify-between p-3 filtropr">
+              <input
+                type="text"
+                className="border p-2 rounded-lg w-1/3"
+                placeholder="Buscar por nombre..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <button
                 className="btn btn-success btn-sm py-2 px-4 rounded-lg shadow-lg hover:bg-green-600 transition-colors duration-300"
                 onClick={() => {
-                  setIsOpen(true);
+                  setIsOpens(true);
                   add(categoria);
                 }}
                 title="Agregar Producto"
@@ -121,7 +142,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                   </tr>
                 </thead>
                 <tbody>
-                  {productos.map((producto) => (
+                  {currentProducts.map((producto) => (
                     <tr key={producto.id_producto} className="hover:bg-gray-100 transition-colors duration-300">
                       <td>
                         <img
@@ -138,30 +159,28 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         />
                       </td>
                       <td>{producto.nombre}</td>
-                      <td>{producto.descripcion.length > 50 ? `${producto.descripcion.substring(0, 50)}...` : producto.descripcion}</td>
+                      <td>{producto.descripcion.length > 10 ? `${producto.descripcion.substring(0 , 15)}...` : producto.descripcion}</td>
                       <td>{producto.stock}</td>
                       <td>{new Date(producto.created_at).toLocaleDateString('es-ES')}</td>
                       <td>
-                      {(() => {
-                      let claseEstado = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ";
-                      let textoEstado = "";
+                        {(() => {
+                          let claseEstado = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ";
+                          let textoEstado = "";
 
-                      if (producto.estado === false) {
-                        claseEstado += "bg-red-100 text-gray-800";
-                        textoEstado = "Inactivo";
-                      } else {
-                        claseEstado += "bg-green-100 text-green-800";
-                        textoEstado = "Activo";
-                        
-                      }
+                          if (producto.estado === false) {
+                            claseEstado += "bg-red-100 text-gray-800";
+                            textoEstado = "Inactivo";
+                          } else {
+                            claseEstado += "bg-green-100 text-green-800";
+                            textoEstado = "Activo";
+                          }
 
-                      return (
-                        <span className={claseEstado}>
-                          {textoEstado}
-                        </span>
-                      );
-                    })()}
-
+                          return (
+                            <span className={claseEstado}>
+                              {textoEstado}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="flex space-x-2">
                         <Button
@@ -200,6 +219,28 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                 </tbody>
               </table>
             </div>
+
+             {/* Paginación */}
+            <div className="flex justify-center p-3">
+              <Button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="mx-2 bg-pink-300 text-white rounded-lg hover:bg-pink-800 transition duration-200"
+              >
+                Anterior
+              </Button>
+              <Button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage * itemsPerPage >= filteredProducts.length}
+                className="mx-2 bg-orange-300 text-white rounded-lg hover:bg-orange-800 transition duration-200"
+              >
+                Siguiente
+              </Button>
+            </div>
+
+
+            
+
             <div className="flex p-3 justify-end mt-4">
               <Button
                 onClick={() => setIsOpen(false)}
@@ -213,11 +254,12 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         </div>
       )}
 
+      {/* Otros modales */}
       {isOpens && Registrarproductos && (
         <Registrarproductos
           isOpen={isOpens}
           setIsOpen={setIsOpens}
-          categoria={categoria} 
+          categoria={categoria}
           onNuevoProducto={agregarProducto}
         />
       )}
@@ -226,7 +268,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         <MdActializarproducto
           isOpen={isOpenupdate}
           setIsOpen={setIsOpenupdate}
-          producto={productoseleccionado}  // Pasamos la categoría al modal
+          producto={productoseleccionado} // Pasamos el producto
         />
       )}
 
@@ -234,7 +276,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         <Ingresoproductos
           isOpen={isOpeningreso}
           setIsOpen={setIsOpeningreso}
-          producto={productoseleccionado}  // Pasamos la categoría al modal
+          producto={productoseleccionado} // Pasamos el producto
         />
       )}
 
@@ -242,7 +284,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         <Mdinformacionproductos
           isOpen={isOpeninfoproducto}
           setIsOpen={setIsOpeninfoproducto}
-          producto={productoseleccionado}  // Pasamos la categoría al modal
+          producto={productoseleccionado} // Pasamos el producto
         />
       )}
     </div>

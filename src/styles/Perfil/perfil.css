@@ -118,3 +118,66 @@
 .button-icon {
   font-size: 16px;
 }
+
+/*Estilos para un modal*/
+
+/* Estilos para el contenedor del filtro y paginación */
+.filtropr {
+  display: flex;
+  justify-content: space-between; /* Alinea el filtro a la derecha */
+  margin-left: 60px; /* Espacio entre el filtro y la tabla */
+  margin-bottom: 30px;
+  margin-top: 20px;
+  margin-right: 60px;
+}
+
+/* Estilos para el filtro de búsqueda */
+.filtro-input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 250px; /* Puedes ajustar el tamaño según prefieras */
+  margin-right: 20px; /* Espacio entre el filtro y los botones de paginación */
+}
+
+/* Contenedor de la paginación */
+.paginacion-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Alinea la paginación a la derecha */
+  margin-top: 10px;
+}
+
+/* Estilos para los botones de paginación */
+.paginacion-btn {
+  padding: 8px 15px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 5px;
+}
+
+.paginacion-btn-anterior {
+  background-color: #8b2323; /* Color para el botón "Anterior" */
+  color: white;
+}
+
+.paginacion-btn-siguiente {
+  background-color: #CD853F; /* Color para el botón "Siguiente" */
+  color: white;
+}
+
+/* Efecto hover para los botones */
+.paginacion-btn:hover {
+  opacity: 0.8;
+}
+
+/* Estilos para cuando no hay más páginas */
+.paginacion-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
