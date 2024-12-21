@@ -43,11 +43,12 @@ function App() {
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
 
+  const veces = 1;
+
   function showConfirmation() {
     const sessionDuration = 15 * 60 * 1000; // Ejemplo: 15 minutos en milisegundos
     const sessionEndTime = new Date().getTime() + sessionDuration;
     let autoLogoutTimeout;
-    const veces = 1;
   
     function calculateRemainingTime() {
       const now = new Date().getTime();
@@ -74,7 +75,9 @@ function App() {
     });
   
     if(calculateRemainingTime() === 0 || veces === 1){
-      autoLogoutTimeout = setTimeout(() => {
+      veces += 1
+      alert(veces)
+        autoLogoutTimeout = setTimeout(() => {
         Swal.close();
         performLogout();
       }, calculateRemainingTime());
@@ -84,7 +87,7 @@ function App() {
   function startTimeout() {
     setTimeout(() => {
       showConfirmation();
-    }, 15 * 60 * 1000); 
+    }, 5 * 60 * 1000); 
   }
   
 
@@ -92,7 +95,6 @@ function App() {
     startTimeout();
   }
   
-  // Escucha eventos de actividad del usuario
   window.addEventListener("mousemove", resetTimer);
   window.addEventListener("keydown", resetTimer);
   window.addEventListener("click", resetTimer);
@@ -100,11 +102,23 @@ function App() {
 
   async function performLogout() {
     try {
-      const response = await fetch(`${API_BASE_URL}/logout/${id}`);
+
+      if(veces ===1){
+        const response = await fetch(`${API_BASE_URL}/logout/${id}`);
       const data = await response.json();
   
       localStorage.clear();
       navigate('/');
+      Swal.fire({
+        title: 'Informacion',
+        text: 'Se cerro su session por inactividad.',
+        icon: 'info',
+        confirmButtonText: 'Aceptar',
+      });
+      }
+      else{
+        localStorage.clear();
+      }
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
   
@@ -123,7 +137,6 @@ function App() {
     const altoPantalla = window.screen.height;
     const ratioPixel = window.devicePixelRatio || 1;
 
-    // Detectar dispositivos por userAgent
     if (/tablet|ipad|playbook|silk/.test(userAgent)) {
         return "Tablet";
     }
@@ -135,12 +148,10 @@ function App() {
         return "Teléfono";
     }
 
-    // Detectar tabletas basadas en dimensiones (si userAgent no lo detectó)
     if (Math.max(anchoPantalla, altoPantalla) <= 1280 && Math.min(anchoPantalla, altoPantalla) >= 600) {
         return "Tablet";
     }
 
-    // Detectar PCs por descarte
     return "PC";
 }
 

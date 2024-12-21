@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import 'datatables.net-bs5';
 import 'datatables.net-responsive-bs5';
-import $ from 'jquery';
+import { Pagination } from 'react-bootstrap';
 import { API_BASE_URL } from '../url';
 import Registrarproductos from './Registrarproductos';
 import { Button } from "../components/ui/button";
@@ -50,7 +50,22 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   };
 
   const ActualizarProducto = (nuevoProducto) => {
-    setProductos((prev) => [...prev, nuevoProducto]);
+    alert(nuevoProducto.id_producto)
+    setProductos((prev) => 
+      prev.map((producto) =>
+        producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
+      )
+    );
+  };
+
+
+  const ingresoProducto = (nuevoProducto) => {
+    alert(nuevoProducto.id_producto)
+    setProductos((prev) => 
+      prev.map((producto) =>
+        producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
+      )
+    );
   };
 
   const fetchProductos = async () => {
@@ -70,18 +85,20 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
     fetchProductos();
   }, [categoria?.id_categoria_pro]);
 
-  // Filtrar los productos por el nombre
   const filteredProducts = productos.filter((producto) =>
     producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Obtener los productos a mostrar en la página actual
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const numeropaginaciones = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  // Cambiar de página
+
+
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   return (
     <div>
@@ -159,7 +176,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         />
                       </td>
                       <td>{producto.nombre}</td>
-                      <td>{producto.descripcion.length > 10 ? `${producto.descripcion.substring(0 , 15)}...` : producto.descripcion}</td>
+                      <td>{producto.descripcion.length > 10 ? `${producto.descripcion.substring(0, 15)}...` : producto.descripcion}</td>
                       <td>{producto.stock}</td>
                       <td>{new Date(producto.created_at).toLocaleDateString('es-ES')}</td>
                       <td>
@@ -202,7 +219,6 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
                         >
                           <RefreshCw className="mr-2 h-4 w-4" /> Actualizar
                         </Button>
-
                         <Button
                           onClick={() => {
                             setIsOpeninfoproducto(true);
@@ -220,26 +236,47 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
               </table>
             </div>
 
-             {/* Paginación */}
-            <div className="flex justify-center p-3">
-              <Button
+
+
+            <div className="flex justify-center items-center p-4 space-x-2">
+              <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="mx-2 bg-pink-300 text-white rounded-lg hover:bg-pink-800 transition duration-200"
+                className="px-4 py-2 bg-pink-300 text-white rounded-lg hover:bg-pink-800 transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Anterior
-              </Button>
-              <Button
+              </button>
+
+              <div className="flex space-x-1">
+                {Array.from({ length: numeropaginaciones }, (_, index) => {
+                  const page = index + 1;
+                  return (
+                    <button
+                      key={page}
+                      className={`px-3 py-2 rounded-lg ${page === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} hover:bg-blue-500 transition duration-200 disabled:bg-gray-500 disabled:cursor-not-allowed`}
+                      onClick={() => paginate(page)}
+                      disabled={page === currentPage}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
+
+              <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage * itemsPerPage >= filteredProducts.length}
-                className="mx-2 bg-orange-300 text-white rounded-lg hover:bg-orange-800 transition duration-200"
+                className="px-4 py-2 bg-orange-300 text-white rounded-lg
+                hover:bg-orange-800 transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Siguiente
-              </Button>
+              </button>
             </div>
 
 
-            
+
+
 
             <div className="flex p-3 justify-end mt-4">
               <Button
@@ -268,7 +305,8 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         <MdActializarproducto
           isOpen={isOpenupdate}
           setIsOpen={setIsOpenupdate}
-          producto={productoseleccionado} // Pasamos el producto
+          producto={productoseleccionado} 
+          updateProducto={ActualizarProducto}
         />
       )}
 
@@ -276,7 +314,8 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         <Ingresoproductos
           isOpen={isOpeningreso}
           setIsOpen={setIsOpeningreso}
-          producto={productoseleccionado} // Pasamos el producto
+          producto={productoseleccionado} 
+          ingresoProducto={ingresoProducto}
         />
       )}
 

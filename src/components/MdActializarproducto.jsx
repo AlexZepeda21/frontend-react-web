@@ -10,7 +10,7 @@ import { X } from 'lucide-react';
 import Generador_de_codigo from '../QR/Generador_de_codigo';
 
 
-export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
+export default function MdActializarproducto({ isOpen, setIsOpen, producto, updateProducto }) {
   const [formData, setFormData] = useState({
     nombre_unidad: "",
     id_unidad_medida: "",
@@ -100,8 +100,10 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto }) {
       }),
       });
 
+      const result = await response.json();
       if (response.ok) {
         alert('Producto actualizado con éxito!');
+        updateProducto(result.message);
         setIsOpen(false);
       } else {
         throw new Error('Error al actualizar el producto');

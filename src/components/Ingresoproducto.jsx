@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { API_BASE_URL } from '../url';
 import Swal from 'sweetalert2'; // Import SweetAlert2
 
-export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
+export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoProducto }) {
     const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
 
     const [formData, setFormData] = useState({
@@ -89,8 +89,11 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto }) {
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                 }).then(() => {
+                    ingresoProducto(result.message);
+
                     closeModal(); // Cierra el modal después de guardar
                 });
+
             } else {
                 Swal.fire({
                     title: 'Error al ingresar el producto',
