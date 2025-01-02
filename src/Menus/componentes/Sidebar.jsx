@@ -83,7 +83,7 @@ function Sidebar() {
           <a href="/../admin/categoria_recetas" className="nav-item">
             <i className="fas fa-utensils"></i>Recetas
           </a>
-          <a href="#" className="nav-item">
+          <a href="/../admin/Menu" className="nav-item">
             <i className="fas fa-concierge-bell"></i>Menu
           </a>
           <a href="#" className="nav-item">

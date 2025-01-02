@@ -1,55 +1,60 @@
-import React from 'react';
-import '../styles/menu.css'; // Asegúrate de que existe tu archivo CSS
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from '../url';  // Asegúrate de configurar esta URL correctamente
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Menu = () => {
-  const menuItems = [
-    {
-      id: 1,
-      name: 'Latte',
-      description: 'Café espresso con leche cremosa',
-      price: '$3.50',
-      image: 'https://via.placeholder.com/300?text=Latte'
-    },
-    {
-      id: 2,
-      name: 'Cappuccino',
-      description: 'Espresso con espuma de leche',
-      price: '$3.00',
-      image: 'https://via.placeholder.com/300?text=Cappuccino'
-    },
-    {
-      id: 3,
-      name: 'Americano',
-      description: 'Espresso diluido con agua caliente',
-      price: '$2.50',
-      image: 'https://via.placeholder.com/300?text=Americano'
-    },
-    {
-      id: 4,
-      name: 'Muffin de Chocolate',
-      description: 'Esponjoso y con chispas de chocolate',
-      price: '$2.00',
-      image: 'https://via.placeholder.com/300?text=Muffin+de+Chocolate'
-    },
-    {
-      id: 5,
-      name: 'Croissant',
-      description: 'Hojaldre crujiente y mantequilloso',
-      price: '$2.50',
-      image: 'https://via.placeholder.com/300?text=Croissant'
-    },
-  ];
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Función para cargar los menús desde la API
+  const fetchMenuItems = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/menu`); // Cambia la URL a tu API real
+      setMenuItems(response.data); // Almacena los menús en el estado
+      setLoading(false);
+    } catch (err) {
+      setError('Error al cargar los menús');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
+
+  if (loading) return <div className="text-center">Cargando menús...</div>;
+  if (error) return <div className="text-center text-danger">{error}</div>;
 
   return (
-    <div className="menu-container">
-      <h1 className="menu-title">Menú de la Cafetería</h1>
-      <div className="menu-grid">
+    <div className="container py-5">
+      <div className="row row-cols-1 row-cols-md-3 g-4">
         {menuItems.map(item => (
-          <div key={item.id} className="menu-card">
-            <img src={item.image} alt={item.name} className="menu-item-image" />
-            <h2 className="menu-item-name">{item.name}</h2>
-            <p className="menu-item-description">{item.description}</p>
-            <p className="menu-item-price">{item.price}</p>
+          <div key={item.id} className="col">
+            <div className="card shadow-sm border-light rounded-3">
+              {/* Ajuste en la imagen */}
+              <img
+                src={item.img ? `data:image/jpeg;base64,${item.img}` : "https://via.placeholder.com/300"}
+                alt={item.nombre}
+                className="card-img-top rounded-top"
+                style={{
+                  objectFit: 'cover', // Asegura que la imagen cubra el espacio sin distorsionarse
+                  maxHeight: '150px', // Limita la altura de la imagen (más pequeña)
+                  height: '150px',    // Altura fija de la imagen
+                  width: '100%',      // Asegura que la imagen se ajuste al ancho
+                }}
+              />
+              <div className="card-body">
+                <h5 className="card-title">{item.nombre}</h5>
+                <p className="card-text">{item.descripcion}</p>
+                <p className="card-text"><strong>Precio:</strong> ${item.precio}</p>
+                <p className="card-text"><strong>Cantidad disponible:</strong> {item.cantidad_platos}</p>
+                <p className={`badge ${item.estado ? "bg-success" : "bg-danger"}`}>
+                  {item.estado ? "Disponible" : "No disponible"}
+                </p>
+              </div>
+            </div>
           </div>
         ))}
       </div>

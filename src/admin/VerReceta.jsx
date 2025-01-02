@@ -18,11 +18,77 @@ const Page = () => {
   const [ShowModalAgregarIngrediente, setShowModalAgregarIngrediente] = useState(false);
   const [ShowModalAgregarPaso, setShowModalAgregarPaso] = useState(false);
   const [nuevoPaso, setNuevoPaso] = useState({ paso_numero: 0, descripcion: '' });
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal básico
 
   const abrirModalIngredientes = () => setShowModalAgregarIngrediente(true);
   const cerrarModalIngredientes = () => setShowModalAgregarIngrediente(false);
   const abrirModalAgregarPaso = () => setShowModalAgregarPaso(true);
   const cerrarModalAgregarPaso = () => setShowModalAgregarPaso(false);
+  const [formPlato, setformPlato] = useState({
+    nombre: '',
+    precio: '',
+    cantidad_platos: '',
+    descripcion: '',
+    estado: true,
+    imagenBase64: '',
+  });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setformPlato((prevForm) => ({
+          ...prevForm,
+          imagenBase64: reader.result.split(',')[1], // Obtienes solo la parte base64 del archivo
+        }));
+      };
+      reader.readAsDataURL(file); // Lee el archivo como URL de datos
+    }
+  };
+
+  const imagePreview = formPlato.imagenBase64
+    ? `data:image/png;base64,${formPlato.imagenBase64}`
+    : receta?.foto
+      ? `data:image/png;base64,${receta.foto}` // Si no se ha cargado una nueva imagen, usar la imagen de la receta
+      : '';
+
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Validación de campos vacíos
+        if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
+          alert('Por favor, complete todos los campos antes de enviar.');
+          return;
+        }
+      
+        try {
+          const response = await fetch(`${API_BASE_URL}/menu`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              nombre: formPlato.nombre,
+              precio: formPlato.precio,
+              cantidad_platos: formPlato.cantidad_platos,
+              descripcion: formPlato.descripcion,
+              estado: formPlato.estado,
+              img: formPlato.imagenBase64, // Enviar la imagen de la receta
+            }),
+          });
+      
+          if (response.ok) {
+            alert('Plato creado con éxito!');
+          } else {
+            throw new Error('Error al crear el plato.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert(error);
+        }
+      };
+      
 
   const handlePasoChange = (e) => {
     const { name, value } = e.target;
@@ -54,25 +120,18 @@ const Page = () => {
       .catch(() => setError('Error al agregar el paso.'));
   };
 
-  const agregarIngrediente = () => {
-    const ingredienteData = {};
-    axios.post(`${API_BASE_URL}/ingredientes-receta/`, ingredienteData)
-      .then((response) => {
-        if (response.status === 200 && response.data && response.data.ingrediente) {
-          setProductos((prevProductos) => [...prevProductos, response.data.ingrediente]);
-          cerrarModalIngredientes();
-          alert('Ingrediente agregado correctamente.');
-        } else {
-          setError('Error al agregar el ingrediente.');
-        }
-      })
-      .catch(() => setError('Error al agregar el ingrediente.'));
-  };
-
   const recargarDatos = () => {
     setLoading(true);
     axios.get(`${API_BASE_URL}/recetas/${idReceta}`)
-      .then((response) => setReceta(response.data.message || {}))
+      .then((response) => {
+        setReceta(response.data.message || {});
+        setformPlato((prevForm) => ({
+          ...prevForm,
+          nombre: response.data.message.nombre_receta || '',
+          descripcion: response.data.message.descripcion || '',
+          imagenBase64: response.data.message.foto || '',
+        }));
+      })
       .catch(() => setError('Error al obtener la receta.'));
 
     axios.get(`${API_BASE_URL}/pasos-receta/${idReceta}`)
@@ -90,10 +149,10 @@ const Page = () => {
           setError('Error al obtener los pasos.');
         }
       });
+
     axios.get(`${API_BASE_URL}/receta-productos/${idReceta}`)
       .then((response) => setProductos(response.data.productos || []))
       .catch(() => setError('Error al obtener los productos.'))
-
       .finally(() => setLoading(false));
   };
 
@@ -101,11 +160,29 @@ const Page = () => {
     recargarDatos();
   }, [idReceta]);
 
+  useEffect(() => {
+    if (pasos.length > 0) {
+      const ultimoPaso = pasos[pasos.length - 1];
+      setNuevoPaso((prevPaso) => ({
+        ...prevPaso,
+        paso_numero: ultimoPaso.paso_numero + 1,
+      }));
+    } else {
+      setNuevoPaso((prevPaso) => ({
+        ...prevPaso,
+        paso_numero: 1,
+      }));
+    }
+  }, [pasos]);
+
   if (loading) return <div className="text-center text-gray-500">Cargando receta...</div>;
 
   if (!receta) return <div className="text-center text-gray-500">{error || 'Receta no encontrada.'}</div>;
 
   const { nombre_receta, descripcion, tiempo_preparacion, dificultad, foto, numero_porciones, estado } = receta;
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="bg-gray-50 py-12 px-6 md:px-12">
@@ -169,6 +246,11 @@ const Page = () => {
             <div className="relative w-full max-w-lg">
               {foto && <Image src={`data:image/png;base64,${foto}`} alt={nombre_receta} fluid className="object-cover w-full h-auto rounded-lg shadow-lg" />}
             </div>
+            <div>
+              <button type="button" className="btn btn-success" onClick={openModal}>
+                Generar plato de esta receta
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -176,6 +258,9 @@ const Page = () => {
       <div className="mt-8">
         <div>
           <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
+          <Button onClick={abrirModalIngredientes} variant="outline" className="mt-4">
+            Agregar Ingredientes
+          </Button>
           <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
             {productos.length > 0 ? (
               <ul className="space-y-2">
@@ -192,14 +277,13 @@ const Page = () => {
             )}
           </div>
         </div>
-
-        <Button onClick={abrirModalIngredientes} variant="outline" className="mt-4">
-          Agregar Ingredientes
-        </Button>
       </div>
 
       <div className="mt-8">
         <h3 className="text-2xl font-semibold text-gray-900">Pasos</h3>
+        <Button onClick={abrirModalAgregarPaso} variant="outline" className="mt-4">
+          Agregar Paso
+        </Button>
         <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
           {pasos.length > 0 ? (
             <ul className="space-y-2">
@@ -216,14 +300,12 @@ const Page = () => {
           )}
         </div>
 
-        <Button onClick={abrirModalAgregarPaso} variant="outline" className="mt-4">
-          Agregar Paso
-        </Button>
         <Button onClick={recargarDatos} variant="outline" className="mt-4">
           Actualizar Datos
         </Button>
       </div>
 
+      {/* Modal para agregar paso */}
       {ShowModalAgregarPaso && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -240,6 +322,7 @@ const Page = () => {
                   onChange={handlePasoChange}
                   placeholder="Número de paso"
                   className="input-field"
+                  readOnly
                 />
                 <textarea
                   name="descripcion"
@@ -265,6 +348,79 @@ const Page = () => {
             </div>
             <div className="modal-body">
               <ListarIngredientes idReceta={idReceta} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para agregar plato */}
+      {isModalOpen && (
+        <div className="modal fade show" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">Agregar Platos a la receta</h5>
+                <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={handleSubmit}>
+
+                  {/* Este campo ahora no será editable */}
+                  <div className="mb-4">
+                    <label htmlFor="imagen" className="block text-sm font-medium text-gray-700">Imagen</label>
+                    <input
+                      id="imagen"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="w-full mt-1"
+                     
+                    />
+                    {/* Solo mostrar la imagen si existe */}
+                    {imagePreview && <img src={imagePreview} alt="Vista previa" className="mt-4 w-full h-48 object-cover rounded-md" />}
+                  </div>
+
+                  <label htmlFor="nombre" className="label-form">Nombre del plato</label>
+                  <input
+                    type="text"
+                    value={formPlato.nombre}
+                    name="nombre"
+                    onChange={(e) => setformPlato({ ...formPlato, nombre: e.target.value })}
+                    className="form-control"
+                  />
+                  <br />
+                  <label htmlFor="precio" className="label-form">Precio en $</label>
+                  <input
+                    type="number"
+                    value={formPlato.precio}
+                    name="precio"
+                    onChange={(e) => setformPlato({ ...formPlato, precio: e.target.value })}
+                    className="form-control"
+                    placeholder='1.00'
+                  />
+                  <br />
+                  <label htmlFor="cantidad" className="label-form">Cantidad de platos</label>
+                  <input
+                    type="number"
+                    value={formPlato.cantidad_platos}
+                    name="cantidad_platos"
+                    onChange={(e) => setformPlato({ ...formPlato, cantidad_platos: e.target.value })}
+                    className="form-control"
+                  />
+                  <br />
+                  <label htmlFor="descripcion" className="label-form">Descripción</label>
+                  <textarea
+                    value={formPlato.descripcion}
+                    name="descripcion"
+                    onChange={(e) => setformPlato({ ...formPlato, descripcion: e.target.value })}
+                    className="form-control"
+                  />
+                  <Button className="m-2">Preparar</Button>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancelar</button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,12 +1,12 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "../components/ui/button";
-import { Plus } from 'lucide-react';
 import { API_BASE_URL } from '../url';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/tabledesign";
 import { useParams } from 'react-router-dom'; // Importar useParams
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/Dialog';
+import { DialogTitle, DialogDescription, DialogFooter } from '../components/ui/Dialog';
 import { Input } from '../components/ui/input';
 import axios from 'axios'; // Importar axios
 
@@ -19,7 +19,6 @@ export default function ListarIngredientes() {
     const [cantidades, setCantidades] = useState({}); // Objeto que guarda la cantidad de cada producto seleccionado
     const [dialogOpen, setDialogOpen] = useState(false); // Estado para abrir y cerrar el cuadro de diálogo
 
-    // Cargar datos desde el servidor con axios
     useEffect(() => {
         const fetchProductos = async () => {
             try {
@@ -41,16 +40,9 @@ export default function ListarIngredientes() {
         fetchProductos();
     }, []);
 
-    // Paginación de los productos
     const paginacion = productos.slice((pagina - 1) * productosPorPagina, pagina * productosPorPagina);
 
-    const manejarCambioPagina = (numeroPagina) => {
-        if (numeroPagina >= 1 && numeroPagina <= Math.ceil(productos.length / productosPorPagina)) {
-            setPagina(numeroPagina);
-        }
-    };
 
-    // Función para manejar el cambio en la cantidad de cada ingrediente
     const manejarCambioCantidad = (idProducto, e) => {
         setCantidades(prev => ({
             ...prev,
@@ -58,7 +50,10 @@ export default function ListarIngredientes() {
         }));
     };
 
-    // Función para manejar el checkbox y seleccionar productos
+    const Cerrar = () => {
+        window.location.reload();
+    };
+
     const manejarCambioSeleccion = (idProducto) => {
         setSelectedProductos(prevSelected => {
             if (prevSelected.includes(idProducto)) {
@@ -69,7 +64,6 @@ export default function ListarIngredientes() {
         });
     };
 
-    // Función para enviar los productos seleccionados con axios
     const manejarAgregarIngredientes = async () => {
         if (!idReceta) {
             alert("No se ha encontrado el id de la receta.");
@@ -78,16 +72,15 @@ export default function ListarIngredientes() {
 
         const productosAAgregar = selectedProductos.map(idProducto => ({
             id_producto: idProducto,
-            id_receta: idReceta, // Este es el id de la receta obtenido de la URL
-            cantidad: parseInt(cantidades[idProducto]) || 0 // Si no hay cantidad, se usa 0 por defecto
-        })).filter(producto => producto.cantidad > 0); // Solo enviar productos con cantidad válida
+            id_receta: idReceta,
+            cantidad: parseInt(cantidades[idProducto]) || 0
+        })).filter(producto => producto.cantidad > 0);
 
         if (productosAAgregar.length === 0) {
             alert("Debe ingresar una cantidad válida para al menos un producto.");
             return;
         }
 
-        // Confirmamos los datos antes de enviarlos
         console.log("Enviando productos a la API:", productosAAgregar);
 
         try {
@@ -122,6 +115,9 @@ export default function ListarIngredientes() {
                 {/* Card Header: Título */}
                 <div className="border-b p-6">
                     <h1 className="text-3xl font-bold tracking-tight justify-center">Lista de Ingredientes</h1>
+                </div>
+                <div>
+                  
                 </div>
 
                 {/* Card Body: Tabla con los Productos */}
@@ -184,6 +180,13 @@ export default function ListarIngredientes() {
                         onClick={() => setDialogOpen(true)} // Abrir cuadro de diálogo
                     >
                         Agregar Ingrediente
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className="mx-2"
+                        onClick={Cerrar} // Abrir cuadro de diálogo
+                    >
+                        Cerrar
                     </Button>
                 </div>
 
