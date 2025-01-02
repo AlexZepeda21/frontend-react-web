@@ -7,7 +7,7 @@ import "../styles/styleproduct.css";
 import { X } from 'lucide-react';
 import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
 
-export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuevoProducto }) {
+export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuevoProducto, categoriaCount }) {
   const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
     const [unidad_medida, setunidad_medida] = useState([]);
     const [formData, setFormData] = useState({
@@ -102,6 +102,8 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                 }).then(() => {
+                    categoriaCount(result.categoria_producto);
+
                     onNuevoProducto(result.message);
                     
                     closeModal(); 

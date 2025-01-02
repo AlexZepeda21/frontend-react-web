@@ -68,6 +68,17 @@ const Categoria_productos = () => {
     setIsOpens(true); 
   };
 
+  const categoriascontproducto=(cate) => {
+    cate.forEach(categorias => {
+      setCategorias((prev) => 
+        prev.map((categoria) =>
+          categoria.id_categoria_pro === categorias.id_categoria_pro ? categorias : categoria
+        )
+      );
+    });
+
+  }
+
   return (
     <div className="container di mt-5">
       <h1 className="text-3xl titulo font-bold tracking-tight">Categorias de Productos</h1>
@@ -165,7 +176,8 @@ const Categoria_productos = () => {
         <Listaproductoscategoria
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          categoria={categoriaSeleccionada}  // Pasamos la categoría al modal
+          categoria={categoriaSeleccionada}
+          categoriascontproducto={categoriascontproducto}
         />
       )}
 

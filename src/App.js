@@ -43,13 +43,14 @@ function App() {
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
 
-  const veces = 1;
 
   function showConfirmation() {
     const sessionDuration = 15 * 60 * 1000; // Ejemplo: 15 minutos en milisegundos
     const sessionEndTime = new Date().getTime() + sessionDuration;
     let autoLogoutTimeout;
-  
+
+ 
+
     function calculateRemainingTime() {
       const now = new Date().getTime();
       return Math.max(0, sessionEndTime - now); 
@@ -74,9 +75,11 @@ function App() {
       }
     });
   
-    if(calculateRemainingTime() === 0 || veces === 1){
-      veces += 1
-      alert(veces)
+    alert("Ya empezo")
+    if(calculateRemainingTime() === 0 ||  id !== null){
+      
+      alert("dentro")
+
         autoLogoutTimeout = setTimeout(() => {
         Swal.close();
         performLogout();
@@ -103,10 +106,11 @@ function App() {
   async function performLogout() {
     try {
 
-      if(veces ===1){
+
         const response = await fetch(`${API_BASE_URL}/logout/${id}`);
       const data = await response.json();
   
+
       localStorage.clear();
       navigate('/');
       Swal.fire({
@@ -115,10 +119,7 @@ function App() {
         icon: 'info',
         confirmButtonText: 'Aceptar',
       });
-      }
-      else{
-        localStorage.clear();
-      }
+
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
   

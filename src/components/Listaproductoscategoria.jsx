@@ -14,7 +14,7 @@ import Mdinformacionproductos from './Mdinformacionproductos';
 import '../styles/Perfil/perfil.css';
 
 
-export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }) {
+export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, categoriascontproducto }) {
   const [productos, setProductos] = useState([]);
   const [productoseleccionado, setProductoseleccionado] = useState([]);
   const tableRef = useRef(null);
@@ -50,7 +50,6 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   };
 
   const ActualizarProducto = (nuevoProducto) => {
-    alert(nuevoProducto.id_producto)
     setProductos((prev) => 
       prev.map((producto) =>
         producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
@@ -59,8 +58,13 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
   };
 
 
+  const categoriaCount=(categoria) => {
+    categoriascontproducto(categoria)
+    
+
+  }
+
   const ingresoProducto = (nuevoProducto) => {
-    alert(nuevoProducto.id_producto)
     setProductos((prev) => 
       prev.map((producto) =>
         producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
@@ -291,13 +295,13 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria }
         </div>
       )}
 
-      {/* Otros modales */}
       {isOpens && Registrarproductos && (
         <Registrarproductos
           isOpen={isOpens}
           setIsOpen={setIsOpens}
           categoria={categoria}
           onNuevoProducto={agregarProducto}
+          categoriaCount={categoriaCount}
         />
       )}
 
