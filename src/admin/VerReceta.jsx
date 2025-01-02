@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -54,8 +55,56 @@ const Page = () => {
       : '';
 
 
+
+      const actualizarProducto = async (idProducto, cantidadUsada) => {
+        try {
+          // Obtener los productos desde la API para obtener la información de stock
+          const response = await axios.get(`${API_BASE_URL}/productos`);
+          const producto = response.data.productos.find(prod => prod.id_producto === idProducto);
+      
+          // Verificar si el producto existe
+          if (!producto) {
+            alert(`Producto con ID ${idProducto} no encontrado.`);
+            return;
+          }
+      
+          const stockActual = producto.stock;
+          if (stockActual === undefined || stockActual === null) {
+            alert(`No se pudo obtener el stock para el producto con ID ${idProducto}.`);
+            return;
+          }
+      
+          // Restar la cantidad usada al stock actual
+          const nuevoStock = stockActual - cantidadUsada;
+      
+          // Mostrar el valor de la cantidad usada y el nuevo stock para depuración
+          alert(`Cantidad Usada: ${cantidadUsada} - Stock Actual: ${stockActual} - Nuevo Stock: ${nuevoStock}`);
+      
+          // Si el nuevo stock es negativo, alertamos que no hay suficiente stock
+          if (nuevoStock < 0) {
+            alert(`No hay suficiente stock para el producto con ID ${idProducto}.`);
+            return;
+          }
+      
+          // Actualizar el producto con el nuevo stock
+          const updateResponse = await axios.patch(`${API_BASE_URL}/productos/${idProducto}`, {
+            stock: nuevoStock,
+          });
+      
+          if (updateResponse.status === 200) {
+            alert(`Stock actualizado correctamente para el producto ${idProducto}.`);
+          } else {
+            alert(`Error al actualizar el stock del producto con ID ${idProducto}.`);
+          }
+        } catch (error) {
+          console.error('Error fatal al actualizar el producto:', error);
+          alert('Hubo un error al actualizar el producto.');
+        }
+      };
+      
       const handleSubmit = async (e) => {
         e.preventDefault();
+      
         // Validación de campos vacíos
         if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
           alert('Por favor, complete todos los campos antes de enviar.');
@@ -80,15 +129,29 @@ const Page = () => {
       
           if (response.ok) {
             alert('Plato creado con éxito!');
+      
+            // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
+            const productosUsados = productos.map((producto) => {
+              const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
+              return { id_producto: producto.producto.id_producto, cantidadUsada };
+            });
+      
+            // Paso 2: Actualizamos el stock de cada producto
+            for (const producto of productosUsados) {
+              await actualizarProducto(producto.id_producto, producto.cantidadUsada);
+            }
           } else {
             throw new Error('Error al crear el plato.');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert(error);
+          alert(`Hubo un error al crear el plato: ${error.message}`);
         }
       };
       
+      
+
+
 
   const handlePasoChange = (e) => {
     const { name, value } = e.target;
@@ -374,7 +437,7 @@ const Page = () => {
                       accept="image/*"
                       onChange={handleImageChange}
                       className="w-full mt-1"
-                     
+
                     />
                     {/* Solo mostrar la imagen si existe */}
                     {imagePreview && <img src={imagePreview} alt="Vista previa" className="mt-4 w-full h-48 object-cover rounded-md" />}
@@ -396,7 +459,7 @@ const Page = () => {
                     name="precio"
                     onChange={(e) => setformPlato({ ...formPlato, precio: e.target.value })}
                     className="form-control"
-                    placeholder='1.00'
+                    placeholder='Por ej: 1.00'
                   />
                   <br />
                   <label htmlFor="cantidad" className="label-form">Cantidad de platos</label>
@@ -406,6 +469,7 @@ const Page = () => {
                     name="cantidad_platos"
                     onChange={(e) => setformPlato({ ...formPlato, cantidad_platos: e.target.value })}
                     className="form-control"
+                    placeholder='Por ej: 4'
                   />
                   <br />
                   <label htmlFor="descripcion" className="label-form">Descripción</label>

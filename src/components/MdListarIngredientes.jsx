@@ -92,7 +92,6 @@ export default function ListarIngredientes() {
                 });
 
                 if (response.status === 201) {
-                    window.location.reload();
                     alert("Ingrediente agregado a la receta.");
                 } else {
                     alert("Error al agregar el ingrediente.");

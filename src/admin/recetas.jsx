@@ -116,7 +116,7 @@ const RecetasList = () => {
                 <TableHead className="w-[100px]">#</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead className="max-w-[300px]">Descripción</TableHead>
-                <TableHead>Tiempo</TableHead>
+                <TableHead>Tiempo preparación</TableHead>
                 <TableHead>Porciones</TableHead>
                 <TableHead>Dificultad</TableHead>
                 <TableHead>Foto</TableHead>
