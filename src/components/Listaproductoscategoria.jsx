@@ -26,6 +26,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const [itemsPerPage] = useState(3); // Número de productos por página
 
+
   const agregarstock = (producto) => {
     setIsOpeningreso(true);
     setProductoseleccionado(producto);
@@ -50,7 +51,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
   };
 
   const ActualizarProducto = (nuevoProducto) => {
-    setProductos((prev) => 
+    setProductos((prev) =>
       prev.map((producto) =>
         producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
       )
@@ -58,14 +59,14 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
   };
 
 
-  const categoriaCount=(categoria) => {
+  const categoriaCount = (categoria) => {
     categoriascontproducto(categoria)
-    
+
 
   }
 
   const ingresoProducto = (nuevoProducto) => {
-    setProductos((prev) => 
+    setProductos((prev) =>
       prev.map((producto) =>
         producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
       )
@@ -138,16 +139,36 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button
-                className="btn btn-success btn-sm py-2 px-4 rounded-lg shadow-lg hover:bg-green-600 transition-colors duration-300"
-                onClick={() => {
-                  setIsOpens(true);
-                  add(categoria);
-                }}
-                title="Agregar Producto"
-              >
-                <i className="fas fa-plus mr-2"> Agregar</i>
-              </button>
+
+
+              {categoria.estado === 0 ? (
+                <button
+                  className="btn btn-success btn-sm py-2 px-4 rounded-lg shadow-lg hover:bg-green-600 transition-colors duration-300"
+                  onClick={() => {
+                    setIsOpens(true);
+                    add(categoria);
+                    
+                  }}
+                  disabled={true} 
+                  title="Agregar Producto"
+                >
+                  <i className="fas fa-plus mr-2"> Agregar</i>
+                </button>    
+                          ) : (
+                <button
+                  className="btn btn-success btn-sm py-2 px-4 rounded-lg shadow-lg hover:bg-green-600 transition-colors duration-300"
+                  onClick={() => {
+                    setIsOpens(true);
+                    add(categoria);
+                  }}
+                  title="Agregar Producto"
+                >
+                  <i className="fas fa-plus mr-2"> Agregar</i>
+                </button>
+              )
+
+              }
+
             </div>
             <div className="p-6 mx-5 bg-gray-50 rounded-lg shadow-lg border border-gray-300 overflow-hidden">
               <table
@@ -312,7 +333,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
         <MdActializarproducto
           isOpen={isOpenupdate}
           setIsOpen={setIsOpenupdate}
-          producto={productoseleccionado} 
+          producto={productoseleccionado}
           updateProducto={ActualizarProducto}
         />
       )}
@@ -321,7 +342,7 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
         <Ingresoproductos
           isOpen={isOpeningreso}
           setIsOpen={setIsOpeningreso}
-          producto={productoseleccionado} 
+          producto={productoseleccionado}
           ingresoProducto={ingresoProducto}
         />
       )}

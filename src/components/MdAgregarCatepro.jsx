@@ -7,7 +7,7 @@ import { Textarea } from "./ui/textarea"
 import { API_BASE_URL } from '../url'
 import Swal from 'sweetalert2'  // Import SweetAlert2
 
-export default function MdAgregarCateproductos() {
+export default function MdAgregarCateproductos({agregarcategoria}) {
   const [image, setImage] = useState(null);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -48,18 +48,19 @@ export default function MdAgregarCateproductos() {
         body: JSON.stringify({
           nombre_categoria: formData.nombre,
           descripcion: formData.descripcion,
-          foto: formData.imagenBase64,
+          foto: formData.imagenBase64 || "Agrege una foto",
         }),
       })
 
+      const result = await response.json();
       if (response.ok) {
-        // Reemplazamos el alert con SweetAlert2
         Swal.fire({
           title: 'Éxito!',
           text: 'Categoría de receta creada con éxito!',
           icon: 'success',
           confirmButtonText: 'Ok'
         });
+        agregarcategoria(result.message)
         setIsOpen(false)
       } else {
         throw new Error('El nombre de la categoria no puede repetirse')

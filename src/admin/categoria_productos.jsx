@@ -79,6 +79,14 @@ const Categoria_productos = () => {
 
   }
 
+  const agregarcategoria=(cate) => {
+    cate.forEach(categorias => {
+      setCategorias((prev) => [...prev, categorias]);
+
+    });
+
+  }
+
   return (
     <div className="container di mt-5">
       <h1 className="text-3xl titulo font-bold tracking-tight">Categorias de Productos</h1>
@@ -94,7 +102,8 @@ const Categoria_productos = () => {
         <br />
         {/* Aquí está el modal personalizado que llamamos desde otro archivo */}
         <div>
-          <MdAgregarCateproductos isOpen={isOpen} setIsOpen={setIsOpen} />
+          <MdAgregarCateproductos isOpen={isOpen} setIsOpen={setIsOpen} 
+          agregarcategoria={agregarcategoria}/>
         </div>
 
       </div>
@@ -188,7 +197,8 @@ const Categoria_productos = () => {
         <MdActualizarCate_producto
           isOpen={isOpens}
           setIsOpen={setIsOpens}
-          categoria={categoriaSeleccionada}  // Pasamos la categoría al modal
+          categoria={categoriaSeleccionada}
+          actualizarcate={categoriascontproducto}
         />
       )}
     </div>

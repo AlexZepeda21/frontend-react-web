@@ -8,9 +8,13 @@ import { API_BASE_URL } from '../url';
 import { Switch } from './ui/Switch';
 import { X } from 'lucide-react';
 import Generador_de_codigo from '../QR/Generador_de_codigo';
+import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
 
 
 export default function MdActializarproducto({ isOpen, setIsOpen, producto, updateProducto }) {
+  
+  const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
+
   const [formData, setFormData] = useState({
     nombre_unidad: "",
     id_unidad_medida: "",
@@ -79,6 +83,13 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
     }
   }, [producto]);
 
+
+  
+  const agregarUnidadMedida = (nuevaUnidad) => {
+    setunidad_medida((prev) => [...prev, nuevaUnidad]);
+
+};
+
  
 
   const handleSubmit = async (e) => {
@@ -113,6 +124,11 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
       alert(error);
     }
   };
+
+
+  const unidad_medida_modal = () => {
+    setIsOpenunidad_medida(true);
+};
 
   return (
     <div>
@@ -194,22 +210,35 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
                 />
               </div>
 
-              <div className="form-group flex-1">
-                <label>Unidad de Medida</label>
-                <select
-                  name="id_unidad_medida"
-                  value={formData.id_unidad_medida || ""}
-                  onChange={(e) => setFormData({ ...formData, id_unidad_medida: e.target.value })}
-                  className="form-control text-sm"
-                >
-                  <option value="">Seleccionar unidad</option>
-                  {unidad_medida.map((unidad) => (
-                    <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
-                      {unidad.nombre_unidad}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="form-group mb-4 ">
+                        <label>Unidad de Medida </label>
+                        <div className="d-flex align-items-center">
+
+                            <select
+                                name="id_unidad_medida"
+                                value={formData.id_unidad_medida}
+                                onChange={(e) => setFormData({ ...formData, id_unidad_medida: e.target.value })}
+                                className="form-control"
+                            >
+                                <option value="">Seleccionar unidad</option>
+                                {unidad_medida.map((unidad) => (
+                                    <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
+                                        {unidad.nombre_unidad}
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary ms-2"
+                                onClick={() => {
+                                    setIsOpenunidad_medida(true);
+                                    unidad_medida_modal();
+                                }}
+                            >
+                                <i className="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
 
 
 
@@ -249,6 +278,13 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
           </motion.div>
         </div>
       )}
+       {isOpeninunidad_medida && MdAgregarUnidadMedida && (
+                <MdAgregarUnidadMedida
+                    showModal={isOpeninunidad_medida}
+                    setShowModal={setIsOpenunidad_medida}
+                    agregarUnidadMedida={agregarUnidadMedida}
+                />
+            )}
     </div>
 
   );
