@@ -39,6 +39,8 @@ const UnidadMedidaList = () => {
       });
   }, []);
 
+
+  
   // Pagination
   const indexOfLastUnidad = (currentPage + 1) * unidadesPorPagina;
   const indexOfFirstUnidad = indexOfLastUnidad - unidadesPorPagina;
@@ -73,6 +75,20 @@ const UnidadMedidaList = () => {
       .catch(() => {
         setError('Error al desactivar la unidad.');
       });
+  };
+
+  
+  const agregarUnidadMedida = (nuevaUnidad) => {
+    setUnidades((prev) => [...prev, nuevaUnidad]);
+
+  };
+
+  const actualizarUnidad = (Unidad) =>{
+    setUnidades((prev) => 
+      prev.map((unidad_medida) =>
+        unidad_medida.id_unidad_medida === Unidad.id_unidad_medida ? Unidad : unidad_medida
+      )
+    );
   };
 
   return (
@@ -117,7 +133,9 @@ const UnidadMedidaList = () => {
       )}
 
       {showModal && (
-        <MdAgregarUnidadMedida showModal={showModal} setShowModal={setShowModal} />
+        <MdAgregarUnidadMedida showModal={showModal} setShowModal={setShowModal}
+        agregarUnidadMedida={agregarUnidadMedida}
+        />
       )}
 
       {showModalEditar && unidadSeleccionada && (
@@ -125,6 +143,7 @@ const UnidadMedidaList = () => {
           showModalEditar={showModalEditar}
           setShowModalEditar={setShowModalEditar}
           unidad={unidadSeleccionada}
+          actualizarUnidad={actualizarUnidad}
         />
       )}
 

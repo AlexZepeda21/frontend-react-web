@@ -28,9 +28,8 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        // Filtrar solo números en el campo cantidad
         const valorFiltrado = name === 'cantidad'
-        ? value.replace(/^0+(?=[1-9])/, '') // Eliminar ceros iniciales antes de números del 1 al 9
+        ? value.replace(/^0+(?=[1-9])/, '') 
         : value;
 
 

@@ -104,7 +104,9 @@ const Categoria_productos = () => {
 
       <div className="row">
         {currentCategorias.length > 0 ? (
-          currentCategorias.map((categoria) => (
+          currentCategorias
+          .sort((a, b) => b.cantidad_productos - a.cantidad_productos) 
+          .map((categoria) => (
             <div className="col-md-3 mb-4 " key={categoria.id_categoria_pro}>
               <div class="width-250px bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="p-3">

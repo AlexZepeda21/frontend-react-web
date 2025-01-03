@@ -21,9 +21,10 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from './url';
 import Subir_img from './QR/Subir_img';
 import Menu from './admin/Menu';
+import { time } from 'framer-motion';
 
 function App() {
-  
+
   const location = useLocation();
   const token = location.state?.token;
   const tipoUsuario = location.state?.tipo_usuario;
@@ -32,7 +33,7 @@ function App() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
 
-  
+
 
 
   if (token) localStorage.setItem('token', token);
@@ -43,19 +44,20 @@ function App() {
   const tokensession = localStorage.getItem('token');
   const tipoUsuarioSession = localStorage.getItem('tipo_usuario');
 
-
   function showConfirmation() {
-    const sessionDuration = 15 * 60 * 1000; // Ejemplo: 15 minutos en milisegundos
+    const sessionDuration = 15 * 60 * 1000;
     const sessionEndTime = new Date().getTime() + sessionDuration;
-    let autoLogoutTimeout;
 
- 
+
+
+
+
 
     function calculateRemainingTime() {
       const now = new Date().getTime();
-      return Math.max(0, sessionEndTime - now); 
+      return Math.max(0, sessionEndTime - now);
     }
-  
+
     Swal.fire({
       title: 'Extender la sesión',
       icon: 'warning',
@@ -66,38 +68,41 @@ function App() {
       timer: calculateRemainingTime(),
       timerProgressBar: true,
     }).then((result) => {
-      clearTimeout(autoLogoutTimeout);
-  
       if (result.isConfirmed) {
         startTimeout();
       } else if (result.isDismissed) {
         performLogout();
       }
     });
-  
-    alert("Ya empezo")
-    if(calculateRemainingTime() === 0 ||  id !== null){
-      
-      alert("dentro")
 
-        autoLogoutTimeout = setTimeout(() => {
-        Swal.close();
-        performLogout();
-      }, calculateRemainingTime());
+
+    setTimeout(() => {
+      Swal.close();
+      performLogout();
+    }, calculateRemainingTime());
+
+
+
+  }
+  let timeoutScheduled = false;
+  let warning = false;
+
+
+  function startTimeout() {
+    
+    if (!timeoutScheduled) {  
+      timeoutScheduled = true;
+        setTimeout(() => {
+        showConfirmation();
+      }, 2 * 60 * 1000);
     }
   }
-  
-  function startTimeout() {
-    setTimeout(() => {
-      showConfirmation();
-    }, 5 * 60 * 1000); 
-  }
-  
+
 
   function resetTimer() {
     startTimeout();
   }
-  
+
   window.addEventListener("mousemove", resetTimer);
   window.addEventListener("keydown", resetTimer);
   window.addEventListener("click", resetTimer);
@@ -106,10 +111,11 @@ function App() {
   async function performLogout() {
     try {
 
+      if(!warning){
+        warning = true;
 
-        const response = await fetch(`${API_BASE_URL}/logout/${id}`);
+      const response = await fetch(`${API_BASE_URL}/logout/${id}`);
       const data = await response.json();
-  
 
       localStorage.clear();
       navigate('/');
@@ -119,10 +125,13 @@ function App() {
         icon: 'info',
         confirmButtonText: 'Aceptar',
       });
+    }else{
+      localStorage.clear();
+    }
 
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
-  
+
       Swal.fire({
         title: 'Error',
         text: 'Hubo un problema al cerrar sesión. Inténtalo nuevamente.',
@@ -139,35 +148,35 @@ function App() {
     const ratioPixel = window.devicePixelRatio || 1;
 
     if (/tablet|ipad|playbook|silk/.test(userAgent)) {
-        return "Tablet";
+      return "Tablet";
     }
 
     if (/mobile|android|iphone|ipod/.test(userAgent)) {
-        if (Math.max(anchoPantalla, altoPantalla) >= 900) {
-            return "Tablet";
-        }
-        return "Teléfono";
+      if (Math.max(anchoPantalla, altoPantalla) >= 900) {
+        return "Tablet";
+      }
+      return "Teléfono";
     }
 
     if (Math.max(anchoPantalla, altoPantalla) <= 1280 && Math.min(anchoPantalla, altoPantalla) >= 600) {
-        return "Tablet";
+      return "Tablet";
     }
 
     return "PC";
-}
+  }
 
 
 
 
 
-  
- //localStorage.clear();
+
+  //localStorage.clear();
 
   const renderRoutes = () => {
 
 
-    if(detectarDispositivo() === "Teléfono"){
-      return(
+    if (detectarDispositivo() === "Teléfono") {
+      return (
         <Routes>
           <Route path="/QR" element={<Subir_img />} />
         </Routes>
@@ -178,7 +187,7 @@ function App() {
 
 
 
-    if (!tokensession || !tipoUsuarioSession  ) {
+    if (!tokensession || !tipoUsuarioSession) {
       return (
         <Routes>
           <Route path="/" element={<Login />} />
@@ -188,7 +197,7 @@ function App() {
       );
     }
 
-    
+
 
     if (tipoUsuarioSession === '1') {
       startTimeout();
@@ -207,7 +216,7 @@ function App() {
             <Route path="Menu" element={<Menu />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
 
-            
+
           </Route>
           <Route path="*" element={<Navigate to="/admin" />} />
         </Routes>

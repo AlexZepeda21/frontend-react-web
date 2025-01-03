@@ -3,8 +3,9 @@ import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../url";
+import { Result } from "postcss";
 
-const MdEditarUnidadMedida = ({ showModalEditar, setShowModalEditar, unidad }) => {
+const MdEditarUnidadMedida = ({ showModalEditar, setShowModalEditar, unidad, actualizarUnidad }) => {
   const [nombreUnidad, setNombreUnidad] = useState("");
   const [estado, setEstado] = useState(true); 
   const [loading, setLoading] = useState(false);
@@ -27,14 +28,23 @@ const MdEditarUnidadMedida = ({ showModalEditar, setShowModalEditar, unidad }) =
     setLoading(true);
 
     try {
-      const response = await axios.put(`${API_BASE_URL}/uni_medidas/${unidad.id_unidad_medida}`, {
-        nombre_unidad: nombreUnidad,
-        estado: estado,
+      const response = await fetch(`${API_BASE_URL}/uni_medidas/${unidad.id_unidad_medida}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre_unidad: nombreUnidad,
+          estado: estado,
+        }),
       });
-
-      if (response.data.status === 200) {
+    
+      const result = await response.json();
+    
+      if (response.ok && result.status === 200) {
         Swal.fire("Actualizado", "La unidad de medida se actualizó correctamente.", "success");
         setShowModalEditar(false);
+        actualizarUnidad(result.message);
       } else {
         Swal.fire("Error", "No se pudo actualizar la unidad de medida.", "error");
       }
@@ -43,6 +53,7 @@ const MdEditarUnidadMedida = ({ showModalEditar, setShowModalEditar, unidad }) =
     } finally {
       setLoading(false);
     }
+    
   };
 
   const handleClose = () => setShowModalEditar(false);

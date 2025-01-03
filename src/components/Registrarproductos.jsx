@@ -7,8 +7,8 @@ import "../styles/styleproduct.css";
 import { X } from 'lucide-react';
 import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
 
-export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuevoProducto, categoriaCount }) {
-  const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
+export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNuevoProducto, categoriaCount }) {
+    const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
     const [unidad_medida, setunidad_medida] = useState([]);
     const [formData, setFormData] = useState({
         nombre: '',
@@ -23,11 +23,11 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
     const unidad_medida_modal = () => {
         setIsOpenunidad_medida(true);
     };
-    
+
 
     const [image, setImage] = useState(null);
 
-    const id = localStorage.getItem('id'); 
+    const id = localStorage.getItem('id');
 
     const closeModal = () => setIsOpen(false);
 
@@ -69,6 +69,11 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
         fetchUnidadesMedida();
     }, []);
 
+    const agregarUnidadMedida = (nuevaUnidad) => {
+        setunidad_medida((prev) => [...prev, nuevaUnidad]);
+
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         Swal.fire({
@@ -105,8 +110,8 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
                     categoriaCount(result.categoria_producto);
 
                     onNuevoProducto(result.message);
-                    
-                    closeModal(); 
+
+                    closeModal();
                 });
             } else {
                 Swal.fire({
@@ -126,6 +131,10 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
             });
         }
     };
+
+
+
+
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -205,7 +214,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
                                 onClick={() => {
                                     setIsOpenunidad_medida(true);
                                     unidad_medida_modal();
-                                  }}
+                                }}
                             >
                                 <i className="fa fa-plus"></i>
                             </button>
@@ -235,13 +244,14 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria,onNuev
                 </form>
             </motion.div>
             {isOpeninunidad_medida && MdAgregarUnidadMedida && (
-                    <MdAgregarUnidadMedida
+                <MdAgregarUnidadMedida
                     showModal={isOpeninunidad_medida}
                     setShowModal={setIsOpenunidad_medida}
-                    />
-                  )}
+                    agregarUnidadMedida={agregarUnidadMedida}
+                />
+            )}
         </div>
 
-        
+
     );
 }

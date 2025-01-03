@@ -72,6 +72,9 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
     );
   };
 
+
+
+
   const fetchProductos = async () => {
     try {
       if (!categoria?.id_categoria_pro) return;
