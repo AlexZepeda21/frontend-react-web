@@ -56,100 +56,106 @@ const Page = () => {
 
 
 
-      const actualizarProducto = async (idProducto, cantidadUsada) => {
-        try {
-          // Obtener los productos desde la API para obtener la información de stock
-          const response = await axios.get(`${API_BASE_URL}/productos`);
-          const producto = response.data.productos.find(prod => prod.id_producto === idProducto);
-      
-          // Verificar si el producto existe
-          if (!producto) {
-            alert(`Producto con ID ${idProducto} no encontrado.`);
-            return;
-          }
-      
-          const stockActual = producto.stock;
-          if (stockActual === undefined || stockActual === null) {
-            alert(`No se pudo obtener el stock para el producto con ID ${idProducto}.`);
-            return;
-          }
-      
-          // Restar la cantidad usada al stock actual
-          const nuevoStock = stockActual - cantidadUsada;
-      
-          // Mostrar el valor de la cantidad usada y el nuevo stock para depuración
-          alert(`Cantidad Usada: ${cantidadUsada} - Stock Actual: ${stockActual} - Nuevo Stock: ${nuevoStock}`);
-      
-          // Si el nuevo stock es negativo, alertamos que no hay suficiente stock
-          if (nuevoStock < 0) {
-            alert(`No hay suficiente stock para el producto con ID ${idProducto}.`);
-            return;
-          }
-      
-          // Actualizar el producto con el nuevo stock
-          const updateResponse = await axios.patch(`${API_BASE_URL}/productos/${idProducto}`, {
-            stock: nuevoStock,
-          });
-      
-          if (updateResponse.status === 200) {
-            alert(`Stock actualizado correctamente para el producto ${idProducto}.`);
-          } else {
-            alert(`Error al actualizar el stock del producto con ID ${idProducto}.`);
-          }
-        } catch (error) {
-          console.error('Error fatal al actualizar el producto:', error);
-          alert('Hubo un error al actualizar el producto.');
-        }
+  const TIPO_MOVIMIENTO = "Creación de plato";
+  const valorCostoUnitario= 1;
+
+  const actualizarProducto = async (idProducto, cantidadUsada) => {
+    try {
+      const idUsuario = localStorage.getItem('id'); // Recuperamos el id del usuario de localStorage
+
+      // Verificar si el id_usuario existe en localStorage
+      if (!idUsuario) {
+        alert('No se encontró el id de usuario en el almacenamiento local.');
+        return;
+      }
+
+      // Generamos el objeto para enviar a la API de "ingreso"
+      const ingresoData = {
+        id_producto: idProducto,
+        cantidad: cantidadUsada,
+        tipo_movimiento: TIPO_MOVIMIENTO,
+        id_usuario: idUsuario,
+        costo_unitario: valorCostoUnitario, // Asegúrate de agregar esto aquí
       };
       
-      const handleSubmit = async (e) => {
-        e.preventDefault();
+      console.log('Ingreso Data:', ingresoData); // Verifica lo que se está enviando al servidor
+
+      // Enviamos el POST a la API de ingreso
+      const response = await axios.post(`${API_BASE_URL}/ingreso`, ingresoData);
+
+      if (response.status === 201) {
+        alert(`Se restó correctamente para el stock del producto ${idProducto}.`);
+      } else {
+        alert(`Hubo un error al registrar el egreso: ${response.statusText}`);
+      }
+    } // En el bloque catch de la función actualizarProducto
+    catch (error) {
+      console.error('Error al registrar el egreso:', error);
       
-        // Validación de campos vacíos
-        if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
-          alert('Por favor, complete todos los campos antes de enviar.');
-          return;
+      if (error.response) {
+        // Aquí convertimos el objeto en un string legible con JSON.stringify
+        console.log('Detalles de la respuesta:', error.response.data);
+        alert(`Detalles del error: ${JSON.stringify(error.response.data)}`); // Muestra el mensaje de error detallado
+      } else if (error.request) {
+        console.log('No hubo respuesta del servidor:', error.request);
+        alert('No hubo respuesta del servidor. Por favor, intente más tarde.');
+      } else {
+        console.log('Error al configurar la solicitud:', error.message);
+        alert(`Error al configurar la solicitud: ${error.message}`);
+      }
+    }
+    
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validación de campos vacíos
+    if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
+      alert('Por favor, complete todos los campos antes de enviar.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/menu`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: formPlato.nombre,
+          precio: formPlato.precio,
+          cantidad_platos: formPlato.cantidad_platos,
+          descripcion: formPlato.descripcion,
+          estado: formPlato.estado,
+          img: formPlato.imagenBase64, // Enviar la imagen de la receta
+        }),
+      });
+
+      if (response.ok) {
+        alert('Plato creado con éxito!');
+
+        // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
+        const productosUsados = productos.map((producto) => {
+          const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
+          return { id_producto: producto.producto.id_producto, cantidadUsada };
+        });
+
+        // Paso 2: Actualizamos el stock de cada producto utilizando el ingreso
+        for (const producto of productosUsados) {
+          await actualizarProducto(producto.id_producto, producto.cantidadUsada);
         }
-      
-        try {
-          const response = await fetch(`${API_BASE_URL}/menu`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              nombre: formPlato.nombre,
-              precio: formPlato.precio,
-              cantidad_platos: formPlato.cantidad_platos,
-              descripcion: formPlato.descripcion,
-              estado: formPlato.estado,
-              img: formPlato.imagenBase64, // Enviar la imagen de la receta
-            }),
-          });
-      
-          if (response.ok) {
-            alert('Plato creado con éxito!');
-      
-            // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
-            const productosUsados = productos.map((producto) => {
-              const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
-              return { id_producto: producto.producto.id_producto, cantidadUsada };
-            });
-      
-            // Paso 2: Actualizamos el stock de cada producto
-            for (const producto of productosUsados) {
-              await actualizarProducto(producto.id_producto, producto.cantidadUsada);
-            }
-          } else {
-            throw new Error('Error al crear el plato.');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          alert(`Hubo un error al crear el plato: ${error.message}`);
-        }
-      };
-      
-      
+      } else {
+        throw new Error('Error al crear el plato.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Hubo un error al crear el plato: ${error.message}`);
+    }
+  };
+
+
+
 
 
 
@@ -465,6 +471,7 @@ const Page = () => {
                   <label htmlFor="cantidad" className="label-form">Cantidad de platos</label>
                   <input
                     type="number"
+                    step="1"
                     value={formPlato.cantidad_platos}
                     name="cantidad_platos"
                     onChange={(e) => setformPlato({ ...formPlato, cantidad_platos: e.target.value })}
