@@ -94,7 +94,7 @@ function App() {
       timeoutScheduled = true;
         setTimeout(() => {
         showConfirmation();
-      }, 2 * 60 * 1000);
+      }, 10 * 60 * 1000);
     }
   }
 

@@ -307,23 +307,46 @@ const UsuarioList = () => {
     setShowModalEditar(true);
   };
 
-  const handleDesactivar = (id) => {
-    axios.put(`${API_BASE_URL}/user/${id}`, { estado: 0 })
-      .then(() => {
-        const updatedUsuarios = usuarios.map(usuario =>
-          usuario.id === id ? { ...usuario, estado: 0 } : usuario
-        );
-        setUsers(updatedUsuarios);
-      })
-      .catch(() => {
-        setError('Error al desactivar el usuario.');
+  const handleDesactivar = async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ estado: 0 }),
       });
+  
+      if (!response.ok) {
+        throw new Error('Error al desactivar el usuario.');
+      }
+  
+      const result = await response.json();
+
+      setUsers((prevUsuarios) =>
+        prevUsuarios.map((usuario) =>
+          usuario.id_usuario === id ? { ...usuario, ...result.message } : usuario
+        )
+      );
+    } catch (error) {
+      console.error(error);
+      setError('Error al desactivar el usuario.');
+    }
   };
+  
 
   const handleUsuariosPorPaginaChange = (event) => {
     setUsuariosPorPagina(Number(event.target.value)); // Update the number of users per page
     setCurrentPage(0); // Reset to first page
   };
+
+  const actualizarusuario =(usuarioactu)=>{
+    setUsers((prevUsuarios) =>
+      prevUsuarios.map((usuario) =>
+        usuario.id_usuario === usuarioactu.id_usuario ? { ...usuario, ...usuarioactu } : usuario
+      )
+    );
+  }
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -375,6 +398,7 @@ const UsuarioList = () => {
           showModalEditar={showModalEditar}
           setShowModalEditar={setShowModalEditar}
           usuario={usuarioSeleccionado}
+          actualizarusuario={actualizarusuario}
         />
       )}
 

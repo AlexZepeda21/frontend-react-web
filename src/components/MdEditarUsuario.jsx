@@ -4,7 +4,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../url";
 
-const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario }) => {
+const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario,actualizarusuario }) => {
   const [correo, setCorreo] = useState("");
   const [nuevaClave, setNuevaClave] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState(3); // Por defecto: Usuario normal
@@ -39,17 +39,33 @@ const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario }) => {
         ...(nuevaClave && { clave: nuevaClave }), // Solo incluimos clave si se define
       };
 
-      const response = await axios.put(
-        `${API_BASE_URL}/user/${usuario.id_usuario}`,
-        payload
-      );
-
-      if (response.data.status === 200) {
-        Swal.fire("Actualizado", "El usuario se actualizó correctamente.", "success");
-        setShowModalEditar(false); // Cerramos el modal
-      } else {
-        Swal.fire("Error", "No se pudo actualizar el usuario.", "error");
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/${usuario.id_usuario}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+      
+        if (!response.ok) {
+          throw new Error('Error en la solicitud');
+        }
+      
+        const result = await response.json();
+      
+        if (result.status === 200) {
+          Swal.fire("Actualizado", "El usuario se actualizó correctamente.", "success");
+          setShowModalEditar(false);
+           actualizarusuario(result.message);
+        } else {
+          Swal.fire("Error", "No se pudo actualizar el usuario.", "error");
+        }
+      } catch (error) {
+        console.error("Error en la solicitud:", error);
+        Swal.fire("Error", "Ocurrió un error al actualizar el usuario.", "error");
       }
+      
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
       Swal.fire("Error", "Ocurrió un problema al actualizar el usuario.", "error");
