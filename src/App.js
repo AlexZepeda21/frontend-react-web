@@ -23,6 +23,20 @@ import Subir_img from './QR/Subir_img';
 import Menu from './admin/Menu';
 import { time } from 'framer-motion';
 
+// Componentes chef
+import LayoutChef from './Menus/Menuchef';
+import ProfileChef from './chef/perfil';
+import ProductoCardChef from './chef/eligiendo_pro';
+import RecetasListChef from './chef/recetas';
+import Categoria_recetasChef from './chef/categoria_recetas';
+import Categoria_productosChef from './chef/categoria_productos';
+import ProductosChef from './chef/productos';
+import RegistroChef from './chef/registro';
+import UserTableChef from './chef/prueba';
+import UnidadMedidaListChef from './chef/uni_medidas';
+import VerRecetaChef from './chef/VerReceta';
+import MenuChef from './chef/Menu';
+
 function App() {
 
   const location = useLocation();
@@ -226,8 +240,20 @@ function App() {
     if (tipoUsuarioSession === '2') {
       return (
         <Routes>
-          <Route path="/" element={<p>Bienvenido, Cliente.</p>} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/chef" element={<LayoutChef />}>
+            <Route path="categoria_recetas" element={<Categoria_recetasChef />} />
+            <Route path="categoria_productos" element={<Categoria_productosChef />} />
+            <Route path="eligiendo_pro" element={<ProductoCardChef />} />
+            <Route path="productos" element={<ProductosChef />} />
+            <Route path="uni_medidas" element={<UnidadMedidaListChef />} />
+            <Route path="recetas/:categoriaId" element={<RecetasListChef />} />
+            <Route path="perfil" element={<ProfileChef />} />
+            <Route path="Menu" element={<MenuChef />} />
+            <Route path="VerReceta/:idReceta" element={<VerRecetaChef />} />
+
+
+          </Route>
+          <Route path="*" element={<Navigate to="/chef" />} />
         </Routes>
       );
     }

@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';  // Importa SweetAlert2
 import '../styles/Perfil/perfil.css';
 import { API_BASE_URL } from '../url';
 
-function Profile() {
+function ProfileChef() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const id = localStorage.getItem('id'); // Obtener el id del usuario del localStorage
@@ -104,4 +104,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default ProfileChef;

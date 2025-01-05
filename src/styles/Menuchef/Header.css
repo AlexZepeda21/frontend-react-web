@@ -1,0 +1,72 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 20px;
+  height: 500px; /* Altura ajustada */
+  background: linear-gradient(45deg, #8B2323 50%, #CD853F 50%); /* Gradiente diagonal invertido */
+  color: white;
+  clip-path: polygon(60%, 70% 0, 100% 100%, 0% 100%, 0 100%, 110 0); /* Ajuste de corte diagonal */
+}
+
+
+
+.header-title {
+  font-size: 18px; 
+  font-weight: bold;
+  margin-top: 20px;
+
+  text-transform: uppercase; /* Para que coincida con el texto de la imagen */
+}
+
+.header-right {
+  display: flex;
+  align-items: flex-start;}
+
+.search-container {
+  position: relative;
+  margin-top: 20px;
+
+  margin-right: 15px; /* Ajustar separación */
+}
+
+.search-input {
+  padding: 8px 35px 8px 15px; /* Espaciado interno */
+  border-radius: 20px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.3); /* Más opaco */
+  color: white;
+  font-size: 14px; /* Ajustar tamaño */
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.8); /* Más visible */
+}
+
+.icon-search {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px; /* Aumentar tamaño */
+}
+
+.user-info {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.user-name {
+  margin-right: 10px;
+  font-size: 16px; /* Ajustar tamaño */
+  font-weight: bold;
+}
+
+.user-avatar {
+  width: 40px; /* Aumentar tamaño */
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}

@@ -53,7 +53,7 @@ export default function Login() {
             
             navegar("/admin", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
           } else if (data.tipo_usuario === 2) {
-            navegar("/menus/Menuuser", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
+            navegar("/chef", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
           }
        }
        else {
