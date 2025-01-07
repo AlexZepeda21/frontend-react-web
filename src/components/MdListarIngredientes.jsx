@@ -44,11 +44,19 @@ export default function ListarIngredientes() {
 
 
     const manejarCambioCantidad = (idProducto, e) => {
-        setCantidades(prev => ({
-            ...prev,
-            [idProducto]: e.target.value
-        }));
+        // Asegurarse de que el valor ingresado sea un número válido (decimal o entero)
+        const valor = e.target.value.trim();
+
+        // Verificar si el valor es un número válido
+        if (!isNaN(valor) && valor !== '') {
+            setCantidades(prev => ({
+                ...prev,
+                [idProducto]: parseFloat(valor) // Almacenamos como número (decimal o entero)
+            }));
+        }
     };
+
+
 
     const Cerrar = () => {
         window.location.reload();
@@ -70,11 +78,21 @@ export default function ListarIngredientes() {
             return;
         }
 
-        const productosAAgregar = selectedProductos.map(idProducto => ({
-            id_producto: idProducto,
-            id_receta: idReceta,
-            cantidad: parseInt(cantidades[idProducto]) || 0
-        })).filter(producto => producto.cantidad > 0);
+        const productosAAgregar = selectedProductos.map(idProducto => {
+            const cantidad = cantidades[idProducto];
+
+            // Asegurarse de que la cantidad es un número y mayor que cero
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Cantidad inválida para el producto " + idProducto);
+                return null;  // No agregamos productos con cantidades inválidas
+            }
+
+            return {
+                id_producto: idProducto,
+                id_receta: idReceta,
+                cantidad: cantidad  // Mantener el valor tal cual es (decimal o entero)
+            };
+        }).filter(producto => producto !== null);  // Filtrar productos con cantidades inválidas
 
         if (productosAAgregar.length === 0) {
             alert("Debe ingresar una cantidad válida para al menos un producto.");
@@ -107,6 +125,7 @@ export default function ListarIngredientes() {
         setCantidades({}); // Limpiar cantidades
     };
 
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white w-[80%] max-w-[1000px] h-auto max-h-[80vh] p-6 rounded-lg shadow-lg overflow-hidden overflow-y-auto">
@@ -116,7 +135,7 @@ export default function ListarIngredientes() {
                     <h1 className="text-3xl font-bold tracking-tight justify-center">Lista de Ingredientes</h1>
                 </div>
                 <div>
-                  
+
                 </div>
 
                 {/* Card Body: Tabla con los Productos */}
@@ -204,11 +223,13 @@ export default function ListarIngredientes() {
                                         <label className="block text-sm font-medium">{producto.nombre}</label>
                                         <Input
                                             type="number"
+                                            step="any"  // Permite cualquier valor decimal
                                             value={cantidades[idProducto] || ''}
                                             onChange={(e) => manejarCambioCantidad(idProducto, e)}
                                             className="mt-2"
                                             placeholder="Cantidad"
                                         />
+
                                     </div>
                                 );
                             })}

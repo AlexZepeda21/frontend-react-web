@@ -191,15 +191,17 @@ const Page = () => {
 
   const recargarDatos = () => {
     setLoading(true);
-    axios.get(`${API_BASE_URL}/recetas/${idReceta}`)
+    axios.get(`${API_BASE_URL}/receta/${idReceta}`)
       .then((response) => {
-        setReceta(response.data.message || {});
+        setReceta(response.data.receta || {});
         setformPlato((prevForm) => ({
           ...prevForm,
-          nombre: response.data.message.nombre_receta || '',
-          descripcion: response.data.message.descripcion || '',
-          imagenBase64: response.data.message.foto || '',
+          nombre: response.data.receta.nombre_receta || '',
+          descripcion: response.data.receta.descripcion || '',
+          imagenBase64: response.data.receta.foto || '',
         }));
+         // Aquí se almacenan los productos de la receta
+         setProductos(response.data.receta.receta_productos || []);
       })
       .catch(() => setError('Error al obtener la receta.'));
 
@@ -219,8 +221,8 @@ const Page = () => {
         }
       });
 
-    axios.get(`${API_BASE_URL}/receta-productos/${idReceta}`)
-      .then((response) => setProductos(response.data.productos || []))
+      axios.get(`${API_BASE_URL}/receta/${idReceta}`)
+      .then((response) => setProductos(response.data.recetas.receta_productos || []))
       .catch(() => setError('Error al obtener los productos.'))
       .finally(() => setLoading(false));
   };
@@ -336,7 +338,7 @@ const Page = () => {
                 {productos.map((producto) => (
                   <li key={producto.id_recetas_producto}>
                     <div className="flex justify-between items-center">
-                      <span>{producto.producto.nombre}</span>: <span>{producto.cantidad} unidades</span>
+                      <span>{producto.producto.nombre}</span>: <span>{producto.cantidad} en {producto.producto.unidad_medida.nombre_unidad}</span>
                     </div>
                   </li>
                 ))}
