@@ -1,0 +1,26 @@
+/* Hacer que el modal ocupe toda la pantalla */
+.modal-fullscreen .modal-dialog {
+    max-width: 100vw;      /* Ancho máximo del 100% de la pantalla */
+    width: 100vw;        /* Establecer el 100% de ancho */
+    height: 100vh;         /* Establecer el 100% de alto */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .modal-fullscreen .modal-content {
+    height: 100%;          /* Asegurarse de que el contenido ocupe todo el alto disponible */
+    border-radius: 0;      /* Opcional: eliminar bordes redondeados */
+    overflow: hidden;      /* Evitar el desbordamiento */
+  }
+  
+  .modal-fullscreen .modal-header, 
+  .modal-fullscreen .modal-footer {
+    background: #f8f9fa;   /* Fondo blanco (o el color que prefieras) */
+    border: none;          /* Sin borde */
+  }
+  
+  .modal-fullscreen .modal-body {
+    max-height: 100%;      /* Asegurarse de que el contenido ocupe todo el espacio */
+    overflow-y: auto;      /* Hacer que el contenido sea desplazable si es necesario */
+  }
+  

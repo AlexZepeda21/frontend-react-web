@@ -21,6 +21,8 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from './url';
 import Subir_img from './QR/Subir_img';
 import Menu from './admin/Menu';
+import Platos from './admin/Platos';
+
 import { time } from 'framer-motion';
 
 // Componentes chef
@@ -218,6 +220,7 @@ function App() {
       return (
         <Routes>
           <Route path="/admin" element={<Layout />}>
+
             <Route path="categoria_recetas" element={<Categoria_recetas />} />
             <Route path="categoria_productos" element={<Categoria_productos />} />
             <Route path="eligiendo_pro" element={<ProductoCard />} />
@@ -228,6 +231,7 @@ function App() {
             <Route path="registro" element={<Registro />} />
             <Route path="usuario" element={<UserTable />} />
             <Route path="Menu" element={<Menu />} />
+            <Route path="Platos/:id_categoria_menu" element={<Platos />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
 
 
