@@ -58,10 +58,10 @@ export default function MdAgregarCateRecetas() {
         window.location.reload();
         setIsOpen(false)
       } else {
-        throw new Error('Error al crear la categoría')
+        throw new Error('No se soporta el formato de la imagen')
       }
     } catch (error) {
-      console.error('Error:', error)
+      console.error('No se soporta el formato de la imagen:', error)
       alert(error)
     }
   }

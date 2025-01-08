@@ -111,6 +111,7 @@ export default function ListarIngredientes() {
 
                 if (response.status === 201) {
                     alert("Ingrediente agregado a la receta.");
+                    window.location.reload();
                 } else {
                     alert("Error al agregar el ingrediente.");
                 }
@@ -147,7 +148,7 @@ export default function ListarIngredientes() {
                                     <TableHead>Seleccionar</TableHead>
                                     <TableHead>Imagen</TableHead>
                                     <TableHead>Nombre</TableHead>
-                                    <TableHead className="max-w-[300px]">Descripción</TableHead>
+                                    <TableHead className="max-w-[300px]">Unidad medida</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -172,8 +173,8 @@ export default function ListarIngredientes() {
                                             </TableCell>
                                             <TableCell>{producto.nombre}</TableCell>
                                             <TableCell className="max-w-[300px]">
-                                                <p className="truncate" title={producto.descripcion}>
-                                                    {producto.descripcion.length > 50 ? producto.descripcion.substring(0, 50) + '...' : producto.descripcion}
+                                                <p className="truncate">
+                                                    {producto.unidad_medida}
                                                 </p>
                                             </TableCell>
                                         </TableRow>

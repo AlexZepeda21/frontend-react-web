@@ -17,7 +17,7 @@ const Platos = () => {
   // Función para cargar los menús con categoría
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/app_menu_filter?id_categoria=${id_categoria_menu}`);
+      const response = await axios.get(`${API_BASE_URL}/menu_filter?id_categoria=${id_categoria_menu}`);
       setMenuItems(response.data.message || []);  // Asegúrate de que si no hay datos, se asigne un array vacío
       setLoading(false);
     } catch (err) {
