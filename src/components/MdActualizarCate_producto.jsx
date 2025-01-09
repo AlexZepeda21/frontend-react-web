@@ -68,6 +68,10 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
           icon: 'success',
           title: 'Categoría actualizada',
           text: 'La categoría de receta se ha actualizado con éxito!',
+          toast: true,  // Hacer que sea una notificación tipo toast
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación en milisegundos
         });
         actualizarcate(result.message);
         setIsOpen(false);  // Cerrar modal al guardar
@@ -81,6 +85,10 @@ export default function MdActualizarCate_producto({ isOpen, setIsOpen, categoria
         icon: 'error',
         title: 'Error',
         text: 'Hubo un error al actualizar la categoría',
+        toast: true,  // Hacer que sea una notificación tipo toast
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación en milisegundos
       });
     }
   };

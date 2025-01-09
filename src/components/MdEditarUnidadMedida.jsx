@@ -3,7 +3,6 @@ import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../url";
-import { Result } from "postcss";
 
 const MdEditarUnidadMedida = ({ showModalEditar, setShowModalEditar, unidad, actualizarUnidad }) => {
   const [nombreUnidad, setNombreUnidad] = useState("");
@@ -42,7 +41,15 @@ const MdEditarUnidadMedida = ({ showModalEditar, setShowModalEditar, unidad, act
       const result = await response.json();
     
       if (response.ok && result.status === 200) {
-        Swal.fire("Actualizado", "La unidad de medida se actualizó correctamente.", "success");
+        Swal.fire({
+          icon: 'success',
+          title: 'Unidad de medida actualizada',
+          text: 'La unidad de medida se ha actualizado con éxito!',
+          toast: true,  // Hacer que sea una notificación tipo toast
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación en milisegundos
+        });
         setShowModalEditar(false);
         actualizarUnidad(result.message);
       } else {

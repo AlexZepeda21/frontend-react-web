@@ -38,6 +38,7 @@
     "react-qr-code": "^2.0.15",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.2",
     "stream-browserify": "^3.0.0",
     "sweetalert2": "^11.14.5",
     "tailwind-merge": "^2.5.5",

@@ -34,16 +34,20 @@ function Sidebar() {
           const response = await fetch(`${API_BASE_URL}/logout/${id}`);
           const data = await response.json();
 
-          // Usar SweetAlert2 para mostrar un mensaje de éxito
-          Swal.fire({
-            title: '¡Éxito!',
-            text: 'Sesión cerrada con éxito',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          }).then(() => {
-            localStorage.clear();
-            navigate('/'); // Redirigir al usuario a la página principal o inicio de sesión
-          });
+          if (response.ok && data.status === 200) {
+            // Usar SweetAlert2 para mostrar un mensaje de éxito como toast
+            Swal.fire({
+              icon: 'success',
+              title: 'Sesión cerrada con éxito',
+              toast: true,           // Notificación tipo toast
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 1000,           // Duración de la notificación en milisegundos
+            }).then(() => {
+              localStorage.clear();
+              navigate('/'); // Redirigir al usuario a la página principal o inicio de sesión
+            });
+          }
         } catch (error) {
           console.error('Error al cerrar sesión:', error);
 

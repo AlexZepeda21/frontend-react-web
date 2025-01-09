@@ -55,10 +55,13 @@ export default function MdAgregarCateproductos({agregarcategoria}) {
       const result = await response.json();
       if (response.ok) {
         Swal.fire({
-          title: 'Éxito!',
-          text: 'Categoría de receta creada con éxito!',
           icon: 'success',
-          confirmButtonText: 'Ok'
+          title: 'Categoría creada',
+          text: 'La categoría de receta se ha creado con éxito!',
+          toast: true,  // Hacer que sea una notificación tipo toast
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación en milisegundos
         });
         agregarcategoria(result.message)
         setIsOpen(false)
@@ -69,10 +72,13 @@ export default function MdAgregarCateproductos({agregarcategoria}) {
       console.error('Error:', error)
       // Reemplazamos el alert con SweetAlert2 para mostrar el error
       Swal.fire({
+        icon: 'error',
         title: 'Error',
         text: error.message,
-        icon: 'error',
-        confirmButtonText: 'Ok'
+        toast: true,  // Hacer que sea una notificación tipo toast
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación en milisegundos
       });
     }
   }

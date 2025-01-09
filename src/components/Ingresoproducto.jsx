@@ -22,29 +22,27 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
     const calcularTotal = () => {
         const cantidad = Number(formData.cantidad) || 0;
         const valorUnitario = parseFloat(formData.costo_unitario) || 0;
-        return Math.round((cantidad * valorUnitario) *100 ) /100;
+        return Math.round((cantidad * valorUnitario) * 100) / 100;
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
         const valorFiltrado = name === 'cantidad'
-        ? value.replace(/^0+(?=[1-9])/, '') 
-        : value;
-
+            ? value.replace(/^0+(?=[1-9])/, '')
+            : value;
 
         if (name === 'tipo_movimiento') {
             if (value === 'Entrada') {
                 setFormData((prevData) => ({
                     ...prevData,
-                    cantidad: formData.cantidad ,
+                    cantidad: formData.cantidad,
                 }));
             } else if (value === 'Salida') {
                 setFormData((prevData) => ({
                     ...prevData,
                     cantidad: producto.stock,
                 }));
-                
             }
         }
 
@@ -56,13 +54,6 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        Swal.fire({
-            title: 'Enviando datos...',
-            text: 'Por favor, espere...',
-            icon: 'info',
-            showConfirmButton: false,
-            allowOutsideClick: false,
-        });
 
         try {
             const response = await fetch(`${API_BASE_URL}/ingreso`, {
@@ -83,31 +74,49 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
 
             const result = await response.json();
             if (response.ok) {
+                let alertTitle = '';
+                // Check the type of movement to set the correct alert message
+                if (formData.tipo_movimiento === 'Entrada') {
+                    alertTitle = 'Productos ingresados correctamente';
+                } else if (formData.tipo_movimiento === 'Salida') {
+                    alertTitle = 'Productos retirados correctamente';
+                }
+
                 Swal.fire({
-                    title: 'Ingreso registrado con éxito',
+                    title: alertTitle,
                     icon: 'success',
-                    confirmButtonText: 'Aceptar',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
                 }).then(() => {
                     ingresoProducto(result.message);
-
                     closeModal(); // Cierra el modal después de guardar
                 });
-
             } else {
                 Swal.fire({
-                    title: 'Error al ingresar el producto',
+                    title: 'Error',
                     text: result.error || 'Hubo un problema al registrar el producto.',
                     icon: 'error',
-                    confirmButtonText: 'Intentar nuevamente',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
                 });
             }
         } catch (error) {
             console.error('Error al enviar los datos:', error);
             Swal.fire({
-                title: 'Error al enviar los datos',
+                title: 'Error',
                 text: 'Ocurrió un error al intentar registrar el producto.',
                 icon: 'error',
-                confirmButtonText: 'Cerrar',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
             });
         }
     };
@@ -166,7 +175,8 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                             name="costo_unitario"
                             value={formData.costo_unitario}
                             min="0"
-                            step="0.01"                            onChange={handleInputChange}
+                            step="0.01"
+                            onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Ej: 4"
                             required
@@ -181,7 +191,8 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                             id="cantidad"
                             name="cantidad"
                             min="0"
-                            step="0.01"                            value={formData.cantidad}
+                            step="0.01"
+                            value={formData.cantidad}
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Ej: 4"
@@ -195,7 +206,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                         <input
                             type="text"
                             name="total"
-                            value={calcularTotal()} 
+                            value={calcularTotal()}
                             readOnly
                             placeholder="Total"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"

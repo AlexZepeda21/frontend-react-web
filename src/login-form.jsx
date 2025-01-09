@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Label } from '@radix-ui/react-label';
+import { Label } from './components/ui/label';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { MdEmail, MdLock } from "react-icons/md";
@@ -16,9 +16,6 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navegar = useNavigate();
 
-
-
-
   async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
@@ -31,52 +28,52 @@ export default function Login() {
         body: JSON.stringify(loginData),
       });
 
-      if (!response.ok) throw new Error('Credenciales inválidas');
+      const result = await response.json();
 
-      const data = await response.json();
-
-      if (data.token) {
+      if (response.ok && result.status === 200) {
         Swal.fire({
           icon: 'success',
           title: 'Inicio de sesión exitoso',
           text: 'Bienvenido de nuevo',
-          confirmButtonText: 'Aceptar',
+          toast: true,  // Notificación tipo toast
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación en milisegundos
         });
 
-        localStorage.setItem('id', data.id);
-        localStorage.setItem('correo', data.correo);
+        localStorage.setItem('id', result.id);
+        localStorage.setItem('correo', result.correo);
 
-        if (data.estado === true) {
-       
-
-          if (data.tipo_usuario === 1) {
-            
-            navegar("/admin", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
-          } else if (data.tipo_usuario === 2) {
-            navegar("/chef", { state: { token: data.token, tipo_usuario: data.tipo_usuario } });
+        if (result.estado === true) {
+          if (result.tipo_usuario === 1) {
+            navegar("/admin", { state: { token: result.token, tipo_usuario: result.tipo_usuario } });
+          } else if (result.tipo_usuario === 2) {
+            navegar("/chef", { state: { token: result.token, tipo_usuario: result.tipo_usuario } });
           }
-       }
-       else {
+        } else {
           Swal.fire({
             icon: 'error',
-            title: 'Error al iniciar sesión',
-          confirmButtonText: 'Aceptar',
+            title: 'Error',
+            text: 'Usuario inactivo. Por favor, contacte al administrador.',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
           });
-       }
-
-
-
-        // Pasamos los datos al siguiente componente usando estado de navegación
-        
+        }
+      } else {
+        throw new Error(result.message || 'Credenciales inválidas');
       }
     } catch (error) {
       console.error('Error:', error);
-      // Usando SweetAlert2 para mostrar error
       Swal.fire({
         icon: 'error',
         title: 'Error al iniciar sesión',
         text: error.message,
-        confirmButtonText: 'Aceptar',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
       });
     } finally {
       setIsLoading(false);

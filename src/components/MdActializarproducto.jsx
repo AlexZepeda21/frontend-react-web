@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from './framer-motion/motion';
 import { Modal, Button, Form } from "react-bootstrap";
+import Swal from 'sweetalert2';  // Importar SweetAlert2
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -10,11 +11,9 @@ import { X } from 'lucide-react';
 import Generador_de_codigo from '../QR/Generador_de_codigo';
 import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
 
-
 export default function MdActializarproducto({ isOpen, setIsOpen, producto, updateProducto }) {
   
   const [isOpeninunidad_medida, setIsOpenunidad_medida] = useState(false);
-
   const [formData, setFormData] = useState({
     nombre_unidad: "",
     id_unidad_medida: "",
@@ -28,7 +27,6 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
   });
 
   const [isOpenGenerador, setIsOpenGenerador] = useState(null);
-
   const [image, setImage] = useState(null);
   const [catepro, setcatepro] = useState([]);
   const [unidad_medida, setunidad_medida] = useState([]);
@@ -51,8 +49,6 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
   const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
 
   useEffect(() => {
-
-
     const fetchUnidadesMedida = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/listasolounidademedia1`);
@@ -76,26 +72,17 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
         id_usuario: id,
         estado: producto.estado || false,
         foto: formData.imagenBase64 || producto.foto,
-
-
       });
       setImage(producto.imagenBase64 ? `${API_BASE_URL}/images/${producto.imagenBase64}` : null);
     }
   }, [producto]);
 
-
-  
   const agregarUnidadMedida = (nuevaUnidad) => {
     setunidad_medida((prev) => [...prev, nuevaUnidad]);
-
-};
-
- 
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-
     try {
       const response = await fetch(`${API_BASE_URL}/productos/${producto.id_producto}`, {
         method: 'PUT',
@@ -108,27 +95,45 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
           descripcion: formData.descripcion,
           id_unidad_medida: formData.id_unidad_medida,
           id_usuario: id,
-      }),
+        }),
       });
 
       const result = await response.json();
       if (response.ok) {
-        alert('Producto actualizado con éxito!');
+        // Mostrar Toast de éxito
+        Swal.fire({
+          title: 'Producto actualizado con éxito!',
+          icon: 'success',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
         updateProducto(result.message);
         setIsOpen(false);
       } else {
         throw new Error('Error al actualizar el producto');
       }
     } catch (error) {
+      // Mostrar Toast de error
+      Swal.fire({
+        title: 'Error',
+        text: error.message || 'Hubo un problema al actualizar el producto.',
+        icon: 'error',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
       console.error('Error:', error);
-      alert(error);
     }
   };
 
-
   const unidad_medida_modal = () => {
     setIsOpenunidad_medida(true);
-};
+  };
 
   return (
     <div>
@@ -154,49 +159,46 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
             </div>
 
             <form onSubmit={handleSubmit} className="p-4 space-y-3">
+              <Form.Group controlId="formEstado" className="">
+                <Form.Label className="me-3 mb-0">Estado</Form.Label>
+                <Form.Check
+                  type="switch"
+                  id="estado-switch"
+                  label={isOpenGenerador ? "Subir foto desde el celular" : "Elegir Foto"}
+                  checked={isOpenGenerador}
+                  onChange={() => setIsOpenGenerador(!isOpenGenerador)}
+                />
+              </Form.Group>
 
-            <Form.Group controlId="formEstado" className="">
-            <Form.Label className="me-3 mb-0">Estado</Form.Label>
-            <Form.Check
-              type="switch"
-              id="estado-switch"
-              label={isOpenGenerador ? "Subir foto dede el celular" : "Elegir Foto"}
-              checked={isOpenGenerador}
-              onChange={() => setIsOpenGenerador(!isOpenGenerador)}
-            />
-            </Form.Group>
-
-            { isOpenGenerador === true ? (
+              {isOpenGenerador === true ? (
                 <div className="form-group me-3 mb-0">
-                 <Generador_de_codigo
-                    id_producto= {producto.id_producto}
-                    id_usuario = {id}
-                    route = {"productos"}
+                  <Generador_de_codigo
+                    id_producto={producto.id_producto}
+                    id_usuario={id}
+                    route={"productos"}
                   />
-                 </div>
-              ):(
+                </div>
+              ) : (
                 <div className="form-group">
-                <label className="image-upload">
-                  {image || producto.foto ? (
-                    <img
-                      src={image ? image : `data:image/png;base64,${producto.foto}`}
-                      alt="Previsualización de imagen"
-                      className="upload-preview w-20 h-20 object-cover rounded"
+                  <label className="image-upload">
+                    {image || producto.foto ? (
+                      <img
+                        src={image ? image : `data:image/png;base64,${producto.foto}`}
+                        alt="Previsualización de imagen"
+                        className="upload-preview w-20 h-20 object-cover rounded"
+                      />
+                    ) : (
+                      <span className="upload-placeholder text-center text-sm">Subir Imagen</span>
+                    )}
+                    <input
+                      type="file"
+                      className="file-input"
+                      accept="image/*"
+                      onChange={handleFileChange}
                     />
-                  ) : (
-                    <span className="upload-placeholder text-center text-sm">Subir Imagen</span>
-                  )}
-                  <input
-                    type="file"
-                    className="file-input"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              </div>
-              )
-            }
-              
+                  </label>
+                </div>
+              )}
 
               <div className="form-group">
                 <label className="text-sm">Nombre</label>
@@ -210,37 +212,34 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
                 />
               </div>
 
-              <div className="form-group mb-4 ">
-                        <label>Unidad de Medida </label>
-                        <div className="d-flex align-items-center">
-
-                            <select
-                                name="id_unidad_medida"
-                                value={formData.id_unidad_medida}
-                                onChange={(e) => setFormData({ ...formData, id_unidad_medida: e.target.value })}
-                                className="form-control"
-                            >
-                                <option value="">Seleccionar unidad</option>
-                                {unidad_medida.map((unidad) => (
-                                    <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
-                                        {unidad.nombre_unidad}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                type="button"
-                                className="btn btn-outline-secondary ms-2"
-                                onClick={() => {
-                                    setIsOpenunidad_medida(true);
-                                    unidad_medida_modal();
-                                }}
-                            >
-                                <i className="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-
+              <div className="form-group mb-4">
+                <label>Unidad de Medida </label>
+                <div className="d-flex align-items-center">
+                  <select
+                    name="id_unidad_medida"
+                    value={formData.id_unidad_medida}
+                    onChange={(e) => setFormData({ ...formData, id_unidad_medida: e.target.value })}
+                    className="form-control"
+                  >
+                    <option value="">Seleccionar unidad</option>
+                    {unidad_medida.map((unidad) => (
+                      <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
+                        {unidad.nombre_unidad}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary ms-2"
+                    onClick={() => {
+                      setIsOpenunidad_medida(true);
+                      unidad_medida_modal();
+                    }}
+                  >
+                    <i className="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
 
               <div className="form-group">
                 <label className="text-sm">Descripción</label>
@@ -271,21 +270,13 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
                   type="submit"
                   className="bg-gradient-to-r from-pink-500 to-orange-500 text-white text-sm"
                 >
-                  Guardar Producto
+                  Actualizar
                 </Button>
               </div>
             </form>
           </motion.div>
         </div>
       )}
-       {isOpeninunidad_medida && MdAgregarUnidadMedida && (
-                <MdAgregarUnidadMedida
-                    showModal={isOpeninunidad_medida}
-                    setShowModal={setIsOpenunidad_medida}
-                    agregarUnidadMedida={agregarUnidadMedida}
-                />
-            )}
     </div>
-
   );
 }

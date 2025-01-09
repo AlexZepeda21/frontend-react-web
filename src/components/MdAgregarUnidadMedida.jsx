@@ -3,7 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { API_BASE_URL } from '../url';
 import Swal from 'sweetalert2';
 
-const MdAgregarUnidadMedida = ({ showModal, setShowModal,agregarUnidadMedida }) => {
+const MdAgregarUnidadMedida = ({ showModal, setShowModal, agregarUnidadMedida }) => {
   const [nombre, setNombre] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,12 +29,15 @@ const MdAgregarUnidadMedida = ({ showModal, setShowModal,agregarUnidadMedida }) 
       const result = await response.json();
       if (response.ok) {
         Swal.fire({
-          title: 'Éxito!',
-          text: 'Unidad de medida creada con éxito!',
           icon: 'success',
-          confirmButtonText: 'Ok'
+          title: 'Unidad de medida creada',
+          text: 'La unidad de medida se ha creado con éxito!',
+          toast: true,  // Hacer que sea una notificación tipo toast
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación en milisegundos
         });
-        agregarUnidadMedida(result.message)
+        agregarUnidadMedida(result.message);
         setShowModal(false);
         setNombre('');
       } else {

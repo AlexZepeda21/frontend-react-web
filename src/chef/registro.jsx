@@ -10,7 +10,7 @@ import { API_BASE_URL } from '../url';
 import Swal from 'sweetalert2';
 import '../styles/login/estilosregister.css';
 
-export default function RegistroChef() {
+export default function Registro() {
   const [correo, setCorreo] = useState('');
   const [clave, setClave] = useState('');
   const [tipo, setTipo] = useState('administrador'); // Valor inicial (opción del select)
@@ -37,26 +37,41 @@ export default function RegistroChef() {
         body: JSON.stringify(registroData),
       });
 
-      if (!response.ok) throw new Error('Error al registrar el usuario');
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'El usuario ha sido registrado correctamente!',
+          toast: true,  // Notificación tipo toast
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación en milisegundos
+        });
 
-      const data = await response.json();
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Registro exitoso',
-        text: 'El usuario ha sido registrado correctamente',
-        confirmButtonText: 'Aceptar',
-      });
-
-      // Redirigir a la ruta deseada
-      navigate('/admin/usuario');
+        // Redirigir a la ruta deseada
+        navigate('/admin/usuario');
+      } else {
+        const data = await response.json();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrar',
+          text: data.message || 'No se pudo registrar el usuario',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
     } catch (error) {
       console.error('Error:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error al registrar',
         text: error.message || 'No se pudo registrar el usuario',
-        confirmButtonText: 'Aceptar',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
       });
     } finally {
       setIsLoading(false);
