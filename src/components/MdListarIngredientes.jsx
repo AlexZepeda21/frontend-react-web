@@ -113,12 +113,12 @@ export default function ListarIngredientes() {
                     alert("Ingrediente agregado a la receta.");
                     window.location.reload();
                 } else {
-                    alert("Error al agregar el ingrediente.");
+                    alert("Posiblemente el ingrediente ya exista, actualizalo o verifica si hay producto en el inventario.");
                 }
             }
         } catch (error) {
             console.error('Error al realizar la inserción:', error);
-            alert('Error al agregar el ingrediente.');
+            alert('Un ingrediente ya ha sido agregado a la receta, de no ser asi, verifica el stock.');
         }
 
         setDialogOpen(false); // Cerrar el cuadro de diálogo después de enviar los datos

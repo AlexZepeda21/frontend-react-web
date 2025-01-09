@@ -20,11 +20,100 @@ const Page = () => {
   const [ShowModalAgregarPaso, setShowModalAgregarPaso] = useState(false);
   const [nuevoPaso, setNuevoPaso] = useState({ paso_numero: 0, descripcion: '' });
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal básico
+  const [ShowModalEditarIngrediente, setShowModalEditarIngrediente] = useState(false);
+  const [ingredienteEditando, setIngredienteEditando] = useState(null);
+
+  const [ShowModalEditarPaso, setShowModalEditarPaso] = useState(false);
+  const [pasoEditando, setPasoEditando] = useState(null);
 
   const abrirModalIngredientes = () => setShowModalAgregarIngrediente(true);
   const cerrarModalIngredientes = () => setShowModalAgregarIngrediente(false);
   const abrirModalAgregarPaso = () => setShowModalAgregarPaso(true);
   const cerrarModalAgregarPaso = () => setShowModalAgregarPaso(false);
+
+  const abrirModalEditarPaso = (paso) => {
+    setPasoEditando(paso);
+    setShowModalEditarPaso(true);
+  };
+
+  const cerrarModalEditarPaso = () => {
+    setShowModalEditarPaso(false);
+    setPasoEditando(null);
+  };
+
+  const guardarCambiosPaso = async () => {
+    if (!pasoEditando.descripcion) {
+      alert("Por favor, ingrese una descripción válida.");
+      return;
+    }
+  
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/pasos_receta/${pasoEditando.id_paso}`,
+        {
+          paso_numero: pasoEditando.paso_numero, // Asegúrate de enviar el paso_numero
+          descripcion: pasoEditando.descripcion,
+        }
+      );
+  
+      if (response.status === 200) {
+        const updatedPasos = pasos.map((paso) => {
+          if (paso.id_paso === pasoEditando.id_paso) {
+            return { ...paso, descripcion: pasoEditando.descripcion };
+          }
+          return paso;
+        });
+  
+        setPasos(updatedPasos);
+        setShowModalEditarPaso(false);
+        alert("Paso actualizado correctamente.");
+      } else {
+        alert("Hubo un error al actualizar el paso.");
+      }
+    } catch (error) {
+      console.error("Error al actualizar el paso:", error);
+      alert("Hubo un error al actualizar el paso. Por favor, inténtalo de nuevo.");
+    }
+  };
+
+  const abrirEditIngrediente = async (ingrediente) => {
+    try {
+      // Hacer una llamada a la API para obtener todos los productos activos
+      const response = await axios.get(`${API_BASE_URL}/Productosactivos`);
+
+      if (response.status === 200 && response.data && Array.isArray(response.data.productos)) {
+        // Buscar el producto correspondiente al id_producto del ingrediente
+        const producto = response.data.productos.find(
+          (p) => p.id_producto === ingrediente.producto.id_producto
+        );
+
+        if (producto) {
+          // Actualizar el estado con la información del ingrediente y el nombre del producto
+          setIngredienteEditando({
+            ...ingrediente,
+            nombre: producto.nombre,
+            unidad_medida: producto.unidad_medida
+          });
+
+          // Mostrar el modal de edición
+          setShowModalEditarIngrediente(true);
+        } else {
+          alert("No se encontró el producto con id " + ingrediente.producto.id_producto);
+        }
+      } else {
+        alert("No se pudieron cargar los productos activos.");
+      }
+    } catch (error) {
+      console.error("Error al buscar el producto:", error);
+      alert("Hubo un error al verificar el producto. Por favor, inténtalo de nuevo.");
+    }
+  };
+
+  const cerrarModalEditarIngrediente = () => {
+    setShowModalEditarIngrediente(false); // Cierra el modal
+    setIngredienteEditando(null); // Restablece el ingrediente editando
+  };
+
   const [formPlato, setformPlato] = useState({
     nombre: '',
     precio: '',
@@ -57,7 +146,44 @@ const Page = () => {
 
 
   const TIPO_MOVIMIENTO = "Creación de plato";
-  const valorCostoUnitario= 1;
+  const valorCostoUnitario = 1;
+
+  const guardarCambiosIngrediente = async () => {
+    // Validar que la cantidad sea un número válido y mayor que 0
+    if (!ingredienteEditando.cantidad || isNaN(ingredienteEditando.cantidad) || ingredienteEditando.cantidad <= 0) {
+      alert("Por favor, ingrese una cantidad válida (mayor que 0).");
+      return;
+    }
+
+    try {
+      // Enviar los cambios a la API
+      const response = await axios.put(
+        `${API_BASE_URL}/receta_producto/${ingredienteEditando.id_recetas_producto}`, // Endpoint para actualizar el ingrediente
+        {
+          cantidad: ingredienteEditando.cantidad, // Enviar la nueva cantidad
+        }
+      );
+
+      if (response.status === 200) {
+        // Actualizar el estado local solo si la API responde con éxito
+        const updatedIngredientes = productos.map((producto) => {
+          if (producto.id_recetas_producto === ingredienteEditando.id_recetas_producto) {
+            return ingredienteEditando; // Actualiza el ingrediente editado
+          }
+          return producto;
+        });
+
+        setProductos(updatedIngredientes); // Actualiza el estado con los nuevos ingredientes
+        setShowModalEditarIngrediente(false); // Cierra el modal
+        alert("Cantidad actualizada correctamente.");
+      } else {
+        alert("Hubo un error al actualizar la cantidad.");
+      }
+    } catch (error) {
+      console.error("Error al actualizar la cantidad:", error);
+      alert("Hubo un error al actualizar la cantidad. Por favor, inténtalo de nuevo.");
+    }
+  };
 
   const actualizarProducto = async (idProducto, cantidadUsada) => {
     try {
@@ -69,7 +195,6 @@ const Page = () => {
         return;
       }
 
-      // Generamos el objeto para enviar a la API de "ingreso"
       const ingresoData = {
         id_producto: idProducto,
         cantidad: cantidadUsada,
@@ -77,7 +202,7 @@ const Page = () => {
         id_usuario: idUsuario,
         costo_unitario: valorCostoUnitario, // Asegúrate de agregar esto aquí
       };
-      
+
       console.log('Ingreso Data:', ingresoData); // Verifica lo que se está enviando al servidor
 
       // Enviamos el POST a la API de ingreso
@@ -91,9 +216,9 @@ const Page = () => {
     } // En el bloque catch de la función actualizarProducto
     catch (error) {
       console.error('Error al registrar el egreso:', error);
-      
+
       if (error.response) {
-        // Aquí convertimos el objeto en un string legible con JSON.stringify
+       
         console.log('Detalles de la respuesta:', error.response.data);
         alert(`Detalles del error: ${JSON.stringify(error.response.data)}`); // Muestra el mensaje de error detallado
       } else if (error.request) {
@@ -104,7 +229,7 @@ const Page = () => {
         alert(`Error al configurar la solicitud: ${error.message}`);
       }
     }
-    
+
   };
 
   const handleSubmit = async (e) => {
@@ -128,7 +253,7 @@ const Page = () => {
           cantidad_platos: formPlato.cantidad_platos,
           descripcion: formPlato.descripcion,
           estado: formPlato.estado,
-          img: formPlato.imagenBase64, // Enviar la imagen de la receta
+          img: formPlato.imagenBase64, 
         }),
       });
 
@@ -200,8 +325,8 @@ const Page = () => {
           descripcion: response.data.receta.descripcion || '',
           imagenBase64: response.data.receta.foto || '',
         }));
-         // Aquí se almacenan los productos de la receta
-         setProductos(response.data.receta.receta_productos || []);
+        // Aquí se almacenan los productos de la receta
+        setProductos(response.data.receta.receta_productos || []);
       })
       .catch(() => setError('Error al obtener la receta.'));
 
@@ -221,7 +346,7 @@ const Page = () => {
         }
       });
 
-      axios.get(`${API_BASE_URL}/receta/${idReceta}`)
+    axios.get(`${API_BASE_URL}/receta/${idReceta}`)
       .then((response) => setProductos(response.data.recetas.receta_productos || []))
       .catch(() => setError('Error al obtener los productos.'))
       .finally(() => setLoading(false));
@@ -318,13 +443,14 @@ const Page = () => {
               {foto && <Image src={`data:image/png;base64,${foto}`} alt={nombre_receta} fluid className="object-cover w-full h-auto rounded-lg shadow-lg" />}
             </div>
             <div>
-              <button type="button" className="btn btn-success" onClick={openModal}>
-                Generar plato de esta receta
-              </button>
             </div>
+
           </div>
         </div>
       </div>
+      <button type="button" className="form-control" onClick={openModal}>
+        Click aqui para generar plato de esta receta
+      </button>
 
       <div className="mt-8">
         <div>
@@ -338,7 +464,9 @@ const Page = () => {
                 {productos.map((producto) => (
                   <li key={producto.id_recetas_producto}>
                     <div className="flex justify-between items-center">
-                      <span>{producto.producto.nombre}</span>: <span>{producto.cantidad} en {producto.producto.unidad_medida.nombre_unidad}</span>
+                      <span>{producto.producto.nombre}</span>: <span>{producto.cantidad} en {producto.producto.unidad_medida.nombre_unidad}</span> <span>
+                        <button className='form-control' onClick={() => abrirEditIngrediente(producto)}>Editar ingrediente</button>
+                      </span>
                     </div>
                   </li>
                 ))}
@@ -362,6 +490,10 @@ const Page = () => {
                 <li key={paso.id_paso}>
                   <div className="flex justify-between items-center">
                     <span>Paso {paso.paso_numero}: {paso.descripcion}</span>
+                    <span>
+                      <button className='form-control' onClick={() => abrirModalEditarPaso(paso)}>Editar paso</button>
+                    </span>
+
                   </div>
                 </li>
               ))}
@@ -375,6 +507,73 @@ const Page = () => {
           Actualizar Datos
         </Button>
       </div>
+
+      {ShowModalEditarPaso && (
+  <div className="modal-overlay">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h2>Editar Paso: {pasoEditando.paso_numero}</h2>
+        <button onClick={cerrarModalEditarPaso}>&times;</button>
+      </div>
+      <div className="modal-body">
+        {pasoEditando && (
+          <div className="space-y-4">
+            {/* Campo para mostrar el número de paso (solo lectura) */}
+            <label htmlFor="paso_numero" className="label-form">Número de paso</label>
+            <input
+              id="paso_numero"
+              type="number"
+              value={pasoEditando.paso_numero}
+              readOnly // Hace que el campo sea de solo lectura
+              className="form-control"
+            />
+
+            {/* Campo para editar la descripción */}
+            <label htmlFor="descripcionPaso" className="label-form">Descripción</label>
+            <textarea
+              id="descripcionPaso"
+              value={pasoEditando.descripcion}
+              onChange={(e) => setPasoEditando({ ...pasoEditando, descripcion: e.target.value })}
+              className="form-control"
+            />
+
+            {/* Botón para guardar los cambios */}
+            <Button onClick={guardarCambiosPaso} variant="primary">Guardar Cambios</Button>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+      {ShowModalEditarIngrediente && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Editar Ingrediente: {ingredienteEditando.nombre}</h2>
+              <button onClick={cerrarModalEditarIngrediente}>&times;</button>
+            </div>
+            <div className="modal-body">
+              {ingredienteEditando && (
+                <div className="space-y-4">
+                  <p><strong>Unidad de medida:</strong> {ingredienteEditando.unidad_medida}</p>
+
+                  <label htmlFor="cantidadIngrediente" className="label-form">Cantidad</label>
+                  <input
+                    id="cantidadIngrediente"
+                    type="number"
+                    value={ingredienteEditando.cantidad}
+                    onChange={(e) => setIngredienteEditando({ ...ingredienteEditando, cantidad: e.target.value })}
+                    className="form-control"
+                  />
+
+                  <Button onClick={guardarCambiosIngrediente} variant="primary">Guardar Cambios</Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Modal para agregar paso */}
       {ShowModalAgregarPaso && (
