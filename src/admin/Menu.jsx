@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
+import { motion } from '../components/framer-motion/motion';
 import "../styles/Cardcategorias.css";
 import { API_BASE_URL } from '../url';  // Asegúrate de configurar esta URL correctamente
 import Generador_de_codigo from '../QR/Generador_de_codigo';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
-
+import Swal from 'sweetalert2'  // Import SweetAlert2
 
 const Menu = () => {
   const [isOpenGenerador, setIsOpenGenerador] = useState(false);
   const [categoriasMenu, setCategoriasMenu] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [categoriasPorPagina, setCategoriasPorPagina] = useState(8);
@@ -36,10 +36,8 @@ const Menu = () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/categorias_menu`);
       setCategoriasMenu(response.data.categorias_menu || []);
-      setLoading(false);
     } catch (err) {
       setError('Error al cargar las categorías del menú');
-      setLoading(false);
     }
   };
 
@@ -66,7 +64,7 @@ const Menu = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64Image = reader.result.split(',')[1]; // Solo la parte base64
-  
+
         // Si estamos editando una categoría
         if (categoriaAEditar) {
           setCategoriaAEditar({
@@ -74,7 +72,7 @@ const Menu = () => {
             foto: base64Image, // Actualiza la foto de la categoría a editar
           });
         }
-  
+
         // Si estamos creando una nueva categoría
         if (newCategoria) {
           setNewCategoria((prevState) => ({
@@ -86,7 +84,7 @@ const Menu = () => {
       reader.readAsDataURL(file);
     }
   };
-  
+
 
 
   const handleSubmit = async (e) => {
@@ -94,10 +92,27 @@ const Menu = () => {
     try {
       const categoryData = { ...newCategoria, foto: newCategoria.foto || null };
       await axios.post(`${API_BASE_URL}/categorias_menu`, categoryData);
+      Swal.fire({
+                icon: 'success',
+                title: 'Categoría creada',
+                text: 'La categoría del menu se ha creado con éxito!',
+                toast: true,  // Hacer que sea una notificación tipo toast
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,  // Duración de la notificación en milisegundos
+              });
       setShowModal(false);
       fetchCategoriasMenu();
     } catch (err) {
-      setError(`Error al agregar la categoría: ${err.response?.data?.message || err.message}`);
+      Swal.fire({
+                icon: 'error',
+                title: 'La categoria no se ha creado, tu conexión es lenta o no estas conectado a la red de itca',
+                text: 'La categoría de receta se ha creado con éxito!',
+                toast: true,  // Hacer que sea una notificación tipo toast
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,  // Duración de la notificación en milisegundos
+              });
     }
   };
 
@@ -106,24 +121,33 @@ const Menu = () => {
     try {
       const categoryData = { ...categoriaAEditar, foto: categoriaAEditar.foto || null };
       await axios.put(`${API_BASE_URL}/categorias_menu/${categoriaAEditar.id_categoria_menu}`, categoryData);
+      Swal.fire({
+                icon: 'success',
+                title: 'Categoría actualizada',
+                text: 'La categoría de receta se ha actualizado con éxito!',
+                toast: true,  // Hacer que sea una notificación tipo toast
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,  // Duración de la notificación en milisegundos
+              });
       setShowUpdateModal(false);  // Cierra el modal
       fetchCategoriasMenu();       // Actualiza la lista de categorías
+
     } catch (err) {
       setError(`Error al actualizar la categoría: ${err.response?.data?.message || err.message}`);
     }
   };
-  
- // Función para redirigir al usuario a la página de platos
- const navigateToPlatos = (idCategoriaMenu) => {
-  localStorage.setItem("id_categoria_menu", idCategoriaMenu); // Guardamos el ID en el localStorage
-  navigate(`/admin/Platos/${idCategoriaMenu}`); // Navegamos a la página de platos con el ID de la categoría
-};
+
+  // Función para redirigir al usuario a la página de platos
+  const navigateToPlatos = (idCategoriaMenu) => {
+    localStorage.setItem("id_categoria_menu", idCategoriaMenu); // Guardamos el ID en el localStorage
+    navigate(`/admin/Platos/${idCategoriaMenu}`); // Navegamos a la página de platos con el ID de la categoría
+  };
 
   useEffect(() => {
     fetchCategoriasMenu();
   }, []);
 
-  if (loading) return <div className="text-center"><div className="spinner-border text-primary" role="status"></div></div>;
   if (error) return <div className="text-center text-danger">{error}</div>;
 
   return (
@@ -131,10 +155,10 @@ const Menu = () => {
       {/* Botón Agregar Categoría */}
       <div className="mb-4">
         <button
-          className="btn btn-lg btn-success"
+          className="btn btn-lg btn-primary"
           onClick={() => setShowModal(true)}
         >
-          <i className="fas fa-plus"></i> Agregar Categoría
+          <i className=""></i> Agregar Categoría
         </button>
       </div>
 
@@ -211,158 +235,178 @@ const Menu = () => {
 
       {/* Modal para agregar una nueva categoría */}
       <div className={`modal fade ${showModal ? 'show' : ''}`} tabIndex="-1" style={{ display: showModal ? 'block' : 'none' }}>
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Agregar Categoría de Menú</h5>
-              <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+        <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ${showModal ? 'block' : 'hidden'}`}>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="bg-white rounded-lg shadow-xl w-full max-w-lg"
+          >
+            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
+              <h5 className="text-2xl font-bold">Agregar Categoría de Menú</h5>
+              <button type="button" className="absolute top-2 right-2 text-white" onClick={() => setShowModal(false)}>
+                <span className="text-3xl">&times;</span>
+              </button>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label htmlFor="nombre" className="form-label">Nombre de la Categoría</label>
-                  <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    className="form-control"
-                    value={newCategoria.nombre}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="descripcion" className="form-label">Descripción</label>
-                  <textarea
-                    id="descripcion"
-                    name="descripcion"
-                    className="form-control"
-                    value={newCategoria.descripcion}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="image-upload">
-                    {newCategoria.foto ? (
-                      <img
-                        src={`data:image/jpeg;base64,${newCategoria.foto}`}
-                        alt="Previsualización de imagen"
-                        className="upload-preview"
-                        style={{ maxWidth: '200px' }}
-                      />
-                    ) : (
-                      <span className="upload-placeholder text-center d-block py-4">Click aquí para subir imagen</span>
-                    )}
-                    <input
-                      type="file"
-                      className="file-input"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                </div>
-
-                <div className="form-check mb-3">
-                  <input
-                    type="checkbox"
-                    id="estado"
-                    name="estado"
-                    className="form-check-input"
-                    checked={newCategoria.estado}
-                    onChange={() => setNewCategoria({ ...newCategoria, estado: !newCategoria.estado })}
-                  />
-                  <label htmlFor="estado" className="form-check-label">Activo</label>
-                </div>
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto max-h-[80vh]">
+              <div className="mb-3">
+                <label htmlFor="nombre" className="text-lg font-medium">Nombre de la Categoría</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  className="w-full p-2 border rounded focus:ring-2 focus:ring-orange-500"
+                  value={newCategoria.nombre}
+                  onChange={handleChange}
+                  required
+                />
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+
+              <div className="mb-3">
+                <label htmlFor="descripcion" className="text-lg font-medium">Descripción</label>
+                <textarea
+                  id="descripcion"
+                  name="descripcion"
+                  className="w-full p-2 border rounded focus:ring-2 focus:ring-orange-500"
+                  value={newCategoria.descripcion}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="image-upload">
+                  {newCategoria.foto ? (
+                    <img
+                      src={`data:image/jpeg;base64,${newCategoria.foto}`}
+                      alt="Previsualización de imagen"
+                      className="upload-preview max-w-[200px] mx-auto"
+                    />
+                  ) : (
+                    <span className="upload-placeholder text-center d-block py-4">Click aquí para subir imagen</span>
+                  )}
+                  <input
+                    type="file"
+                    className="file-input"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+
+              <div className="form-check mb-3">
+                <input
+                  type="checkbox"
+                  id="estado"
+                  name="estado"
+                  className="form-check-input"
+                  checked={newCategoria.estado}
+                  onChange={() => setNewCategoria({ ...newCategoria, estado: !newCategoria.estado })}
+                />
+                <label htmlFor="estado" className="form-check-label">Activo</label>
+              </div>
+
+              <div className="flex justify-end space-x-2 mt-6">
+                <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(false)}>
                   Cerrar
                 </button>
-                <button type="submit" className="btn btn-primary">Agregar</button>
+                <button type="submit" className="btn btn-primary bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+                  Agregar
+                </button>
               </div>
             </form>
-          </div>
+          </motion.div>
         </div>
+
       </div>
+
       {/* Modal para actualizar una categoría */}
       <div className={`modal fade ${showUpdateModal ? 'show' : ''}`} tabIndex="-1" style={{ display: showUpdateModal ? 'block' : 'none' }}>
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Actualizar Categoría de Menú</h5>
-              <button type="button" className="btn-close" onClick={() => setShowUpdateModal(false)}></button>
+        <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ${showUpdateModal ? 'block' : 'hidden'}`}>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="bg-white rounded-lg shadow-xl w-full max-w-lg"
+          >
+            <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
+              <h5 className="text-2xl font-bold">Actualizar Categoría de Menú</h5>
+              <button type="button" className="absolute top-2 right-2 text-white" onClick={() => setShowUpdateModal(false)}>
+                <span className="text-3xl">&times;</span>
+              </button>
             </div>
-            <form onSubmit={handleUpdateSubmit}>
-              <div className="modal-body">
-                {/* Campos prellenados con la categoría que estamos editando */}
-                <div className="mb-3">
-                  <label htmlFor="nombre" className="form-label">Nombre de la Categoría</label>
-                  <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    className="form-control"
-                    value={categoriaAEditar?.nombre || ''}
-                    onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, nombre: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="descripcion" className="form-label">Descripción</label>
-                  <textarea
-                    id="descripcion"
-                    name="descripcion"
-                    className="form-control"
-                    value={categoriaAEditar?.descripcion || ''}
-                    onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, descripcion: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-            <label className="image-upload">
-              {categoriaAEditar?.foto ? (
-                <img
-                  src={`data:image/png;base64,${categoriaAEditar.foto}`}
-                  alt="Previsualización de imagen"
-                  className="upload-preview"
-                  style={{ maxWidth: '200px' }}
+            <form onSubmit={handleUpdateSubmit} className="p-6 space-y-4 overflow-y-auto max-h-[80vh]">
+              <div className="mb-3">
+                <label htmlFor="nombre" className="text-lg font-medium">Nombre de la Categoría</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  className="w-full p-2 border rounded focus:ring-2 focus:ring-orange-500"
+                  value={categoriaAEditar?.nombre || ''}
+                  onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, nombre: e.target.value })}
+                  required
                 />
-              ) : (
-                <span className="upload-placeholder text-center d-block py-4">Click aquí para subir imagen</span>
-              )}
-              <input
-                type="file"
-                className="file-input"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </label>
-          </div>
-
-
-                <div className="form-check mb-3">
-                  <input
-                    type="checkbox"
-                    id="estado"
-                    name="estado"
-                    className="form-check-input"
-                    checked={categoriaAEditar?.estado || false}
-                    onChange={() => setCategoriaAEditar({ ...categoriaAEditar, estado: !categoriaAEditar.estado })}
-                  />
-                  <label htmlFor="estado" className="form-check-label">Activo</label>
-                </div>
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowUpdateModal(false)}>
+
+              <div className="mb-3">
+                <label htmlFor="descripcion" className="text-lg font-medium">Descripción</label>
+                <textarea
+                  id="descripcion"
+                  name="descripcion"
+                  className="w-full p-2 border rounded focus:ring-2 focus:ring-orange-500"
+                  value={categoriaAEditar?.descripcion || ''}
+                  onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, descripcion: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="image-upload">
+                  {categoriaAEditar?.foto ? (
+                    <img
+                      src={`data:image/png;base64,${categoriaAEditar.foto}`}
+                      alt="Previsualización de imagen"
+                      className="upload-preview max-w-[200px] mx-auto"
+                    />
+                  ) : (
+                    <span className="upload-placeholder text-center d-block py-4">Click aquí para subir imagen</span>
+                  )}
+                  <input
+                    type="file"
+                    className="file-input"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+
+              <div className="form-check mb-3">
+                <input
+                  type="checkbox"
+                  id="estado"
+                  name="estado"
+                  className="form-check-input"
+                  checked={categoriaAEditar?.estado || false}
+                  onChange={() => setCategoriaAEditar({ ...categoriaAEditar, estado: !categoriaAEditar.estado })}
+                />
+                <label htmlFor="estado" className="form-check-label">Activo</label>
+              </div>
+
+              <div className="flex justify-end space-x-2 mt-6">
+                <button type="button" className="btn btn-outline-secondary" onClick={() => setShowUpdateModal(false)}>
                   Cerrar
                 </button>
-                <button type="submit" className="btn btn-primary">Actualizar</button>
+                <button type="submit" className="btn btn-primary bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+                  Actualizar
+                </button>
               </div>
             </form>
-          </div>
+          </motion.div>
         </div>
+
       </div>
 
       {showUpdateModal && <div className="modal-backdrop fade show" onClick={() => setShowUpdateModal(false)}></div>}

@@ -1,0 +1,37 @@
+/* Personalización de bordes y sombreados */
+.modal-content {
+  border-radius: 0.5rem;
+  border: 1px solid #f97316; /* Bordes con color similar al gradiente */
+}
+
+.modal-header {
+  background: linear-gradient(to right, #ec4899, #f97316); /* Fondo con gradiente similar */
+}
+
+.modal-header .close {
+  color: white;
+}
+
+/* Estilo para la tabla */
+.table thead th {
+  background: linear-gradient(to right, #ec4899, #f97316); /* Fondo gradiente para la tabla */
+  color: white;
+}
+
+/* Hacer el modal casi de pantalla completa */
+.modal-dialog {
+  max-width: 95% !important;  /* El modal ocupará el 95% del ancho de la pantalla */
+  width: 95% !important;      /* O puedes usar 100% si deseas que ocupe toda la pantalla */
+  max-height: 95vh !important; /* Altura máxima del 95% de la altura de la pantalla */
+  margin: 0 !important;       /* Eliminar márgenes */
+}
+
+/* Ajuste para el contenido dentro del modal si excede el tamaño */
+.modal-body {
+  overflow-y: auto; /* Permitir desplazamiento si el contenido es más grande que la altura del modal */
+}
+
+/* Modificar el tamaño de la cabecera */
+.modal-header {
+  padding: 1.5rem 2rem; /* Más espacio para la cabecera */
+}
