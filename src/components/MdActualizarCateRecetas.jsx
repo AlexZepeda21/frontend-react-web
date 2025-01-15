@@ -4,6 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import { API_BASE_URL } from '../url';
 import Generador_de_codigo from '../QR/Generador_de_codigo';
 import { Switch } from './ui/Switch';
+import Swal from 'sweetalert2'  // Import SweetAlert2
 
 const ImageUploader = ({ categoria, image, handleFileChange }) => (
   <div className="form-group">
@@ -57,7 +58,7 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
         alert('Por favor selecciona una imagen.');
         return;
       }
-      if (file.size > 5000000) { 
+      if (file.size > 5000000) {
         alert('El archivo es demasiado grande. Elige una imagen de menos de 5MB.');
         return;
       }
@@ -84,7 +85,14 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
     if (formData.imagenBase64 && formData.imagenBase64 !== categoria.foto) updatedData.foto = formData.imagenBase64;
 
     if (Object.keys(updatedData).length === 0) {
-      alert('No se han realizado cambios.');
+      Swal.fire({
+        icon: 'question',
+        title: 'No ha realizado ningun cambio',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
       return;
     }
 
@@ -98,17 +106,44 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
       });
 
       if (response.ok) {
-        alert('Categoría de receta actualizada con éxito!');
-        window.location.reload();
+        // Mostrar la notificación de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Receta actualizada',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+
+        // Después de 2 segundos, recargar la página
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000); // 2000 milisegundos = 2 segundos
+
         setIsOpen(false);
       } else {
         const data = await response.json();
-        console.error('Error al actualizar la categoría:', data.message);
-        alert(data.message || 'Error al actualizar la categoría');
+        Swal.fire({
+          icon: 'error',
+          title: 'Verifica los datos que estas enviando',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
-      alert('Hubo un error al actualizar la categoría');
+      Swal.fire({
+        icon: 'Error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 

@@ -7,10 +7,12 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { Textarea } from "./ui/textarea"
 import { API_BASE_URL } from '../url'
+import Swal from 'sweetalert2'  // Import SweetAlert2
+
 
 export default function MdAgregarCateRecetas() {
   const [image, setImage] = useState(null);
-  
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -40,7 +42,7 @@ export default function MdAgregarCateRecetas() {
   })
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const response = await fetch(`${API_BASE_URL}/cate_recetas`, {
         method: 'POST',
@@ -52,19 +54,49 @@ export default function MdAgregarCateRecetas() {
           descripcion: formData.descripcion,
           foto: formData.imagenBase64,
         }),
-      })
+      });
+
       if (response.ok) {
-        alert('Categoría de receta creada con éxito!')
-        window.location.reload();
-        setIsOpen(false)
+        // Mostrar la notificación de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Categoría de receta creada',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+
+        // Después de 2 segundos, recargar la página
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000); // 2000 milisegundos = 2 segundos
+
+        setIsOpen(false);
       } else {
-        throw new Error('No se soporta el formato de la imagen')
+        Swal.fire({
+          icon: 'error',
+          title: 'Verifica que los datos esten completos o prueba cambiar de imagen',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
     } catch (error) {
-      console.error('No se soporta el formato de la imagen:', error)
-      alert(error)
+      Swal.fire({
+        icon: 'Error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
-  }
+  };
+
 
   return (
     <div>

@@ -8,6 +8,8 @@ import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
 import ListarIngredientes from '../components/MdListarIngredientes';
 import "../styles/m/mstyles.css";
+import Swal from 'sweetalert2'  // Import SweetAlert2
+
 
 const Page = () => {
   const { idReceta } = useParams();
@@ -43,10 +45,18 @@ const Page = () => {
 
   const guardarCambiosPaso = async () => {
     if (!pasoEditando.descripcion) {
-      alert("Por favor, ingrese una descripción válida.");
+      Swal.fire({
+        icon: 'question',
+        title: 'Agrega una descripcion valida',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
+
       return;
     }
-  
+
     try {
       const response = await axios.put(
         `${API_BASE_URL}/pasos_receta/${pasoEditando.id_paso}`,
@@ -55,7 +65,7 @@ const Page = () => {
           descripcion: pasoEditando.descripcion,
         }
       );
-  
+
       if (response.status === 200) {
         const updatedPasos = pasos.map((paso) => {
           if (paso.id_paso === pasoEditando.id_paso) {
@@ -63,16 +73,44 @@ const Page = () => {
           }
           return paso;
         });
-  
+
         setPasos(updatedPasos);
         setShowModalEditarPaso(false);
-        alert("Paso actualizado correctamente.");
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Paso actualizado',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+
+
       } else {
-        alert("Hubo un error al actualizar el paso.");
+
+        Swal.fire({
+          icon: 'Error',
+          title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
     } catch (error) {
       console.error("Error al actualizar el paso:", error);
-      alert("Hubo un error al actualizar el paso. Por favor, inténtalo de nuevo.");
+      Swal.fire({
+        icon: 'Error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 
@@ -151,8 +189,15 @@ const Page = () => {
   const guardarCambiosIngrediente = async () => {
     // Validar que la cantidad sea un número válido y mayor que 0
     if (!ingredienteEditando.cantidad || isNaN(ingredienteEditando.cantidad) || ingredienteEditando.cantidad <= 0) {
-      alert("Por favor, ingrese una cantidad válida (mayor que 0).");
-      return;
+
+      Swal.fire({
+        icon: 'question',
+        title: 'Por favor, ingrese una cantidad válida (mayor que 0).',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });      return;
     }
 
     try {
@@ -175,26 +220,55 @@ const Page = () => {
 
         setProductos(updatedIngredientes); // Actualiza el estado con los nuevos ingredientes
         setShowModalEditarIngrediente(false); // Cierra el modal
-        alert("Cantidad actualizada correctamente.");
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Receta editada',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+
+
       } else {
-        alert("Hubo un error al actualizar la cantidad.");
+
+        Swal.fire({
+          icon: 'Error',
+          title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
     } catch (error) {
       console.error("Error al actualizar la cantidad:", error);
-      alert("Hubo un error al actualizar la cantidad. Por favor, inténtalo de nuevo.");
+
+      Swal.fire({
+        icon: 'Error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 
   const actualizarProducto = async (idProducto, cantidadUsada) => {
     try {
       const idUsuario = localStorage.getItem('id'); // Recuperamos el id del usuario de localStorage
-
+  
       // Verificar si el id_usuario existe en localStorage
       if (!idUsuario) {
         alert('No se encontró el id de usuario en el almacenamiento local.');
         return;
       }
-
+  
       const ingresoData = {
         id_producto: idProducto,
         cantidad: cantidadUsada,
@@ -202,23 +276,21 @@ const Page = () => {
         id_usuario: idUsuario,
         costo_unitario: valorCostoUnitario, // Asegúrate de agregar esto aquí
       };
-
+  
       console.log('Ingreso Data:', ingresoData); // Verifica lo que se está enviando al servidor
-
+  
       // Enviamos el POST a la API de ingreso
       const response = await axios.post(`${API_BASE_URL}/ingreso`, ingresoData);
-
+  
       if (response.status === 201) {
         alert(`Se restó correctamente para el stock del producto ${idProducto}.`);
       } else {
         alert(`Hubo un error al registrar el egreso: ${response.statusText}`);
       }
-    } // En el bloque catch de la función actualizarProducto
-    catch (error) {
+    } catch (error) {
       console.error('Error al registrar el egreso:', error);
-
+  
       if (error.response) {
-       
         console.log('Detalles de la respuesta:', error.response.data);
         alert(`Detalles del error: ${JSON.stringify(error.response.data)}`); // Muestra el mensaje de error detallado
       } else if (error.request) {
@@ -228,20 +300,32 @@ const Page = () => {
         console.log('Error al configurar la solicitud:', error.message);
         alert(`Error al configurar la solicitud: ${error.message}`);
       }
+      throw error; // Relanzamos el error para manejarlo en el flujo principal
     }
-
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validación de campos vacíos
     if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
       alert('Por favor, complete todos los campos antes de enviar.');
       return;
     }
-
+  
     try {
+      // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
+      const productosUsados = productos.map((producto) => {
+        const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
+        return { id_producto: producto.producto.id_producto, cantidadUsada };
+      });
+  
+      // Paso 2: Actualizamos el stock de cada producto utilizando el ingreso
+      for (const producto of productosUsados) {
+        await actualizarProducto(producto.id_producto, producto.cantidadUsada);
+      }
+  
+      // Paso 3: Crear el plato (ahora se hace de último)
       const response = await fetch(`${API_BASE_URL}/menu`, {
         method: 'POST',
         headers: {
@@ -253,23 +337,12 @@ const Page = () => {
           cantidad_platos: formPlato.cantidad_platos,
           descripcion: formPlato.descripcion,
           estado: formPlato.estado,
-          img: formPlato.imagenBase64, 
+          img: formPlato.imagenBase64,
         }),
       });
-
+  
       if (response.ok) {
         alert('Plato creado con éxito!');
-
-        // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
-        const productosUsados = productos.map((producto) => {
-          const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
-          return { id_producto: producto.producto.id_producto, cantidadUsada };
-        });
-
-        // Paso 2: Actualizamos el stock de cada producto utilizando el ingreso
-        for (const producto of productosUsados) {
-          await actualizarProducto(producto.id_producto, producto.cantidadUsada);
-        }
       } else {
         throw new Error('Error al crear el plato.');
       }
@@ -280,10 +353,6 @@ const Page = () => {
   };
 
 
-
-
-
-
   const handlePasoChange = (e) => {
     const { name, value } = e.target;
     setNuevoPaso((prevPaso) => ({ ...prevPaso, [name]: value }));
@@ -291,7 +360,15 @@ const Page = () => {
 
   const agregarPaso = () => {
     if (!nuevoPaso.paso_numero || !nuevoPaso.descripcion) {
-      alert("Por favor, complete todos los campos.");
+      Swal.fire({
+        icon: 'question',
+        title: 'Agrega una descripcion',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
+
       return;
     }
     const pasoData = {
@@ -305,10 +382,33 @@ const Page = () => {
         if (response.status === 201 && response.data) {
           setPasos((prevPasos) => [...prevPasos, response.data]);
           setNuevoPaso({ paso_numero: '', descripcion: '' });
-          alert('Paso agregado correctamente.');
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Receta editada',
+            text: 'Espere a que se reinicie el navegador',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,  // Duración de la notificación (en milisegundos)
+          });
+
+          setTimeout(() => {
+          }, 1000); // 1000 milisegundos = 1 segundo
+
           setShowModalAgregarPaso(false);
         } else {
-          setError('Error al agregar el paso.');
+
+          Swal.fire({
+            icon: 'Error',
+            title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+            text: error.message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,  // Duración de la notificación (en milisegundos)
+          });
+
         }
       })
       .catch(() => setError('Error al agregar el paso.'));
@@ -504,47 +604,36 @@ const Page = () => {
         </div>
 
         <Button onClick={recargarDatos} variant="outline" className="mt-4">
-          Actualizar Datos
+          .:.:.:
         </Button>
       </div>
 
       {ShowModalEditarPaso && (
-  <div className="modal-overlay">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h2>Editar Paso: {pasoEditando.paso_numero}</h2>
-        <button onClick={cerrarModalEditarPaso}>&times;</button>
-      </div>
-      <div className="modal-body">
-        {pasoEditando && (
-          <div className="space-y-4">
-            {/* Campo para mostrar el número de paso (solo lectura) */}
-            <label htmlFor="paso_numero" className="label-form">Número de paso</label>
-            <input
-              id="paso_numero"
-              type="number"
-              value={pasoEditando.paso_numero}
-              readOnly // Hace que el campo sea de solo lectura
-              className="form-control"
-            />
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Editar Paso {pasoEditando.paso_numero}</h2>
+              <button onClick={cerrarModalEditarPaso}>&times;</button>
+            </div>
+            <div className="modal-body">
+              {pasoEditando && (
+                <div className="space-y-4">
+                  <label htmlFor="descripcionPaso" className="label-form">Descripción</label>
+                  <textarea
+                    id="descripcionPaso"
+                    value={pasoEditando.descripcion}
+                    onChange={(e) => setPasoEditando({ ...pasoEditando, descripcion: e.target.value })}
+                    className="form-control"
+                  />
 
-            {/* Campo para editar la descripción */}
-            <label htmlFor="descripcionPaso" className="label-form">Descripción</label>
-            <textarea
-              id="descripcionPaso"
-              value={pasoEditando.descripcion}
-              onChange={(e) => setPasoEditando({ ...pasoEditando, descripcion: e.target.value })}
-              className="form-control"
-            />
-
-            {/* Botón para guardar los cambios */}
-            <Button onClick={guardarCambiosPaso} variant="primary">Guardar Cambios</Button>
+                  {/* Botón para guardar los cambios */}
+                  <Button onClick={guardarCambiosPaso} variant="primary">Guardar Cambios</Button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
       {ShowModalEditarIngrediente && (
         <div className="modal-overlay">
           <div className="modal-content">

@@ -16,6 +16,7 @@ import MdAgregarRecetas from '../components/MdAgregarreceta';
 import MdEditarReceta from '../components/MdEditarReceta'; // Modal de Editar receta
 import { useParams } from 'react-router-dom';
 
+
 const RecetasList = () => {
   const { categoriaId } = useParams(); // Obtener el id de la categoría desde la URL
   const [recetas, setRecetas] = useState([]);

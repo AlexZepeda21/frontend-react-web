@@ -1,28 +1,144 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { API_BASE_URL } from '../url';  // Asegúrate de configurar esta URL correctamente
+import { API_BASE_URL } from '../url';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Modal, Button } from 'react-bootstrap';  // Importamos los componentes Modal y Button de Bootstrap
-import '../styles/Platos.css';  // Asegúrate de importar la hoja de estilos personalizada
+import { Modal, Button } from 'react-bootstrap';
+import '../styles/Platos.css';
 
 const Platos = () => {
-  const { id_categoria_menu } = useParams();  // Obtenemos el id_categoria de la URL
-  const [menuItems, setMenuItems] = useState([]);  // Menús con id_categoria
-  const [menuItemsSinCategoria, setMenuItemsSinCategoria] = useState([]);  // Menús sin id_categoria
+  const { id_categoria_menu } = useParams();
+  const [menuItems, setMenuItems] = useState([]);
+  const [menuItemsSinCategoria, setMenuItemsSinCategoria] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(''); 
-  const [showModal, setShowModal] = useState(false);  // Estado para controlar la visibilidad del modal
+  const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [verModalInventario, setverModalInventario] = useState(false);
+  const [productosActivos, setProductosActivos] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [showFormularioModal, setShowFormularioModal] = useState(false);
+
+  const [formPlato, setFormPlato] = useState({
+    nombre: '',
+    precio: '',
+    cantidad_platos: '',
+    descripcion: '',
+    estado: true,
+    imagenBase64: '',
+  });
+
+  useEffect(() => {
+    if (productoSeleccionado) {
+      setFormPlato({
+        nombre: productoSeleccionado.nombre,
+        precio: productoSeleccionado.precio,
+        cantidad_platos: productoSeleccionado.cantidad_platos,
+        descripcion: productoSeleccionado.descripcion,
+        estado: productoSeleccionado.estado,
+        imagenBase64: productoSeleccionado.img || '',
+        id_categoria_menu: id_categoria_menu,
+      });
+    }
+  }, [productoSeleccionado, id_categoria_menu]);
+
+
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+
+    if (id === 'precio' && value && !/^\d+(\.\d+)?$/.test(value)) {
+      alert("Por favor, ingresa un precio válido (puede ser un número entero o decimal).");
+      return;
+    }
+    
+    setFormPlato({
+      ...formPlato,
+      [id]: value,
+    });
+  };
+
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormPlato((prevForm) => ({
+          ...prevForm,
+          imagenBase64: reader.result.split(',')[1],
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  //Metodo para crear plato
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log(formPlato);
+    
+    if (!formPlato.nombre || !formPlato.precio || !formPlato.descripcion || !formPlato.cantidad_platos && formPlato.cantidad_platos < productoSeleccionado.stock) {
+      alert('Por favor, complete todos los campos correctamente.');
+      return;
+    }
+
+    try {
+      alert(id_categoria_menu)
+      const response = await fetch(`${API_BASE_URL}/menu`, {
+        method: 'POST',
+        body: JSON.stringify({
+          nombre: formPlato.nombre,
+          precio: formPlato.precio,
+          cantidad_platos: formPlato.cantidad_platos,
+          descripcion: formPlato.descripcion,
+          estado: formPlato.estado,
+          img: formPlato.imagenBase64,
+          id_categoria: id_categoria_menu,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Plato creado con éxito!');
+        setverModalInventario(false);
+      } else {
+        alert(result);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Hubo un error al crear el plato: ${error.message}`);
+    }
+  };
+
+
 
   // Función para cargar los menús con categoría
   const fetchMenuItems = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/menu_filter?id_categoria=${id_categoria_menu}`);
-      setMenuItems(response.data.message || []);  // Asegúrate de que si no hay datos, se asigne un array vacío
+      setMenuItems(response.data.message || []);
       setLoading(false);
     } catch (err) {
       setError('Error al cargar los menús con categoría');
       setLoading(false);
+    }
+  };
+
+  // Función para cargar los productos activos
+  const fetchProductosActivos = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/Productosactivos`);
+      if (response.data.productos) {
+        setProductosActivos(response.data.productos);
+      } else {
+        setProductosActivos([]);
+      }
+    } catch (err) {
+      console.error('Error al cargar los productos activos', err);
     }
   };
 
@@ -31,20 +147,25 @@ const Platos = () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/filter_cero`);
       if (response.data.message) {
-        setMenuItemsSinCategoria(response.data.message || []); // Solo asigna los datos si existen
+        setMenuItemsSinCategoria(response.data.message || []);
       } else {
-        setMenuItemsSinCategoria([]);  // Si no hay datos, asigna un array vacío
+        setMenuItemsSinCategoria([]);
       }
     } catch (err) {
-    
-     
+
     }
   };
+
+  const handleAgregarProducto = (producto) => {
+    setProductoSeleccionado(producto);  // Guarda el producto seleccionado
+    setShowFormularioModal(true);  // Muestra el modal con el formulario
+  };
+
 
   const handleUpdate = async (id) => {
     try {
       const response = await axios.put(`${API_BASE_URL}/menu/${id}`, {
-        id_categoria: id_categoria_menu, // Actualiza la categoría
+        id_categoria: id_categoria_menu,
       });
 
       if (response.status === 200) {
@@ -59,14 +180,21 @@ const Platos = () => {
   };
 
   useEffect(() => {
-    fetchMenuItems();  // Solo cargamos los menús con categoría al inicio
-  }, [id_categoria_menu]);  // Solo depende de la categoría, no de `showModal`
+    fetchMenuItems();
+  }, [id_categoria_menu]);
 
   useEffect(() => {
-    if (showModal) {  // Solo cargamos los menús sin categoría si el modal está abierto
+    if (showModal) {
       fetchMenuItemsSinCategoria();
     }
-  }, [showModal]);  // Dependiendo de la visibilidad del modal
+  }, [showModal]);
+
+
+  useEffect(() => {
+    if (verModalInventario) {
+      fetchProductosActivos();  // Cargar productos activos cuando el modal se muestra
+    }
+  }, [verModalInventario]);
 
   if (loading) return <div className="text-center">Cargando menús...</div>;
   if (error) return <div className="text-center text-danger">{error}</div>;
@@ -74,15 +202,26 @@ const Platos = () => {
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
+  const verInventarioModal = () => setverModalInventario(true);
+  const cerrarInventarioModal = () => setverModalInventario(false);
+
+
   return (
     <div className="container py-5">
       <div className="text-center mb-4">
         <button
           className="btn btn-primary"
-          onClick={handleShowModal}  // Al hacer clic, abre el modal
+          onClick={handleShowModal}
         >
           Agregar Platos
         </button>
+        <button
+          className="btn btn-primary m-3"
+          onClick={verInventarioModal}
+        >
+          Agregar del inventario
+        </button>
+
       </div>
 
       <div className="row row-cols-1 row-cols-md-3 g-4">
@@ -174,6 +313,172 @@ const Platos = () => {
           <Button variant="primary" onClick={() => alert('Agregar plato funcionalidad aquí.')}>Agregar</Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Modal para mostrar los productos del inventario */}
+      <Modal show={verModalInventario} onHide={cerrarInventarioModal} dialogClassName="modal-fullscreen">
+        <Modal.Header closeButton>
+          <Modal.Title>Productos del Inventario</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>A continuación se muestran los productos activos desde el inventario.</p>
+
+          {/* Tabla para mostrar los productos activos */}
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Unidad de Medida</th>
+                <th>Categoría</th>
+                <th>Estado</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productosActivos.length > 0 ? (
+                productosActivos.map((item) => (
+                  <tr key={item.id_producto}>
+                    <td>{item.id_producto}</td>
+                    <td>{item.nombre}</td>
+                    <td>{item.descripcion}</td>
+                    <td>{item.unidad_medida}</td>
+                    <td>{item.categoria}</td>
+                    <td>{item.estado ? 'Activo' : 'Inactivo'}</td>
+                    <td>{item.stock}</td>
+
+                    <td>
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleAgregarProducto(item)}
+                      >
+                        Agregar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">No hay productos activos</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cerrarInventarioModal}>Cerrar</Button>
+          <Button variant="primary" onClick={() => alert('Agregar plato funcionalidad aquí.')}>Agregar</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal para agregar los productos del inventario */}
+      <Modal show={showFormularioModal} onHide={() => setShowFormularioModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Formulario de Producto</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {productoSeleccionado && (
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="idProducto" className="form-label">ID Producto</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="idProducto"
+                  value={productoSeleccionado.id_producto}
+                  readOnly
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="nombreProducto" className="form-label">Nombre</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="nombreProducto"
+                  value={formPlato.nombre || productoSeleccionado?.nombre || ''}
+                  readOnly
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="precio" className="form-label">Precio</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="precio"
+                  value={formPlato.precio}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="cantidad_platos" className="form-label">Que cantidad de producto a agregar de {productoSeleccionado.stock} posibles</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="cantidad_platos"
+                  value={formPlato.cantidad_platos}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="descripcion" className="form-label">Descripción</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="descripcion"
+                  value={formPlato.descripcion}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="imagenBase64" className="form-label">Imagen</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  onChange={handleImageChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="estado" className="form-label">Estado</label>
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="estado"
+                  checked={formPlato.estado}
+                  onChange={(e) => setFormPlato({ ...formPlato, estado: e.target.checked })}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="idCategoriaMenu" className="form-label">ID Categoría de Menú</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="idCategoriaMenu"
+                  value={formPlato.id_categoria || id_categoria_menu}
+                  onChange={handleChange}
+                  readOnly
+                />
+              </div>
+
+              {/* Botón de enviar dentro del formulario */}
+              <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowFormularioModal(false)}>Cerrar</Button>
+                <Button variant="primary" type="submit">Guardar</Button> {/* Enviar el formulario aquí */}
+              </Modal.Footer>
+            </form>
+          )}
+        </Modal.Body>
+      </Modal>
+
+
+
     </div>
   );
 };

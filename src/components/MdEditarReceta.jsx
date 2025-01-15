@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Generador_de_codigo from '../QR/Generador_de_codigo';
 import { API_BASE_URL } from '../url';
+import Swal from 'sweetalert2'  // Import SweetAlert2
 
 const ImageUploader = ({ receta, image, handleFileChange }) => (
   <div className="form-group">
@@ -92,7 +93,14 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
 
     // Verificar si hay cambios
     if (Object.keys(updatedData).length === 0) {
-      alert('No se han realizado cambios.');
+      Swal.fire({
+        icon: 'question',
+        title: 'No ha realizado ningun cambio',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
       return;
     }
 
@@ -107,19 +115,45 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
       });
 
       if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Receta editada',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
 
-        alert("Receta actualizada exitosamente");
-        window.location.reload();
-        const data = await response.json();
-        actualizarReceta(data);
+        // Después de 1 segundo, recargar la página
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000); // 1000 milisegundos = 1 segundo
+
         setShowModalEditar(false);
-      } else {
-        const data = await response.json();
-        console.error('Error al actualizar receta:', data.message);
-        alert(data.message || 'Error al actualizar receta');
       }
-    } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
+      else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Verifica los datos que estas enviando',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
+
+      }
+    }
+    catch (error) {
+      Swal.fire({
+        icon: 'Error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 

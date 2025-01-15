@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom'; // Importar useParams
 import { DialogTitle, DialogDescription, DialogFooter } from '../components/ui/Dialog';
 import { Input } from '../components/ui/input';
 import axios from 'axios'; // Importar axios
+import Swal from 'sweetalert2'  // Import SweetAlert2
 
 export default function ListarIngredientes() {
     const { idReceta } = useParams(); // Recuperar el idReceta desde los parámetros de la URL
@@ -83,7 +84,14 @@ export default function ListarIngredientes() {
 
             // Asegurarse de que la cantidad es un número y mayor que cero
             if (isNaN(cantidad) || cantidad <= 0) {
-                alert("Cantidad inválida para el producto " + idProducto);
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Cantidad invalida para el producto ' + idProducto,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,  // Duración de la notificación (en milisegundos)
+                });
                 return null;  // No agregamos productos con cantidades inválidas
             }
 
@@ -95,7 +103,14 @@ export default function ListarIngredientes() {
         }).filter(producto => producto !== null);  // Filtrar productos con cantidades inválidas
 
         if (productosAAgregar.length === 0) {
-            alert("Debe ingresar una cantidad válida para al menos un producto.");
+            Swal.fire({
+                icon: 'question',
+                title: 'Debes agregar una cantidad valida para el producto',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,  // Duración de la notificación (en milisegundos)
+            });
             return;
         }
 
@@ -110,15 +125,42 @@ export default function ListarIngredientes() {
                 });
 
                 if (response.status === 201) {
-                    alert("Ingrediente agregado a la receta.");
-                    window.location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Ingrediente agregado a la receta',
+                        text: 'Espere a que se reinicie el navegador',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1500,  // Duración de la notificación (en milisegundos)
+                    });
+
+                    // Después de 1 segundo, recargar la página
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000); // 1000 milisegundos = 1 segundo
+
                 } else {
-                    alert("Posiblemente el ingrediente ya exista, actualizalo o verifica si hay producto en el inventario.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Posiblemente el ingrediente ya exista, actualiza la pagina o verifica si hay producto en el inventario.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,  // Duración de la notificación (en milisegundos)
+                    });
                 }
             }
         } catch (error) {
-            console.error('Error al realizar la inserción:', error);
-            alert('Un ingrediente ya ha sido agregado a la receta, de no ser asi, verifica el stock.');
+            Swal.fire({
+                icon: 'Error',
+                title: 'Posiblemente el ingrediente ya exista, actualiza la pagina o verifica si hay producto en el inventario.',
+                text: error.message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,  // Duración de la notificación (en milisegundos)
+            });
         }
 
         setDialogOpen(false); // Cerrar el cuadro de diálogo después de enviar los datos

@@ -5,6 +5,8 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { API_BASE_URL } from '../url';
+import Swal from 'sweetalert2'  // Import SweetAlert2
+
 
 export default function MdAgregarRecetas({ setShowModal }) {
   const [image, setImage] = useState(null);
@@ -62,16 +64,43 @@ export default function MdAgregarRecetas({ setShowModal }) {
         }),
       });
       if (response.ok) {
-        alert('Receta creada con éxito!');
-        window.location.reload();
+        Swal.fire({
+          icon: 'success',
+          title: 'Receta creada',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+
+        // Después de 2 segundos, recargar la página
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000); // 2000 milisegundos = 2 segundos
+
 
         setShowModal(false);
       } else {
-        throw new Error('Error al crear la receta');
+        Swal.fire({
+          icon: 'question',
+          title: 'Verifica que los datos esten completos o prueba cambiar de imagen',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert(error);
+      Swal.fire({
+        icon: 'Error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 
