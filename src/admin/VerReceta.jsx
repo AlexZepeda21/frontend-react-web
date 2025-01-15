@@ -197,7 +197,7 @@ const Page = () => {
         position: 'top-end',
         showConfirmButton: false,
         timer: 3000,  // Duración de la notificación (en milisegundos)
-      });      return;
+      }); return;
     }
 
     try {
@@ -262,13 +262,13 @@ const Page = () => {
   const actualizarProducto = async (idProducto, cantidadUsada) => {
     try {
       const idUsuario = localStorage.getItem('id'); // Recuperamos el id del usuario de localStorage
-  
+
       // Verificar si el id_usuario existe en localStorage
       if (!idUsuario) {
         alert('No se encontró el id de usuario en el almacenamiento local.');
         return;
       }
-  
+
       const ingresoData = {
         id_producto: idProducto,
         cantidad: cantidadUsada,
@@ -276,20 +276,37 @@ const Page = () => {
         id_usuario: idUsuario,
         costo_unitario: valorCostoUnitario, // Asegúrate de agregar esto aquí
       };
-  
+
       console.log('Ingreso Data:', ingresoData); // Verifica lo que se está enviando al servidor
-  
+
       // Enviamos el POST a la API de ingreso
       const response = await axios.post(`${API_BASE_URL}/ingreso`, ingresoData);
-  
+
       if (response.status === 201) {
-        alert(`Se restó correctamente para el stock del producto ${idProducto}.`);
+
+        Swal.fire({
+          icon: 'success',
+          title: `Se restó correctamente para el stock del producto ${idProducto}.`,
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
       } else {
-        alert(`Hubo un error al registrar el egreso: ${response.statusText}`);
+
+        Swal.fire({
+          icon: 'question',
+          title: `Hubo un error al registrar el egreso: ${response.statusText}`,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
       }
     } catch (error) {
       console.error('Error al registrar el egreso:', error);
-  
+
       if (error.response) {
         console.log('Detalles de la respuesta:', error.response.data);
         alert(`Detalles del error: ${JSON.stringify(error.response.data)}`); // Muestra el mensaje de error detallado
@@ -303,28 +320,90 @@ const Page = () => {
       throw error; // Relanzamos el error para manejarlo en el flujo principal
     }
   };
-  
+
+
+  const verificarStockProductos = async () => {
+    try {
+      const productosValidos = await Promise.all(
+        productos.map(async (producto) => {
+          // Verifica la estructura de `producto`
+          console.log("Producto actual:", producto);
+
+          // Hacer la solicitud a la API
+          const response = await axios.get(`${API_BASE_URL}/productos/${producto.producto.id_producto}`);
+
+          // Acceder al stock correctamente
+          const stockActual = response.data.message.stock;
+          const cantidadNecesaria = producto.cantidad * formPlato.cantidad_platos;
+          const esValido = stockActual >= cantidadNecesaria ? 1 : 0;
+
+          return {
+            id_producto: producto.producto.id_producto,
+            cantidadUsada: cantidadNecesaria,
+            esValido: esValido,
+          };
+        })
+      );
+
+      return productosValidos;
+    } catch (error) {
+      console.error('Error al verificar el stock:', error);
+      throw error;
+    }
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validación de campos vacíos
     if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
-      alert('Por favor, complete todos los campos antes de enviar.');
+      Swal.fire({
+        icon: 'question',
+        title: 'Es importante que todos los campos esten llenos',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
+
       return;
     }
-  
+
     try {
+
+      // Paso 1: Verificar el stock de todos los productos
+      const productosValidos = await verificarStockProductos();
+
+      // Paso 2: Verificar si todos los productos tienen suficiente stock
+      const hayStockInsuficiente = productosValidos.some((producto) => producto.esValido === 0);
+
+      if (hayStockInsuficiente) {
+        // Mostrar un mensaje de error si no hay suficiente stock
+        Swal.fire({
+          icon: 'question',
+          title: 'No hay suficiente stock para uno o más productos. No se creará el plato.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
+
+        return; // Detener el proceso si no hay suficiente stock
+      }
+
+
       // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
       const productosUsados = productos.map((producto) => {
         const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
         return { id_producto: producto.producto.id_producto, cantidadUsada };
       });
-  
+
       // Paso 2: Actualizamos el stock de cada producto utilizando el ingreso
       for (const producto of productosUsados) {
         await actualizarProducto(producto.id_producto, producto.cantidadUsada);
       }
-  
+
       // Paso 3: Crear el plato (ahora se hace de último)
       const response = await fetch(`${API_BASE_URL}/menu`, {
         method: 'POST',
@@ -340,15 +419,45 @@ const Page = () => {
           img: formPlato.imagenBase64,
         }),
       });
-  
+
       if (response.ok) {
-        alert('Plato creado con éxito!');
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Plato creado con exito',
+          text: 'Espere a que se reinicie el navegador',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+
+        // Después de 1 segundo, recargar la página
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000); // 1000 milisegundos = 1 segundo
       } else {
-        throw new Error('Error al crear el plato.');
+
+        Swal.fire({
+          icon: 'error',
+          text: 'El plato no se creo por un posible error en la carga del servidor',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,  // Duración de la notificación (en milisegundos)
+        });
+ 
       }
     } catch (error) {
       console.error('Error:', error);
-      alert(`Hubo un error al crear el plato: ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        text: `Error en a respuesta del servidor, conectate a la red de itca, posible: ${error.message}`,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 
