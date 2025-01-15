@@ -1,24 +1,25 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "../components/ui/button";
 import { API_BASE_URL } from '../url';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/tabledesign";
-import { useParams } from 'react-router-dom'; // Importar useParams
+import { useParams } from 'react-router-dom';
 import { DialogTitle, DialogDescription, DialogFooter } from '../components/ui/Dialog';
 import { Input } from '../components/ui/input';
-import axios from 'axios'; // Importar axios
-import Swal from 'sweetalert2'  // Import SweetAlert2
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function ListarIngredientes() {
-    const { idReceta } = useParams(); // Recuperar el idReceta desde los parámetros de la URL
+    const { idReceta } = useParams();
     const [productos, setProductos] = useState([]);
+    const [productosFiltrados, setProductosFiltrados] = useState([]);
     const [pagina, setPagina] = useState(1);
     const [productosPorPagina] = useState(10);
-    const [selectedProductos, setSelectedProductos] = useState([]); // Para almacenar los productos seleccionados
-    const [cantidades, setCantidades] = useState({}); // Objeto que guarda la cantidad de cada producto seleccionado
-    const [dialogOpen, setDialogOpen] = useState(false); // Estado para abrir y cerrar el cuadro de diálogo
+    const [selectedProductos, setSelectedProductos] = useState([]);
+    const [cantidades, setCantidades] = useState({});
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [busqueda, setBusqueda] = useState('');
 
     useEffect(() => {
         const fetchProductos = async () => {
@@ -28,39 +29,56 @@ export default function ListarIngredientes() {
 
                 if (data && Array.isArray(data.productos)) {
                     setProductos(data.productos);
+                    setProductosFiltrados(data.productos); // Inicializar los productos filtrados con todos los productos
                 } else {
                     setProductos([]);
+                    setProductosFiltrados([]);
                 }
             } catch (error) {
                 console.error('Error al obtener los productos:', error);
                 alert('No se pudo cargar la información.');
                 setProductos([]);
+                setProductosFiltrados([]);
             }
         };
 
         fetchProductos();
     }, []);
 
-    const paginacion = productos.slice((pagina - 1) * productosPorPagina, pagina * productosPorPagina);
+    useEffect(() => {
+        // Filtrar los productos según el término de búsqueda
+        if (busqueda.trim() === '') {
+            setProductosFiltrados(productos);
+        } else {
+            const productosFiltradosPorNombre = productos.filter(producto =>
+                producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+            );
+            setProductosFiltrados(productosFiltradosPorNombre);
+        }
+    }, [busqueda, productos]);
 
+    // Lógica para paginación
+    const totalProductos = productosFiltrados.length;
+    const paginacion = productosFiltrados.slice((pagina - 1) * productosPorPagina, pagina * productosPorPagina);
 
+    
+    const cerrarModal = async () => {
+       window.location.reload();
+        }
+
+    const cambiarPagina = (nuevaPagina) => {
+        setPagina(nuevaPagina);
+    };
+
+    // Manejo de los cambios de cantidad y selección de productos (como ya lo tienes)
     const manejarCambioCantidad = (idProducto, e) => {
-        // Asegurarse de que el valor ingresado sea un número válido (decimal o entero)
         const valor = e.target.value.trim();
-
-        // Verificar si el valor es un número válido
         if (!isNaN(valor) && valor !== '') {
             setCantidades(prev => ({
                 ...prev,
-                [idProducto]: parseFloat(valor) // Almacenamos como número (decimal o entero)
+                [idProducto]: parseFloat(valor)
             }));
         }
-    };
-
-
-
-    const Cerrar = () => {
-        window.location.reload();
     };
 
     const manejarCambioSeleccion = (idProducto) => {
@@ -81,8 +99,6 @@ export default function ListarIngredientes() {
 
         const productosAAgregar = selectedProductos.map(idProducto => {
             const cantidad = cantidades[idProducto];
-
-            // Asegurarse de que la cantidad es un número y mayor que cero
             if (isNaN(cantidad) || cantidad <= 0) {
                 Swal.fire({
                     icon: 'question',
@@ -90,17 +106,17 @@ export default function ListarIngredientes() {
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: 3000,  // Duración de la notificación (en milisegundos)
+                    timer: 3000,
                 });
-                return null;  // No agregamos productos con cantidades inválidas
+                return null;
             }
 
             return {
                 id_producto: idProducto,
                 id_receta: idReceta,
-                cantidad: cantidad  // Mantener el valor tal cual es (decimal o entero)
+                cantidad: cantidad
             };
-        }).filter(producto => producto !== null);  // Filtrar productos con cantidades inválidas
+        }).filter(producto => producto !== null);
 
         if (productosAAgregar.length === 0) {
             Swal.fire({
@@ -109,7 +125,7 @@ export default function ListarIngredientes() {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,  // Duración de la notificación (en milisegundos)
+                timer: 3000,
             });
             return;
         }
@@ -128,17 +144,12 @@ export default function ListarIngredientes() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Ingrediente agregado a la receta',
-                        text: 'Espere a que se reinicie el navegador',
+                        text: 'Ingrediente agregado con exito',
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
-                        timer: 1500,  // Duración de la notificación (en milisegundos)
+                        timer: 1500,
                     });
-
-                    // Después de 1 segundo, recargar la página
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000); // 1000 milisegundos = 1 segundo
 
                 } else {
                     Swal.fire({
@@ -147,7 +158,7 @@ export default function ListarIngredientes() {
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
-                        timer: 3000,  // Duración de la notificación (en milisegundos)
+                        timer: 3000,
                     });
                 }
             }
@@ -159,29 +170,33 @@ export default function ListarIngredientes() {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,  // Duración de la notificación (en milisegundos)
+                timer: 3000,
             });
         }
 
-        setDialogOpen(false); // Cerrar el cuadro de diálogo después de enviar los datos
-        setSelectedProductos([]); // Limpiar selección de productos
-        setCantidades({}); // Limpiar cantidades
+        setDialogOpen(false);
+        setSelectedProductos([]);
+        setCantidades({});
     };
-
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white w-[80%] max-w-[1000px] h-auto max-h-[80vh] p-6 rounded-lg shadow-lg overflow-hidden overflow-y-auto">
-
-                {/* Card Header: Título */}
                 <div className="border-b p-6">
                     <h1 className="text-3xl font-bold tracking-tight justify-center">Lista de Ingredientes</h1>
                 </div>
-                <div>
 
+                {/* Campo de Búsqueda */}
+                <div className="p-6">
+                    <Input
+                        type="text"
+                        placeholder="Buscar por nombre de producto..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                        className="w-full"
+                    />
                 </div>
 
-                {/* Card Body: Tabla con los Productos */}
                 <div className="p-6 overflow-x-auto max-h-[60vh] overflow-y-auto">
                     <form action="">
                         <Table>
@@ -233,19 +248,37 @@ export default function ListarIngredientes() {
                     </form>
                 </div>
 
-                {/* Card Footer: Botón Agregar Ingrediente */}
+                {/* Paginación */}
+                <div className="flex justify-between items-center p-4">
+                    <Button
+                        variant="outline"
+                        disabled={pagina === 1}
+                        onClick={() => cambiarPagina(pagina - 1)}
+                    >
+                        Anterior
+                    </Button>
+                    <span>Página {pagina} de {Math.ceil(totalProductos / productosPorPagina)}</span>
+                    <Button
+                        variant="outline"
+                        disabled={pagina === Math.ceil(totalProductos / productosPorPagina)}
+                        onClick={() => cambiarPagina(pagina + 1)}
+                    >
+                        Siguiente
+                    </Button>
+                </div>
+
                 <div className="border-t p-6 flex justify-between">
                     <Button
                         variant="outline"
                         className="mx-2"
-                        onClick={() => setDialogOpen(true)} // Abrir cuadro de diálogo
+                        onClick={() => setDialogOpen(true)}
                     >
                         Agregar Ingrediente
                     </Button>
                     <Button
                         variant="outline"
                         className="mx-2"
-                        onClick={Cerrar} // Abrir cuadro de diálogo
+                        onClick={() => cerrarModal()}
                     >
                         Cerrar
                     </Button>
@@ -258,24 +291,25 @@ export default function ListarIngredientes() {
                             <DialogTitle>Agregar Ingredientes</DialogTitle>
                             <DialogDescription>Ingrese la cantidad de los ingredientes seleccionados:</DialogDescription>
 
-                            {/* Crear campos de cantidad para cada producto seleccionado */}
-                            {selectedProductos.map(idProducto => {
-                                const producto = productos.find(p => p.id_producto === idProducto);
-                                return (
-                                    <div key={idProducto} className="mb-4">
-                                        <label className="block text-sm font-medium">{producto.nombre}</label>
-                                        <Input
-                                            type="number"
-                                            step="any"  // Permite cualquier valor decimal
-                                            value={cantidades[idProducto] || ''}
-                                            onChange={(e) => manejarCambioCantidad(idProducto, e)}
-                                            className="mt-2"
-                                            placeholder="Cantidad"
-                                        />
-
-                                    </div>
-                                );
-                            })}
+                            {/* Contenedor con overflow-y-auto para permitir el desplazamiento vertical */}
+                            <div className="max-h-[60vh] overflow-y-auto">
+                                {selectedProductos.map(idProducto => {
+                                    const producto = productos.find(p => p.id_producto === idProducto);
+                                    return (
+                                        <div key={idProducto} className="mb-4">
+                                            <label className="block text-sm font-medium">{producto.nombre}</label>
+                                            <Input
+                                                type="number"
+                                                step="any"
+                                                value={cantidades[idProducto] || ''}
+                                                onChange={(e) => manejarCambioCantidad(idProducto, e)}
+                                                className="mt-2"
+                                                placeholder={"Cantidad en " + producto.unidad_medida}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
 
                             <DialogFooter>
                                 <Button
@@ -287,7 +321,7 @@ export default function ListarIngredientes() {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    onClick={() => setDialogOpen(false)} // Cerrar cuadro de diálogo
+                                    onClick={() => setDialogOpen(false)}
                                 >
                                     Cancelar
                                 </Button>

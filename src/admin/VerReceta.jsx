@@ -91,8 +91,8 @@ const Page = () => {
       } else {
 
         Swal.fire({
-          icon: 'Error',
-          title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+          icon: 'question',
+          title: 'El paso no se ah creado, posiblemente por un error de red, intentelo de nuevo mas tarde',
           text: error.message,
           toast: true,
           position: 'top-end',
@@ -103,8 +103,8 @@ const Page = () => {
     } catch (error) {
       console.error("Error al actualizar el paso:", error);
       Swal.fire({
-        icon: 'Error',
-        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        icon: 'error',
+        title: 'Error en la respuesta del servidor, conectese a la red de itca',
         text: error.message,
         toast: true,
         position: 'top-end',
@@ -136,14 +136,38 @@ const Page = () => {
           // Mostrar el modal de edición
           setShowModalEditarIngrediente(true);
         } else {
-          alert("No se encontró el producto con id " + ingrediente.producto.id_producto);
+          Swal.fire({
+            icon: 'question',
+            title: "No se encontró el producto con id " + ingrediente.producto.id_producto,
+            text: error.message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,  // Duración de la notificación (en milisegundos)
+          });
         }
       } else {
-        alert("No se pudieron cargar los productos activos.");
+        Swal.fire({
+          icon: 'question',
+          title: 'La respuesta del servidor no fue la esperada, intentalo de nuevo mas tarde',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
     } catch (error) {
       console.error("Error al buscar el producto:", error);
-      alert("Hubo un error al verificar el producto. Por favor, inténtalo de nuevo.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en la respuesta del servidor, conectese a la red de itca',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
     }
   };
 
@@ -235,7 +259,7 @@ const Page = () => {
       } else {
 
         Swal.fire({
-          icon: 'Error',
+          icon: 'error',
           title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
           text: error.message,
           toast: true,
@@ -248,8 +272,8 @@ const Page = () => {
       console.error("Error al actualizar la cantidad:", error);
 
       Swal.fire({
-        icon: 'Error',
-        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        icon: 'error',
+        title: 'Error en la respuesta del servidor, conectese a la red de itca',
         text: error.message,
         toast: true,
         position: 'top-end',
@@ -265,7 +289,15 @@ const Page = () => {
 
       // Verificar si el id_usuario existe en localStorage
       if (!idUsuario) {
-        alert('No se encontró el id de usuario en el almacenamiento local.');
+        Swal.fire({
+          icon: 'question',
+          title: 'Debes haber iniciado sesión correctamente, tu id no lo hemos podido recuperar, asegurate de iniciar sesion nuevamente',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
         return;
       }
 
@@ -309,15 +341,39 @@ const Page = () => {
 
       if (error.response) {
         console.log('Detalles de la respuesta:', error.response.data);
-        alert(`Detalles del error: ${JSON.stringify(error.response.data)}`); // Muestra el mensaje de error detallado
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en la respuesta del servidor, conectese a la red de itca',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       } else if (error.request) {
         console.log('No hubo respuesta del servidor:', error.request);
-        alert('No hubo respuesta del servidor. Por favor, intente más tarde.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en la respuesta del servidor, conectese a la red de itca',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       } else {
         console.log('Error al configurar la solicitud:', error.message);
-        alert(`Error al configurar la solicitud: ${error.message}`);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en la respuesta del servidor, conectese a la red de itca',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        });
       }
-      throw error; // Relanzamos el error para manejarlo en el flujo principal
+      throw error; 
     }
   };
 
@@ -491,25 +547,20 @@ const Page = () => {
         if (response.status === 201 && response.data) {
           setPasos((prevPasos) => [...prevPasos, response.data]);
           setNuevoPaso({ paso_numero: '', descripcion: '' });
-
           Swal.fire({
             icon: 'success',
-            title: 'Receta editada',
-            text: 'Espere a que se reinicie el navegador',
+            title: 'Paso agregado',
+            text: 'Paso agregado satisfactoriamebte',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
             timer: 1500,  // Duración de la notificación (en milisegundos)
           });
-
-          setTimeout(() => {
-          }, 1000); // 1000 milisegundos = 1 segundo
-
           setShowModalAgregarPaso(false);
         } else {
 
           Swal.fire({
-            icon: 'Error',
+            icon: 'error',
             title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
             text: error.message,
             toast: true,
@@ -520,7 +571,17 @@ const Page = () => {
 
         }
       })
-      .catch(() => setError('Error al agregar el paso.'));
+      .catch(() => setError(
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al agregar el paso, asegurese de estar conectado a la red de itca',
+          text: error.message,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,  // Duración de la notificación (en milisegundos)
+        })
+      ));
   };
 
   const recargarDatos = () => {
@@ -537,7 +598,15 @@ const Page = () => {
         // Aquí se almacenan los productos de la receta
         setProductos(response.data.receta.receta_productos || []);
       })
-      .catch(() => setError('Error al obtener la receta.'));
+      .catch(() => setError( Swal.fire({
+        icon: 'error',
+        title: 'Error al obtener la receta, asegurese de estar conectado a la red de itca',
+        text: error.message,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,  // Duración de la notificación (en milisegundos)
+      })));
 
     axios.get(`${API_BASE_URL}/pasos-receta/${idReceta}`)
       .then((response) => {
@@ -551,13 +620,21 @@ const Page = () => {
         if (error.response && error.response.status === 404) {
           setPasos([]);
         } else {
-          setError('Error al obtener los pasos.');
+          setError( Swal.fire({
+            icon: 'question',
+            title: 'No se obtuvieron productos, no hay o no se estan cargando correctamente, verifique si esta conectada a la red de itca',
+            text: error.message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,  // Duración de la notificación (en milisegundos)
+          }));
         }
       });
 
     axios.get(`${API_BASE_URL}/receta/${idReceta}`)
       .then((response) => setProductos(response.data.recetas.receta_productos || []))
-      .catch(() => setError('Error al obtener los productos.'))
+      .catch(() => setError( ))
       .finally(() => setLoading(false));
   };
 
