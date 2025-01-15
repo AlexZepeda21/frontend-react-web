@@ -4,7 +4,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../url";
 
-const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario,actualizarusuario }) => {
+const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario, actualizarusuario }) => {
   const [correo, setCorreo] = useState("");
   const [nuevaClave, setNuevaClave] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState(3); // Por defecto: Usuario normal
@@ -24,51 +24,74 @@ const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario,actualiz
     e.preventDefault();
 
     if (correo.trim() === "") {
-      Swal.fire("Error", "El correo no puede estar vacío.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "El correo no puede estar vacío.",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return;
     }
 
     setLoading(true);
 
     try {
-      // Construimos el payload a enviar
       const payload = {
         correo,
         tipo_usuario: tipoUsuario,
-        estado: activo ? 1 : 0, // Enviamos 1 si activo, 0 si inactivo
-        ...(nuevaClave && { clave: nuevaClave }), // Solo incluimos clave si se define
+        estado: activo ? 1 : 0,
+        ...(nuevaClave && { clave: nuevaClave }),
       };
 
-      try {
-        const response = await fetch(`${API_BASE_URL}/user/${usuario.id_usuario}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
+      const response = await fetch(`${API_BASE_URL}/user/${usuario.id_usuario}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Error en la solicitud");
+
+      const result = await response.json();
+
+      if (result.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Usuario actualizado",
+          text: "El usuario se actualizó correctamente.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1500,
         });
-      
-        if (!response.ok) {
-          throw new Error('Error en la solicitud');
-        }
-      
-        const result = await response.json();
-      
-        if (result.status === 200) {
-          Swal.fire("Actualizado", "El usuario se actualizó correctamente.", "success");
-          setShowModalEditar(false);
-           actualizarusuario(result.message);
-        } else {
-          Swal.fire("Error", "No se pudo actualizar el usuario.", "error");
-        }
-      } catch (error) {
-        console.error("Error en la solicitud:", error);
-        Swal.fire("Error", "Ocurrió un error al actualizar el usuario.", "error");
+        setShowModalEditar(false);
+        actualizarusuario(result.message);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo actualizar el usuario.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
-      
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
-      Swal.fire("Error", "Ocurrió un problema al actualizar el usuario.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un problema al actualizar el usuario.",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } finally {
       setLoading(false);
     }
@@ -121,7 +144,6 @@ const MdEditarUsuario = ({ showModalEditar, setShowModalEditar, usuario,actualiz
             >
               <option value={1}>Administrador</option>
               <option value={2}>Chef</option>
-             
             </Form.Select>
           </Form.Group>
 

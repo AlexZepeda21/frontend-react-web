@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../url';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { motion } from 'framer-motion';
-import Swal from 'sweetalert2';  // Import SweetAlert2
+import Swal from 'sweetalert2';
 import "../styles/styleproduct.css";
 import { X } from 'lucide-react';
 import MdAgregarUnidadMedida from './MdAgregarUnidadMedida';
@@ -18,17 +18,12 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
         imagenBase64: '',
     });
 
-
-
     const unidad_medida_modal = () => {
         setIsOpenunidad_medida(true);
     };
 
-
     const [image, setImage] = useState(null);
-
     const id = localStorage.getItem('id');
-
     const closeModal = () => setIsOpen(false);
 
     const handleInputChange = (e) => {
@@ -71,18 +66,10 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
 
     const agregarUnidadMedida = (nuevaUnidad) => {
         setunidad_medida((prev) => [...prev, nuevaUnidad]);
-
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        Swal.fire({
-            title: 'Enviando datos...',
-            text: 'Por favor, espere...',
-            icon: 'info',
-            showConfirmButton: false,
-            allowOutsideClick: false,
-        });
 
         try {
             const response = await fetch(`${API_BASE_URL}/productos`, {
@@ -103,16 +90,18 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
             const result = await response.json();
             if (response.ok) {
                 Swal.fire({
-                    title: 'Producto registrado con éxito',
                     icon: 'success',
-                    confirmButtonText: 'Aceptar',
-                }).then(() => {
-                    categoriaCount(result.categoria_producto);
-
-                    onNuevoProducto(result.message);
-
-                    closeModal();
+                    title: 'Ingrediente agregado a la receta',
+                    text: 'Espere a que se reinicie el navegador',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
                 });
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             } else {
                 Swal.fire({
                     title: 'Error al registrar el producto',
@@ -131,10 +120,6 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
             });
         }
     };
-
-
-
-
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -194,7 +179,6 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
                     <div className="form-group mb-4 ">
                         <label>Unidad de Medida </label>
                         <div className="d-flex align-items-center">
-
                             <select
                                 name="id_unidad_medida"
                                 value={formData.id_unidad_medida}
@@ -243,6 +227,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
                     </div>
                 </form>
             </motion.div>
+
             {isOpeninunidad_medida && MdAgregarUnidadMedida && (
                 <MdAgregarUnidadMedida
                     showModal={isOpeninunidad_medida}
@@ -251,7 +236,5 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
                 />
             )}
         </div>
-
-
     );
 }
