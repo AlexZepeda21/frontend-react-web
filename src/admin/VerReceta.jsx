@@ -373,7 +373,7 @@ const Page = () => {
           timer: 3000,  // Duración de la notificación (en milisegundos)
         });
       }
-      throw error; 
+      throw error;
     }
   };
 
@@ -382,7 +382,6 @@ const Page = () => {
     try {
       const productosValidos = await Promise.all(
         productos.map(async (producto) => {
-          // Verifica la estructura de `producto`
           console.log("Producto actual:", producto);
 
           // Hacer la solicitud a la API
@@ -412,15 +411,17 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
     // Validación de campos vacíos
-    if (!formPlato.nombre || !formPlato.precio || !formPlato.cantidad_platos || !formPlato.descripcion) {
+    if (!formPlato.nombre || formPlato.precio <= 0 || !formPlato.precio || formPlato.cantidad_platos <= 0 || !formPlato.cantidad_platos || !formPlato.descripcion) {
       Swal.fire({
         icon: 'question',
-        title: 'Es importante que todos los campos esten llenos',
+        title: 'Rellene todos los campos',
+        text: 'Si todos los campos estan llenos, verifique que el precio sea mayor a 0 y que la cantidad de platos a crear sea mayor a 0',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación (en milisegundos)
+        timer: 5000,
       });
 
       return;
@@ -428,17 +429,18 @@ const Page = () => {
 
     try {
 
-      // Paso 1: Verificar el stock de todos los productos
+
       const productosValidos = await verificarStockProductos();
 
-      // Paso 2: Verificar si todos los productos tienen suficiente stock
+      // Verificar si todos los productos tienen suficiente stock
       const hayStockInsuficiente = productosValidos.some((producto) => producto.esValido === 0);
 
       if (hayStockInsuficiente) {
         // Mostrar un mensaje de error si no hay suficiente stock
         Swal.fire({
           icon: 'question',
-          title: 'No hay suficiente stock para uno o más productos. No se creará el plato.',
+          title: 'Inventario insuficiente.',
+          text: 'No hay suficiente stock para uno o más productos. No se creará el plato.',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
@@ -449,12 +451,25 @@ const Page = () => {
       }
 
 
-      // Paso 1: Usamos los productos de la receta para calcular el stock a actualizar
+      // Paso 1: Usar los productos de la receta para calcular el stock a actualizar
       const productosUsados = productos.map((producto) => {
         const cantidadUsada = producto.cantidad * formPlato.cantidad_platos; // Calculamos la cantidad usada por la receta
         return { id_producto: producto.producto.id_producto, cantidadUsada };
       });
 
+      // Validación después de mapear
+      if (productosUsados.length === 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'No hay',
+          text: 'No hay productos válidos en la receta o no se pudo calcular la cantidad usada.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        return; // Detener el proceso si no hay productos procesados
+      }
       // Paso 2: Actualizamos el stock de cada producto utilizando el ingreso
       for (const producto of productosUsados) {
         await actualizarProducto(producto.id_producto, producto.cantidadUsada);
@@ -485,10 +500,9 @@ const Page = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 1500,  // Duración de la notificación (en milisegundos)
+          timer: 1500,
         });
 
-        // Después de 1 segundo, recargar la página
         setTimeout(() => {
           window.location.reload();
         }, 1000); // 1000 milisegundos = 1 segundo
@@ -500,9 +514,9 @@ const Page = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 1500,  // Duración de la notificación (en milisegundos)
+          timer: 1500,
         });
- 
+
       }
     } catch (error) {
       console.error('Error:', error);
@@ -512,7 +526,7 @@ const Page = () => {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 1500,  // Duración de la notificación (en milisegundos)
+        timer: 1500,
       });
     }
   };
@@ -598,7 +612,7 @@ const Page = () => {
         // Aquí se almacenan los productos de la receta
         setProductos(response.data.receta.receta_productos || []);
       })
-      .catch(() => setError( Swal.fire({
+      .catch(() => setError(Swal.fire({
         icon: 'error',
         title: 'Error al obtener la receta, asegurese de estar conectado a la red de itca',
         text: error.message,
@@ -620,7 +634,7 @@ const Page = () => {
         if (error.response && error.response.status === 404) {
           setPasos([]);
         } else {
-          setError( Swal.fire({
+          setError(Swal.fire({
             icon: 'question',
             title: 'No se obtuvieron productos, no hay o no se estan cargando correctamente, verifique si esta conectada a la red de itca',
             text: error.message,
@@ -634,7 +648,7 @@ const Page = () => {
 
     axios.get(`${API_BASE_URL}/receta/${idReceta}`)
       .then((response) => setProductos(response.data.recetas.receta_productos || []))
-      .catch(() => setError( ))
+      .catch(() => setError())
       .finally(() => setLoading(false));
   };
 
@@ -918,7 +932,7 @@ const Page = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
-                      className="w-full mt-1"
+                      className="form-control"
 
                     />
                     {/* Solo mostrar la imagen si existe */}
