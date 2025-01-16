@@ -281,7 +281,7 @@ const Platos = () => {
                     variant="top"
                     src={item.img ? `data:image/jpeg;base64,${item.img}` : "https://via.placeholder.com/300"}
                     alt={item.nombre}
-                    style={{ objectFit: 'cover', height: '200px' }}
+                    style={{ objectFit: 'cover', height: '100px' }}
                   />
                   <Card.Body>
                     <Card.Title>{item.nombre}</Card.Title>
