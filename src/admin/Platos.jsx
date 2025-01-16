@@ -183,7 +183,7 @@ const Platos = () => {
         Swal.fire({
           icon: 'question',
           title: 'No se agrego el producto a la categoria',
-          text: 'Pruebe cambiando de imagen',
+          text: 'Si estas usando una imagen, prueba cambiarla, de no estar usando una imagen, agregala.',
           toast: true,  // Hacer que sea una notificación tipo toast
           position: 'top-end',
           showConfirmButton: false,
@@ -259,10 +259,10 @@ const Platos = () => {
       <Row className="mb-4">
         <Col className="text-center">
           <Button variant="primary" className="me-3" onClick={() => setShowModal(true)}>
-            Agregar Platos
+            Asignar platos
           </Button>
           <Button variant="success" onClick={() => setVerModalInventario(true)}>
-            Agregar del inventario
+            Agregar productos del inventario
           </Button>
         </Col>
       </Row>
@@ -305,7 +305,7 @@ const Platos = () => {
           ))
         ) : (
           <Col xs={12} className="text-center">
-            <h3>No hay platos, agregue platos.</h3>
+            <p>No hay platos, agregue platos.</p>
           </Col>
         )}
       </Row>
@@ -445,10 +445,9 @@ const Platos = () => {
         </Modal.Header>
         <Modal.Body>
           {productoSeleccionado && (
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} >
               <Form.Group className="mb-3">
-                <Form.Label>ID Producto</Form.Label>
-                <Form.Control type="number" value={productoSeleccionado.id_producto} readOnly />
+                <Form.Control style={{ display: 'none' }} type="number" value={productoSeleccionado.id_producto} readOnly />
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -503,7 +502,7 @@ const Platos = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3">
+              <Form.Group className="mb-3" style={{ display: 'none' }}>
                 <Form.Label>ID Categoría de Menú</Form.Label>
                 <Form.Control
                   type="number"

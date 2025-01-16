@@ -111,7 +111,7 @@ export default function MdAgregarCateRecetas() {
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="bg-white rounded-lg shadow-xl w-full max-w-lg"
-          >
+          > 
             <div className="bg-gradient-to-r from-pink-500 to-orange-500 p-6 text-white rounded-t-lg">
               <h2 className="text-2xl font-bold mb-2">Categoria de recetas</h2>
             </div>

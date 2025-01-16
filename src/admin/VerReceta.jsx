@@ -461,12 +461,12 @@ const Page = () => {
       if (productosUsados.length === 0) {
         Swal.fire({
           icon: 'error',
-          title: 'No hay',
+          title: 'Ingredientes inexistentes',
           text: 'No hay productos válidos en la receta o no se pudo calcular la cantidad usada.',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,
+          timer: 5000,
         });
         return; // Detener el proceso si no hay productos procesados
       }

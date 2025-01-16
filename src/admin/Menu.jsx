@@ -8,6 +8,7 @@ import Generador_de_codigo from '../QR/Generador_de_codigo';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import Swal from 'sweetalert2'  // Import SweetAlert2
+import { Cat } from 'lucide-react';
 
 const Menu = () => {
   const [isOpenGenerador, setIsOpenGenerador] = useState(false);
@@ -19,9 +20,11 @@ const Menu = () => {
   const [categoriaAEditar, setCategoriaAEditar] = useState(null); // Para almacenar la categoría seleccionada
   const [showUpdateModal, setShowUpdateModal] = useState(false);    // Controla la visibilidad del modal de actualización
   const navigate = useNavigate(); // Hook para navegar
+  const [categoriaOriginal, setCategoriaOriginal] = useState(null); // Nuevo estado para guardar los datos originales
 
   const openUpdateModal = (categoria) => {
     setCategoriaAEditar(categoria);  // Guardamos la categoría que queremos editar
+    setCategoriaOriginal(categoria); // Guardamos una copia de los datos originales
     setShowUpdateModal(true);        // Abrimos el modal
   };
 
@@ -86,56 +89,84 @@ const Menu = () => {
   };
 
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const categoryData = { ...newCategoria, foto: newCategoria.foto || null };
       await axios.post(`${API_BASE_URL}/categorias_menu`, categoryData);
       Swal.fire({
-                icon: 'success',
-                title: 'Categoría creada',
-                text: 'La categoría del menu se ha creado con éxito!',
-                toast: true,  // Hacer que sea una notificación tipo toast
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,  // Duración de la notificación en milisegundos
-              });
+        icon: 'success',
+        title: 'Categoría creada',
+        text: 'La categoría del menu se ha creado con éxito!',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
       setShowModal(false);
       fetchCategoriasMenu();
     } catch (err) {
       Swal.fire({
-                icon: 'error',
-                title: 'La categoria no se ha creado, tu conexión es lenta o no estas conectado a la red de itca',
-                text: 'La categoría de receta se ha creado con éxito!',
-                toast: true,  // Hacer que sea una notificación tipo toast
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,  // Duración de la notificación en milisegundos
-              });
+        icon: 'error',
+        title: 'Categoria no creada',
+        text: 'Comprueba si has agregado todos los campos de manera correcta, tambien es posible que tu conexión este lenta o no estes conectado a la red de itca \nRellena campos vacios sin usar espacios o conectate a una red de itca',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 10000,
+      });
     }
   };
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
+
+    // Verificar si no hay cambios
+    if (
+      categoriaAEditar.nombre === categoriaOriginal.nombre &&
+      categoriaAEditar.descripcion === categoriaOriginal.descripcion &&
+      categoriaAEditar.foto === categoriaOriginal.foto &&
+      categoriaAEditar.estado === categoriaOriginal.estado
+    ) {
+      Swal.fire({
+        icon: 'info',
+        title: 'No se han realizado cambios',
+        text: 'No has modificado ningún campo.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return; // Detener la ejecución si no hay cambios
+    }
+
     try {
       const categoryData = { ...categoriaAEditar, foto: categoriaAEditar.foto || null };
       await axios.put(`${API_BASE_URL}/categorias_menu/${categoriaAEditar.id_categoria_menu}`, categoryData);
       Swal.fire({
-                icon: 'success',
-                title: 'Categoría actualizada',
-                text: 'La categoría de receta se ha actualizado con éxito!',
-                toast: true,  // Hacer que sea una notificación tipo toast
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,  // Duración de la notificación en milisegundos
-              });
+        icon: 'success',
+        title: 'Categoría actualizada',
+        text: 'La categoría de receta se ha actualizado con éxito!',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
       setShowUpdateModal(false);  // Cierra el modal
       fetchCategoriasMenu();       // Actualiza la lista de categorías
-
     } catch (err) {
-      setError(`Error al actualizar la categoría: ${err.response?.data?.message || err.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'No has podido actualizar la categoria',
+        text: 'Probablemente el formato de imagen no es soportado, prueba agregando otra imagen. \n Ademas comprueba si estas conectado a la red de itca',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 7000,
+      });
     }
+    
   };
 
   // Función para redirigir al usuario a la página de platos
