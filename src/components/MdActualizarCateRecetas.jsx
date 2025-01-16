@@ -136,9 +136,9 @@ export default function MdActualizarCateRecetas({ isOpen, setIsOpen, categoria }
       }
     } catch (error) {
       Swal.fire({
-        icon: 'Error',
-        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
-        text: error.message,
+        icon: 'error',
+        title: 'Error en la respuesta del servidor',
+        text: 'Estas agregando un campo invalido o no estas conectado a la red de itca',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,

@@ -538,64 +538,81 @@ const Page = () => {
   };
 
   const agregarPaso = () => {
-    if (!nuevoPaso.paso_numero || !nuevoPaso.descripcion) {
+    // Validar que el número de paso sea un número válido y mayor que 0
+    if (isNaN(nuevoPaso.paso_numero) || nuevoPaso.paso_numero <= 0) {
       Swal.fire({
-        icon: 'question',
-        title: 'Agrega una descripcion',
+        icon: 'error',
+        title: 'Número de paso inválido',
+        text: 'El número de paso debe ser un valor numérico mayor que 0.',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación (en milisegundos)
+        timer: 3000,
       });
-
       return;
     }
+
+    // Validar que la descripción no esté vacía ni contenga solo espacios en blanco
+    if (!nuevoPaso.descripcion || !nuevoPaso.descripcion.trim()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Descripción inválida',
+        text: 'La descripción no puede estar vacía o contener solo espacios en blanco.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return;
+    }
+
+    // Si pasa las validaciones, crear el objeto pasoData
     const pasoData = {
       id_recetas: idReceta,
       paso_numero: nuevoPaso.paso_numero,
-      descripcion: nuevoPaso.descripcion,
+      descripcion: nuevoPaso.descripcion.trim(), // Eliminar espacios en blanco al inicio y al final
     };
 
+    // Enviar los datos a la API
     axios.post(`${API_BASE_URL}/pasos_receta`, pasoData)
       .then((response) => {
         if (response.status === 201 && response.data) {
           setPasos((prevPasos) => [...prevPasos, response.data]);
-          setNuevoPaso({ paso_numero: '', descripcion: '' });
+          setNuevoPaso({ paso_numero: '', descripcion: '' }); // Reiniciar el formulario
           Swal.fire({
             icon: 'success',
             title: 'Paso agregado',
-            text: 'Paso agregado satisfactoriamebte',
+            text: 'Paso agregado satisfactoriamente.',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 1500,  // Duración de la notificación (en milisegundos)
+            timer: 1500,
           });
-          setShowModalAgregarPaso(false);
+          setShowModalAgregarPaso(false); // Cerrar el modal
         } else {
-
           Swal.fire({
             icon: 'error',
-            title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
-            text: error.message,
+            title: 'Error en la respuesta del servidor',
+            text: 'No se pudo agregar el paso. Inténtalo de nuevo más tarde.',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,  // Duración de la notificación (en milisegundos)
+            timer: 3000,
           });
-
         }
       })
-      .catch(() => setError(
+      .catch((error) => {
+        console.error('Error al agregar el paso:', error);
         Swal.fire({
           icon: 'error',
-          title: 'Error al agregar el paso, asegurese de estar conectado a la red de itca',
-          text: error.message,
+          title: 'Error al agregar el paso',
+          text: 'Asegúrate de estar conectado a la red de ITCA.',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,  // Duración de la notificación (en milisegundos)
-        })
-      ));
+          timer: 3000,
+        });
+      });
   };
 
   const recargarDatos = () => {
