@@ -65,6 +65,13 @@ export default function MdAgregarCateproductos({agregarcategoria}) {
         });
         agregarcategoria(result.message)
         setIsOpen(false)
+        // Limpiar los campos después de crear la categoría
+        setFormData({
+          nombre: '',
+          descripcion: '',
+          foto: ''
+        })
+        setImage(null);  // Limpiar la imagen seleccionada
       } else {
         throw new Error('El nombre de la categoria no puede repetirse')
       }
