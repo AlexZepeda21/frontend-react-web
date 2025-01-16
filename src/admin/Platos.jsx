@@ -7,7 +7,9 @@ import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import '../styles/Platos.css';
 import '../styles/modal/modal.css'
-import Swal from 'sweetalert2'  // Import SweetAlert2
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+
 
 
 const Platos = () => {
@@ -22,6 +24,7 @@ const Platos = () => {
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [showFormularioModal, setShowFormularioModal] = useState(false);
   const [searchMenuItems, setSearchMenuItems] = useState('');
+  const navigate = useNavigate(); // Hook para navegar
   const [searchProductos, setSearchProductos] = useState('');
   const [formPlato, setFormPlato] = useState({
     nombre: '',
@@ -31,6 +34,14 @@ const Platos = () => {
     estado: true,
     imagenBase64: '',
   });
+
+
+
+  const reservas = (id_menu) => {
+    //localStorage.setItem("id_categoria_menu", id_menu); // Guardamos el ID en el localStorage
+    navigate(`/admin/Reservas/${id_menu}`); // Navegamos a la página de platos con el ID de la categoría
+  
+  };
 
   useEffect(() => {
     fetchMenuItems();
@@ -280,7 +291,14 @@ const Platos = () => {
                     <Badge bg={item.estado ? "success" : "danger"}>
                       {item.estado ? "Disponible" : "No disponible"}
                     </Badge>
+                    
                   </Card.Body>
+                  <button
+                  onClick={() => reservas(item.id_menu)} 
+                    className="btn btn-primary m-1"
+                  >
+                    Entrar
+                  </button>
                 </Card>
               </motion.div>
             </Col>

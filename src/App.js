@@ -22,6 +22,7 @@ import { API_BASE_URL } from './url';
 import Subir_img from './QR/Subir_img';
 import Menu from './admin/Menu';
 import Platos from './admin/Platos';
+import Reservas from './admin/Reservas';
 
 import { time } from 'framer-motion';
 
@@ -232,6 +233,7 @@ function App() {
             <Route path="usuario" element={<UserTable />} />
             <Route path="Menu" element={<Menu />} />
             <Route path="Platos/:id_categoria_menu" element={<Platos />} />
+            <Route path="Reservas/:id_menu" element={<Reservas />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
 
 
