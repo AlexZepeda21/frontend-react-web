@@ -160,7 +160,7 @@ export default function MdActializarproducto({ isOpen, setIsOpen, producto, upda
 
             <form onSubmit={handleSubmit} className="p-4 space-y-3">
               <Form.Group controlId="formEstado" className="">
-                <Form.Label className="me-3 mb-0">Estado</Form.Label>
+                
                 <Form.Check
                   type="switch"
                   id="estado-switch"
