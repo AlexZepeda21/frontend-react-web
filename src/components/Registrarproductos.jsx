@@ -99,9 +99,9 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
                     timer: 1500,
                 });
 
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
+                onNuevoProducto(result.message);
+                closeModal();
+
             } else {
                 Swal.fire({
                     title: 'Error al registrar el producto',
