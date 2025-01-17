@@ -83,6 +83,7 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
     // Crear el objeto para enviar solo los campos modificados
     const updatedData = {};
 
+    // Verifica si los campos han cambiado respecto a los datos iniciales
     if (nombre !== receta.nombre_receta) updatedData.nombre_receta = nombre;
     if (descripcion !== receta.descripcion) updatedData.descripcion = descripcion;
     if (tiempoPreparacion !== receta.tiempo_preparacion) updatedData.tiempo_preparacion = tiempoPreparacion;
@@ -100,6 +101,43 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
         position: 'top-end',
         showConfirmButton: false,
         timer: 3000,  // Duración de la notificación (en milisegundos)
+      });
+      return;
+    }
+
+    // Verificar que todos los campos obligatorios no estén vacíos
+    if (
+      !nombre ||
+      !descripcion ||
+      !tiempoPreparacion ||
+      !numeroPorciones ||
+      !dificultad
+    ) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Todos los campos son obligatorios',
+        text: 'Por favor, llena todos los campos antes de enviar.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000, // Duración de la notificación (en milisegundos)
+      });
+      return;
+    }
+
+    // Validación de campos numéricos para que no acepten valores negativos
+    if (
+      isNaN(tiempoPreparacion) || tiempoPreparacion <= 0 ||
+      isNaN(numeroPorciones) || numeroPorciones <= 0
+    ) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Los campos numéricos deben ser positivos',
+        text: 'Por favor, ingresa valores positivos para el tiempo de preparación y las porciones.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000, // Duración de la notificación (en milisegundos)
       });
       return;
     }
@@ -131,8 +169,7 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
         }, 1000); // 1000 milisegundos = 1 segundo
 
         setShowModalEditar(false);
-      }
-      else {
+      } else {
         Swal.fire({
           icon: 'error',
           title: 'Verifica los datos que estas enviando',
@@ -141,13 +178,11 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
           showConfirmButton: false,
           timer: 3000,  // Duración de la notificación (en milisegundos)
         });
-
       }
-    }
-    catch (error) {
+    } catch (error) {
       Swal.fire({
-        icon: 'Error',
-        title: 'Error en la respuesta del servidor, intentelo de nuevo mas tarde',
+        icon: 'error',
+        title: 'Error en la respuesta del servidor, intentelo de nuevo más tarde',
         text: error.message,
         toast: true,
         position: 'top-end',
@@ -156,6 +191,7 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
       });
     }
   };
+
 
   return (
     <Modal show={showModalEditar} onHide={() => setShowModalEditar(false)} className="z-50">

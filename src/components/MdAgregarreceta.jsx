@@ -46,6 +46,40 @@ export default function MdAgregarRecetas({ setShowModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Verificar que todos los campos obligatorios no estén vacíos
+    if (
+      !formData.nombre_receta ||
+      !formData.descripcion ||
+      !formData.tiempo_preparacion ||
+      !formData.numero_porciones ||
+      !formData.dificultad
+    ) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Todos los campos son obligatorios',
+        text: 'Por favor, llena todos los campos antes de enviar.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000, // Duración de la notificación (en milisegundos)
+      });
+      return; // Detener la ejecución si hay campos vacíos
+    }
+
+    // Validación de campos numéricos para que no acepten valores negativos
+    if (parseInt(formData.tiempo_preparacion) <= 0 || parseInt(formData.numero_porciones) <= 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Los campos numéricos deben ser positivos',
+        text: 'Por favor, ingresa valores positivos para el tiempo de preparación y las porciones.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000, // Duración de la notificación (en milisegundos)
+      });
+      return;
+    }
     try {
       const response = await fetch(`${API_BASE_URL}/recetas`, {
         method: 'POST',
