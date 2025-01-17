@@ -80,7 +80,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
                 body: JSON.stringify({
                     foto: formData.imagenBase64 || "Agrege una foto",
                     nombre: formData.nombre,
-                    descripcion: formData.descripcion,
+                    descripcion: formData.descripcion || "Agrege una Descripcion",
                     id_unidad_medida: formData.id_unidad_medida,
                     id_categoria_pro: categoria.id_categoria_pro,
                     id_usuario: id,
