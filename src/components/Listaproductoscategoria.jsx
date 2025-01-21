@@ -47,7 +47,10 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
   };
 
   const agregarProducto = (nuevoProducto) => {
-    setProductos((prev) => [...prev, nuevoProducto]);
+    nuevoProducto.forEach(Producto => {
+      setProductos((prev) => [...prev, Producto]);
+
+    });
   };
 
   const ActualizarProducto = (nuevoProducto) => {

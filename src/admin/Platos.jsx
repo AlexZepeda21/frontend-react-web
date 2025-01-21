@@ -62,6 +62,7 @@ const Platos = () => {
   useEffect(() => {
     if (productoSeleccionado) {
       setFormPlato({
+        id_producto : productoSeleccionado.id_producto || '',
         nombre: productoSeleccionado.nombre,
         precio: productoSeleccionado.precio,
         cantidad_platos: productoSeleccionado.cantidad_platos,
@@ -151,6 +152,7 @@ const Platos = () => {
       const response = await fetch(`${API_BASE_URL}/menu`, {
         method: 'POST',
         body: JSON.stringify({
+          id_producto: formPlato.id_producto,
           nombre: formPlato.nombre,
           precio: formPlato.precio,
           cantidad_platos: formPlato.cantidad_platos,

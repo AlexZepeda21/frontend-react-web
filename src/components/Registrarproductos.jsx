@@ -91,8 +91,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
             if (response.ok) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Ingrediente agregado a la receta',
-                    text: 'Espere a que se reinicie el navegador',
+                    title: 'Producto Agregado a la categoria',
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,

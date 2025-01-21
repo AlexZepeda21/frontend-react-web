@@ -10,14 +10,22 @@ import { API_BASE_URL } from '../url'
 export default function Mdinformacionproductos({ isOpen, setIsOpen, producto }) {
     const [formData, setFormData] = useState({
         nombre: '',
+        stock: '',
+        unidad_medida: '',
+        categoria: '',
+        usuario: '',
         descripcion: '',
         estado: false,
       });
+
 
   useEffect(() => {
     if (producto) {
       setFormData({
         nombre: producto.nombre,
+        stock: producto.stock,
+        unidad_medida: producto.unidad_medida,
+        usuario: producto.usuario,
         descripcion: producto.descripcion,
         estado: producto.estado || false,  
       });
