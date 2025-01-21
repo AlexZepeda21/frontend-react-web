@@ -100,6 +100,7 @@ export default function Registrarproductos({ isOpen, setIsOpen, categoria, onNue
                 });
 
                 onNuevoProducto(result.message);
+                categoriaCount(result.categoria_producto);
                 closeModal();
 
             } else {
