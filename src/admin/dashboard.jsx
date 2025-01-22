@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bar, Line } from "react-chartjs-2";
+import { API_BASE_URL } from "../url";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,84 +26,116 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  // Datos para la gráfica de barras
-  const barData = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
-    datasets: [
-      {
-        label: "Ventas 2024",
-        data: [65, 59, 80, 81, 56, 55],
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
+  const [barData, setBarData] = useState(null);
+  const [lineData, setLineData] = useState(null);
+
+  useEffect(() => {
+    // Función para obtener datos de la API
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/grafica_platillo_mas_reservado`);
+        const result = await response.json();
+
+        if (result.status === 200) {
+          const message = result.message;
+
+          const labels = message.map((item) => item.nombre);
+          const barDataValues = message.map((item) => item.cantidad);
+          const lineDataValues = message.map((item) => item.cantidad); 
+
+          setBarData({
+            labels,
+            datasets: [
+              {
+                label: "Platillos más reservados",
+                data: barDataValues,
+                backgroundColor: "rgba(75, 192, 192, 0.5)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+              },
+            ],
+          });
+
+          setLineData({
+            labels,
+            datasets: [
+              {
+                label: "Platillos más reservados (Líneas)",
+                data: lineDataValues,
+                fill: false,
+                borderColor: "rgba(255, 99, 132, 1)",
+                tension: 0.4,
+              },
+            ],
+          });
+        } else {
+          console.error("Error en los datos de la API:", result.message);
+        }
+      } catch (error) {
+        console.error("Error al obtener los datos de la API:", error);
+      }
+    };
+
+    fetchData();
+  }, []); 
 
   const barOptions = {
     responsive: true,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Los 6 platos mas reservados"},
     },
-  };
-
-  // Datos para la gráfica de línea
-  const lineData = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
-    datasets: [
-      {
-        label: "Ganancias 2024",
-        data: [40, 55, 70, 80, 90, 100],
-        fill: false,
-        borderColor: "rgba(255, 99, 132, 1)",
-        tension: 0.4,
-      },
-    ],
   };
 
   const lineOptions = {
     responsive: true,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Ganancias Mensuales (2024)" },
+      title: { display: true, text: "Platillos más reservados (Líneas)" },
     },
   };
 
   return (
     <div className="container di mt-5">
-        <div className="dashboard-container" style={styles.dashboardContainer}>
-      <div className="chart" style={styles.chart}>
-        <h3 style={styles.title}>Gráfica de Barras</h3>
-        <Bar data={barData} options={barOptions} />
-      </div>
-      <div className="chart" style={styles.chart}>
-        <h3 style={styles.title}>Gráfica de Líneas</h3>
-        <Line data={lineData} options={lineOptions} />
-      </div>
-    </div>
-    </div>
+      <div className="dashboard-container" style={styles.dashboardContainer}>
+        {/* Gráfica de Barras */}
+        <div className="chart" style={styles.chart}>
+          <h3 style={styles.title}>Los 6 platillos mas reservados</h3>
+          {barData ? (
+            <Bar data={barData} options={barOptions} />
+          ) : (
+            <p>Cargando datos...</p>
+          )}
+        </div>
 
-    
+        {/* Gráfica de Líneas */}
+        <div className="chart" style={styles.chart}>
+          <h3 style={styles.title}>Gráfica de Líneas</h3>
+          {lineData ? (
+            <Line data={lineData} options={lineOptions} />
+          ) : (
+            <p>Cargando datos...</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
-// Estilos CSS en JS
 const styles = {
   dashboardContainer: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr", // Dos columnas iguales
+    gridTemplateColumns: "1fr 1fr", 
     gap: "20px",
     padding: "20px",
-    maxWidth: "1200px", // Ancho máximo del contenedor
-    margin: "auto", // Centrar el contenedor
+    maxWidth: "1200px", 
+    margin: "auto",
   },
   chart: {
     backgroundColor: "#ffffff",
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    height: "300px", // Altura específica para cada gráfica
+    height: "300px", 
   },
   title: {
     textAlign: "center",
