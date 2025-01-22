@@ -830,11 +830,11 @@ const Page = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>Editar Paso {pasoEditando.paso_numero}</h2>
-              <button onClick={cerrarModalEditarPaso}>&times;</button>
             </div>
             <div className="modal-body">
               {pasoEditando && (
                 <div className="space-y-4">
+                  <br />
                   <label htmlFor="descripcionPaso" className="label-form">Descripción</label>
                   <textarea
                     id="descripcionPaso"
@@ -845,6 +845,8 @@ const Page = () => {
 
                   {/* Botón para guardar los cambios */}
                   <Button onClick={guardarCambiosPaso} variant="primary">Guardar Cambios</Button>
+                  <Button onClick={cerrarModalEditarPaso} variant="primary">Cancelar</Button>
+
                 </div>
               )}
             </div>
@@ -856,11 +858,11 @@ const Page = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>Editar Ingrediente: {ingredienteEditando.nombre}</h2>
-              <button onClick={cerrarModalEditarIngrediente}>&times;</button>
             </div>
             <div className="modal-body">
               {ingredienteEditando && (
                 <div className="space-y-4">
+                  <br />
                   <p><strong>Unidad de medida:</strong> {ingredienteEditando.unidad_medida}</p>
 
                   <label htmlFor="cantidadIngrediente" className="label-form">Cantidad</label>
@@ -873,6 +875,8 @@ const Page = () => {
                   />
 
                   <Button onClick={guardarCambiosIngrediente} variant="primary">Guardar Cambios</Button>
+                  <Button onClick={cerrarModalEditarIngrediente} variant="primary">Cancelar</Button>
+
                 </div>
               )}
             </div>
@@ -887,7 +891,6 @@ const Page = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>Agregar Paso a la Receta</h2>
-              <button onClick={cerrarModalAgregarPaso}>&times;</button>
             </div>
             <div className="modal-body">
               <div className="space-y-4">
@@ -908,6 +911,8 @@ const Page = () => {
                   className="textarea-field"
                 />
                 <Button onClick={agregarPaso} variant="primary">Agregar Paso</Button>
+                <Button onClick={cerrarModalAgregarPaso} variant="primary">Cancelar</Button>
+
               </div>
             </div>
           </div>
