@@ -87,7 +87,7 @@ const Dashboard = () => {
             labels,
             datasets: [
               {
-                label: "Platillos más reservados (Líneas)",
+                label: "Productos mas utilizados",
                 data: lineDataValues,
                 fill: false,
                 borderColor: "rgba(255, 99, 132, 1)",
@@ -119,7 +119,6 @@ const Dashboard = () => {
     responsive: true,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Platillos más reservados (Líneas)" },
     },
   };
 
@@ -138,7 +137,7 @@ const Dashboard = () => {
 
         {/* Gráfica de Líneas */}
         <div className="chart" style={styles.chart}>
-          <h3 style={styles.title}>Gráfica de Líneas</h3>
+          <h3 style={styles.title}>Los 6 productos mas utilizados</h3>
           {lineData ? (
             <Line data={lineData} options={lineOptions} />
           ) : (
