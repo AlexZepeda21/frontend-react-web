@@ -90,7 +90,7 @@ function Sidebar() {
           <a href="/../admin/Menu" className="nav-item">
             <i className="fas fa-concierge-bell"></i>Menu
           </a>
-          <a href="#" className="nav-item">
+          <a href="../admin/Reservas" className="nav-item">
             <i className="fas fa-calendar-check"></i>Reservas
           </a>
           <a href="../admin/usuario" className="nav-item">

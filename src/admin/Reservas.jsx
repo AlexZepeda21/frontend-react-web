@@ -15,7 +15,7 @@ const Reservas = () => {
 
     const fetchMenuItems = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/reservas/${id_menu}`);
+            const response = await fetch(`${API_BASE_URL}/reservas_fil`);
             if (!response.ok) {
                 throw new Error('Error al cargar los menús con categoría');
             }
@@ -76,7 +76,6 @@ const Reservas = () => {
     return (
         <Container fluid className="py-5">
             <h1>Reservas</h1>
-            {error && <p className="text-danger">{error}</p>}
             <input
                 type="text"
                 className="form-control mb-3"

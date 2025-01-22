@@ -37,11 +37,6 @@ const Platos = () => {
 
 
 
-  const reservas = (id_menu) => {
-    //localStorage.setItem("id_categoria_menu", id_menu); // Guardamos el ID en el localStorage
-    navigate(`/admin/Reservas/${id_menu}`); // Navegamos a la página de platos con el ID de la categoría
-  
-  };
 
   useEffect(() => {
     fetchMenuItems();
@@ -295,12 +290,7 @@ const Platos = () => {
                     </Badge>
                     
                   </Card.Body>
-                  <button
-                  onClick={() => reservas(item.id_menu)} 
-                    className="btn btn-primary m-1"
-                  >
-                    Entrar
-                  </button>
+
                 </Card>
               </motion.div>
             </Col>

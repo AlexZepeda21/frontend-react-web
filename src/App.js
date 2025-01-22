@@ -233,7 +233,7 @@ function App() {
             <Route path="usuario" element={<UserTable />} />
             <Route path="Menu" element={<Menu />} />
             <Route path="Platos/:id_categoria_menu" element={<Platos />} />
-            <Route path="Reservas/:id_menu" element={<Reservas />} />
+            <Route path="Reservas" element={<Reservas />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
 
 
