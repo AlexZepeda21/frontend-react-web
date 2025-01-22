@@ -72,7 +72,7 @@ function Sidebar() {
           <img src={logo} alt="ITCA FEPADE" className="logo" />
         </div>
         <nav className="main-nav">
-          <a href="#" className="nav-item">
+          <a href="/../admin/dashboard" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Dashboard
           </a>
           <a href="/../admin/categoria_productos" className="nav-item">

@@ -23,7 +23,7 @@ import Subir_img from './QR/Subir_img';
 import Menu from './admin/Menu';
 import Platos from './admin/Platos';
 import Reservas from './admin/Reservas';
-
+import Dashboard from './admin/dashboard';
 import { time } from 'framer-motion';
 
 // Componentes chef
@@ -227,6 +227,7 @@ function App() {
             <Route path="eligiendo_pro" element={<ProductoCard />} />
             <Route path="productos" element={<Productos />} />
             <Route path="uni_medidas" element={<UnidadMedidaList />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="recetas/:categoriaId" element={<RecetasList />} />
             <Route path="perfil" element={<Profile />} />
             <Route path="registro" element={<Registro />} />
