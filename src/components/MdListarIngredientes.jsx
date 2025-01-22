@@ -61,10 +61,10 @@ export default function ListarIngredientes() {
     const totalProductos = productosFiltrados.length;
     const paginacion = productosFiltrados.slice((pagina - 1) * productosPorPagina, pagina * productosPorPagina);
 
-    
+
     const cerrarModal = async () => {
-       window.location.reload();
-        }
+        window.location.reload();
+    }
 
     const cambiarPagina = (nuevaPagina) => {
         setPagina(nuevaPagina);
@@ -180,11 +180,8 @@ export default function ListarIngredientes() {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white w-[80%] max-w-[1000px] h-auto max-h-[80vh] p-6 rounded-lg shadow-lg overflow-hidden overflow-y-auto">
-                <div className="border-b p-6">
-                    <h1 className="text-3xl font-bold tracking-tight justify-center">Lista de Ingredientes</h1>
-                </div>
+        <div className="bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white w-[100%] max-w-[1000px] h-auto max-h-[80vh] p-6 rounded-lg shadow-lg overflow-hidden overflow-y-auto">
 
                 {/* Campo de Búsqueda */}
                 <div className="p-6">
@@ -246,44 +243,36 @@ export default function ListarIngredientes() {
                             </TableBody>
                         </Table>
                     </form>
-                </div>
 
-                {/* Paginación */}
-                <div className="flex justify-between items-center p-4">
-                    <Button
-                        variant="outline"
-                        disabled={pagina === 1}
-                        onClick={() => cambiarPagina(pagina - 1)}
-                    >
-                        Anterior
-                    </Button>
-                    <span>Página {pagina} de {Math.ceil(totalProductos / productosPorPagina)}</span>
-                    <Button
-                        variant="outline"
-                        disabled={pagina === Math.ceil(totalProductos / productosPorPagina)}
-                        onClick={() => cambiarPagina(pagina + 1)}
-                    >
-                        Siguiente
-                    </Button>
-                </div>
 
-                <div className="border-t p-6 flex justify-between">
-                    <Button
-                        variant="outline"
-                        className="mx-2"
-                        onClick={() => setDialogOpen(true)}
-                    >
-                        Agregar Ingrediente
-                    </Button>
-                    <Button
-                        variant="outline"
-                        className="mx-2"
-                        onClick={() => cerrarModal()}
-                    >
-                        Cerrar
-                    </Button>
-                </div>
+                    {/* Paginación */}
+                    <div className="flex justify-between items-center p-4">
+                        <Button
+                            variant="outline"
+                            disabled={pagina === 1}
+                            onClick={() => cambiarPagina(pagina - 1)}
+                        >
+                            Anterior
+                        </Button>
+                        <span>Página {pagina} de {Math.ceil(totalProductos / productosPorPagina)}</span>
+                        <Button
+                            variant="outline"
+                            disabled={pagina === Math.ceil(totalProductos / productosPorPagina)}
+                            onClick={() => cambiarPagina(pagina + 1)}
+                        >
+                            Siguiente
+                        </Button>
 
+                        <Button
+                            variant="outline"
+                            className="mx-2"
+                            onClick={() => setDialogOpen(true)}
+                        >
+                            Agregar Ingrediente
+                        </Button>
+
+                    </div>
+                </div>
                 {/* Cuadro de Diálogo: Cantidad del ingrediente */}
                 {dialogOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">

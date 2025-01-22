@@ -908,7 +908,7 @@ const Page = () => {
                   value={nuevoPaso.descripcion}
                   onChange={handlePasoChange}
                   placeholder="Descripción del paso"
-                  className="textarea-field"
+                  className="form-control"
                 />
                 <Button onClick={agregarPaso} variant="primary">Agregar Paso</Button>
                 <Button onClick={cerrarModalAgregarPaso} variant="primary">Cancelar</Button>
@@ -918,21 +918,22 @@ const Page = () => {
           </div>
         </div>
       )}
-
-      {/* Modal para agregar ingredientes */}
       {ShowModalAgregarIngrediente && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content" style={{ width: '90%', maxWidth: '800px', height:'90%' }}> {/* Estilos en línea */}
             <div className="modal-header">
               <h2>Agregar Ingredientes a la Receta</h2>
-              <button onClick={cerrarModalIngredientes}>&times;</button>
             </div>
             <div className="modal-body">
-              <ListarIngredientes idReceta={idReceta} />
+              <div className="overflow-y-auto">
+                <ListarIngredientes idReceta={idReceta} />
+              </div>
+              <button onClick={cerrarModalIngredientes} className='form-control'>Cerrar</button>
             </div>
           </div>
         </div>
       )}
+
 
       {/* Modal para agregar plato */}
       {isModalOpen && (
