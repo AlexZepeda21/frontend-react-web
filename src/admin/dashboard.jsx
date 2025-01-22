@@ -56,6 +56,33 @@ const Dashboard = () => {
             ],
           });
 
+        
+        } else {
+          console.error("Error en los datos de la API:", result.message);
+        }
+      } catch (error) {
+        console.error("Error al obtener los datos de la API:", error);
+      }
+    };
+
+    fetchData();
+  }, []); 
+
+
+  useEffect(() => {
+    // Función para obtener datos de la API
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/grafica_productos_mas_utilizados`);
+        const result = await response.json();
+
+        if (result.status === 200) {
+          const message = result.message;
+
+          const labels = message.map((item) => item.nombre);
+          const barDataValues = message.map((item) => item.cantidad);
+          const lineDataValues = message.map((item) => item.cantidad); 
+
           setLineData({
             labels,
             datasets: [
@@ -68,6 +95,8 @@ const Dashboard = () => {
               },
             ],
           });
+
+        
         } else {
           console.error("Error en los datos de la API:", result.message);
         }
