@@ -39,6 +39,8 @@ import UserTableChef from './chef/prueba';
 import UnidadMedidaListChef from './chef/uni_medidas';
 import VerRecetaChef from './chef/VerReceta';
 import MenuChef from './chef/Menu';
+import PlatosChef from './chef/Platos';
+import ReservasChef from './chef/Reservas'
 
 function App() {
 
@@ -257,6 +259,8 @@ function App() {
             <Route path="perfil" element={<ProfileChef />} />
             <Route path="Menu" element={<MenuChef />} />
             <Route path="VerReceta/:idReceta" element={<VerRecetaChef />} />
+            <Route path="Reservas" element={<ReservasChef />} />
+            <Route path="Platos/:id_categoria_menu" element={<PlatosChef />} />
 
 
           </Route>
