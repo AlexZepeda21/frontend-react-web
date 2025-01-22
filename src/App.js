@@ -41,7 +41,7 @@ import VerRecetaChef from './chef/VerReceta';
 import MenuChef from './chef/Menu';
 import PlatosChef from './chef/Platos';
 import ReservasChef from './chef/Reservas'
-
+import DashboardChef from './chef/dashboard';
 function App() {
 
   const location = useLocation();
@@ -261,6 +261,8 @@ function App() {
             <Route path="VerReceta/:idReceta" element={<VerRecetaChef />} />
             <Route path="Reservas" element={<ReservasChef />} />
             <Route path="Platos/:id_categoria_menu" element={<PlatosChef />} />
+            <Route path="dashboard" element={<DashboardChef />} />
+
 
 
           </Route>
