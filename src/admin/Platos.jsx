@@ -14,18 +14,23 @@ import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
 const Platos = () => {
   const { id_categoria_menu } = useParams();
+
   const [menuItems, setMenuItems] = useState([]);
+  const [RecetasPlato, setRecetasPlato] = useState([]);
   const [menuItemsSinCategoria, setMenuItemsSinCategoria] = useState([]);
+  const [productosActivos, setProductosActivos] = useState([]);
+
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [verModalInventario, setVerModalInventario] = useState(false);
-  const [productosActivos, setProductosActivos] = useState([]);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [showFormularioModal, setShowFormularioModal] = useState(false);
-  const [searchMenuItems, setSearchMenuItems] = useState('');
   const navigate = useNavigate(); // Hook para navegar
+
+  const [searchMenuItems, setSearchMenuItems] = useState('');
   const [searchProductos, setSearchProductos] = useState('');
+  const [searchRecetasPlato, setSearchRecetasPlato] = useState('');
+
   const [formPlato, setFormPlato] = useState({
     nombre: '',
     precio: '',
@@ -34,9 +39,13 @@ const Platos = () => {
     estado: true,
     imagenBase64: '',
   });
+  const [showModal, setShowModal] = useState(false);
+  const [verModalInventario, setVerModalInventario] = useState(false);
+  const [showModalReceta, setShowModalReceta] = useState(false);
 
-
-
+  useEffect(() => {
+    fetchRecetasPlato();
+  })
 
   useEffect(() => {
     fetchMenuItems();
@@ -57,7 +66,7 @@ const Platos = () => {
   useEffect(() => {
     if (productoSeleccionado) {
       setFormPlato({
-        id_producto : productoSeleccionado.id_producto || '',
+        id_producto: productoSeleccionado.id_producto || '',
         nombre: productoSeleccionado.nombre,
         precio: productoSeleccionado.precio,
         cantidad_platos: productoSeleccionado.cantidad_platos,
@@ -98,6 +107,15 @@ const Platos = () => {
     }
   };
 
+  const fetchRecetasPlato = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/recetas`);
+      setRecetasPlato(response.data.recetas || []);
+    } catch (err) {
+      console.error('Error al cargar las recetas', err);
+    }
+  };
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     if (id === 'precio' && value && !/^\d+(\.\d+)?$/.test(value)) {
@@ -131,7 +149,7 @@ const Platos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formPlato.nombre || formPlato.precio<=0 ||!formPlato.precio || !formPlato.descripcion || !formPlato.cantidad_platos ||  formPlato.cantidad_platos <=0 || formPlato.cantidad_platos > productoSeleccionado.stock)  {
+    if (!formPlato.nombre || formPlato.precio <= 0 || !formPlato.precio || !formPlato.descripcion || !formPlato.cantidad_platos || formPlato.cantidad_platos <= 0 || formPlato.cantidad_platos > productoSeleccionado.stock) {
       Swal.fire({
         icon: 'question',
         title: 'Datos invalidos',
@@ -171,9 +189,11 @@ const Platos = () => {
           showConfirmButton: false,
           timer: 3000,  // Duración de la notificación en milisegundos
         });
+
         setVerModalInventario(false)
-        setShowFormularioModal(false);  // Esto cerrará el modal del formulario
-        
+        setShowFormularioModal(false);
+        setShowModalReceta(false);
+
 
         fetchMenuItems();
       } else {
@@ -214,28 +234,26 @@ const Platos = () => {
       if (response.status === 200) {
         Swal.fire({
           icon: 'success',
-          title: 'Has agregado un plato al menu',
-          text: 'El plato se ha creado en esta categoria',
-          toast: true,  
+          title: 'Receta agregada al menú',
+          text: 'La receta se ha agregado correctamente.',
+          toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,  
+          timer: 3000,
         });
         fetchMenuItems();
         setShowModal(false);
-
-        
       }
     } catch (err) {
-      console.error('Error al actualizar el menú', err);
+      console.error('Error al agregar la receta', err);
       Swal.fire({
         icon: 'error',
-        title: 'Error al actualizar el menú',
-        text: 'Conectese a Itca',
-        toast: true,  // Hacer que sea una notificación tipo toast
+        title: 'Error al agregar la receta',
+        text: 'Conéctese a la red de ITCA.',
+        toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación en milisegundos
+        timer: 3000,
       });
     }
   };
@@ -248,6 +266,15 @@ const Platos = () => {
     item.nombre.toLowerCase().includes(searchProductos.toLowerCase())
   );
 
+  const filteredRecetas = RecetasPlato.filter(item =>
+    item.nombre_receta.toLowerCase().includes(searchRecetasPlato.toLowerCase())
+  );
+
+  const handleVerRecetaPlato = (idReceta) => {
+    navigate(`/admin/VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+  };
+
+
   if (loading) return <Container className="text-center py-5"><h2>Cargando menús...</h2></Container>;
   if (error) return <Container className="text-center py-5"><h2 className="text-danger">{error}</h2></Container>;
 
@@ -255,11 +282,14 @@ const Platos = () => {
     <Container fluid className="py-5">
       <Row className="mb-4">
         <Col className="text-center">
-          <Button variant="primary" className="me-3" onClick={() => setShowModal(true)}>
-            Asignar platos
+          <Button variant="primary" className="me-3" onClick={() => setShowModalReceta(true)}>
+            Crear apartir de receta
           </Button>
-          <Button variant="success" onClick={() => setVerModalInventario(true)}>
-            Agregar productos del inventario
+          <Button variant="primary" className="me-3" onClick={() => setShowModal(true)}>
+            Asignar plato ya creado
+          </Button>
+          <Button variant="primary" className="me-3" onClick={() => setVerModalInventario(true)}>
+            Agregar desde el inventario
           </Button>
         </Col>
       </Row>
@@ -288,7 +318,7 @@ const Platos = () => {
                     <Badge bg={item.estado ? "success" : "danger"}>
                       {item.estado ? "Disponible" : "No disponible"}
                     </Badge>
-                    
+
                   </Card.Body>
 
                 </Card>
@@ -302,6 +332,7 @@ const Platos = () => {
         )}
       </Row>
 
+      {/* Modal para asignar productos */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="xl">
         <Modal.Header
           closeButton
@@ -365,7 +396,62 @@ const Platos = () => {
         </Modal.Body>
       </Modal>
 
+      {/* Modal para crear plato apartir de la receta */}
+      <Modal show={showModalReceta} onHide={() => setShowModalReceta(false)} size="xl">
+        <Modal.Header
+          closeButton
+          className="bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-t-lg"
+        >
+          <Modal.Title>Receta</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <InputGroup className="mb-3">
+            <InputGroup.Text>
+              <Search />
+            </InputGroup.Text>
+            <Form.Control
+              placeholder="Buscar por nombre..."
+              value={searchRecetasPlato}
+              onChange={(e) => setSearchRecetasPlato(e.target.value)}
+            />
+          </InputGroup>
+          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <Table responsive striped bordered hover>
+              <thead className="bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Tiempo de preparación</th>
+                  <th>Dificultad</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRecetas.length > 0 ? (
+                  filteredRecetas.map((item) => (
+                    <tr>
+                      <td>{item.nombre_receta || 'Sin nombre'}</td>
+                      <td>{item.descripcion || 'Sin descripción'}</td>
+                      <td>{item.tiempo_preparacion || '0'} min</td>
+                      <td>{item.dificultad || 'Sin dificultad'}</td>
+                      <td><button className="form-control primary m-1" onClick={() => handleVerRecetaPlato(item.id_recetas)}>crear plato</button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center">No hay menús sin categoría</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </div>
+        </Modal.Body>
+      </Modal>
 
+
+
+      {/* Modal para ver productos del inventario */}
       <Modal show={verModalInventario} onHide={() => setVerModalInventario(false)} className="custom-modal">
         <Modal.Header
           closeButton
@@ -431,6 +517,7 @@ const Platos = () => {
         </Modal.Body>
       </Modal>
 
+      {/* Modal para crear plato */}
       <Modal show={showFormularioModal} onHide={() => setShowFormularioModal(false)} className="custom-modal">
         <Modal.Header closeButton className="bg-info text-white">
           <Modal.Title>Formulario de Producto</Modal.Title>

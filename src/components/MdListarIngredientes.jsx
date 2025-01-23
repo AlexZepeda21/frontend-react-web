@@ -200,7 +200,6 @@ export default function ListarIngredientes() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Seleccionar</TableHead>
-                                    <TableHead>Imagen</TableHead>
                                     <TableHead>Nombre</TableHead>
                                     <TableHead className="max-w-[300px]">Unidad medida</TableHead>
                                 </TableRow>
@@ -215,15 +214,6 @@ export default function ListarIngredientes() {
                                                     checked={selectedProductos.includes(producto.id_producto)}
                                                     onChange={() => manejarCambioSeleccion(producto.id_producto)}
                                                 />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="relative h-16 w-16 overflow-hidden rounded-lg">
-                                                    <img
-                                                        src={`data:image/png;base64,${producto.foto}`}
-                                                        alt={producto.nombre}
-                                                        className="h-full w-full object-cover transition-transform hover:scale-110"
-                                                    />
-                                                </div>
                                             </TableCell>
                                             <TableCell>{producto.nombre}</TableCell>
                                             <TableCell className="max-w-[300px]">

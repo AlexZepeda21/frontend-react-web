@@ -66,6 +66,11 @@ const RecetasList = () => {
     navigate(`/admin/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
+  
+  const handleVerRecetaPlato = (idReceta) => {
+    navigate(`/admin/VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+  };
+
   // Función para abrir el modal "Editar"
   const openModalEditar = (receta) => {
     setRecetaSeleccionada(receta);
@@ -166,6 +171,7 @@ const RecetasList = () => {
                     <TableCell>
                       <button className="form-control primary m-1" onClick={() => openModalEditar(receta)}>Editar</button>
                       <button className="form-control primary m-1" onClick={() => handleVerReceta(receta.id_recetas)}>Ver</button>
+                      <button className="form-control primary m-1" onClick={() => handleVerRecetaPlato(receta.id_recetas)}>crear plato</button>
                     </TableCell>
                   </TableRow>
                 ))

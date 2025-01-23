@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -8,10 +7,10 @@ import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
 import ListarIngredientes from '../components/MdListarIngredientes';
 import "../styles/m/mstyles.css";
-import Swal from 'sweetalert2'  // Import SweetAlert2
-
+import Swal from 'sweetalert2';  // Import SweetAlert2
 
 const Page = () => {
+  // 1. Todos los Hooks deben ir aquí, al principio del componente.
   const { idReceta } = useParams();
   const [receta, setReceta] = useState(null);
   const [productos, setProductos] = useState([]);
@@ -21,17 +20,30 @@ const Page = () => {
   const [ShowModalAgregarIngrediente, setShowModalAgregarIngrediente] = useState(false);
   const [ShowModalAgregarPaso, setShowModalAgregarPaso] = useState(false);
   const [nuevoPaso, setNuevoPaso] = useState({ paso_numero: 0, descripcion: '' });
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal básico
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [ShowModalEditarIngrediente, setShowModalEditarIngrediente] = useState(false);
   const [ingredienteEditando, setIngredienteEditando] = useState(null);
-
   const [ShowModalEditarPaso, setShowModalEditarPaso] = useState(false);
   const [pasoEditando, setPasoEditando] = useState(null);
+  const [costoTotal, setCostoTotal] = useState(0);
 
+  // 2. Funciones que no son Hooks pueden ir después de los Hooks.
   const abrirModalIngredientes = () => setShowModalAgregarIngrediente(true);
   const cerrarModalIngredientes = () => setShowModalAgregarIngrediente(false);
   const abrirModalAgregarPaso = () => setShowModalAgregarPaso(true);
   const cerrarModalAgregarPaso = () => setShowModalAgregarPaso(false);
+
+  // 3. Funciones que dependen de Hooks también pueden ir aquí.
+  const calcularCostoTotal = () => {
+    return productos.reduce((total, producto) => {
+      return total + (producto.cantidad * producto.producto.costo_unitario);
+    }, 0);
+  };
+
+  // 4. Los useEffect deben ir después de los useState, pero antes de cualquier lógica condicional.
+  useEffect(() => {
+    setCostoTotal(calcularCostoTotal());
+  }, [productos]);
 
   const abrirModalEditarPaso = (paso) => {
     setPasoEditando(paso);
@@ -407,11 +419,8 @@ const Page = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-
     // Validación de campos vacíos
     if (!formPlato.nombre || formPlato.precio <= 0 || !formPlato.precio || formPlato.cantidad_platos <= 0 || !formPlato.cantidad_platos || !formPlato.descripcion) {
       Swal.fire({
@@ -428,13 +437,9 @@ const Page = () => {
     }
 
     try {
-
-
       const productosValidos = await verificarStockProductos();
-
       // Verificar si todos los productos tienen suficiente stock
       const hayStockInsuficiente = productosValidos.some((producto) => producto.esValido === 0);
-
       if (hayStockInsuficiente) {
         // Mostrar un mensaje de error si no hay suficiente stock
         Swal.fire({
@@ -697,6 +702,12 @@ const Page = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const formatearCantidad = (cantidad) => {
+    const cantidadNumero = parseFloat(cantidad);
+    if (isNaN(cantidadNumero)) return "0";
+    if (Number.isInteger(cantidadNumero)) return cantidadNumero.toString();
+    return cantidadNumero.toFixed(2);
+  };
   return (
     <div className="bg-gray-50 py-12 px-6 md:px-12">
       <div className="max-w-screen-xl mx-auto">
@@ -765,32 +776,44 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <button type="button" className="form-control" onClick={openModal}>
+      <button type="button" className="form-control m-2" onClick={openModal}>
         Click aqui para generar plato de esta receta
       </button>
 
       <div className="mt-8">
-        <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
-          <Button onClick={abrirModalIngredientes} variant="outline" className="mt-4">
-            Agregar Ingredientes
-          </Button>
-          <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
-            {productos.length > 0 ? (
-              <ul className="space-y-2">
-                {productos.map((producto) => (
-                  <li key={producto.id_recetas_producto}>
-                    <div className="flex justify-between items-center">
-                      <span>{producto.producto.nombre}</span>: <span>{producto.cantidad} en {producto.producto.unidad_medida.nombre_unidad}</span> <span>
-                        <button className='form-control' onClick={() => abrirEditIngrediente(producto)}>Editar ingrediente</button>
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">No hay productos para esta receta.</p>
-            )}
+        <div>         
+          <div className="mt-8">
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
+              <Button onClick={abrirModalIngredientes} variant="outline" className="mt-4">
+                Agregar Ingredientes
+              </Button>
+              <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
+                {productos.length > 0 ? (
+                  <ul className="space-y-2">
+                    {productos.map((producto) => (
+                      <li key={producto.id_recetas_producto}>
+                        <div className="flex justify-between items-center">
+                          <span>
+                            {producto.producto.unidad_medida} de {producto.producto.nombre}......... a ${producto.producto.costo_unitario} x({formatearCantidad(producto.cantidad)})
+                          </span>
+                          <span>
+                            <button className='form-control' onClick={() => abrirEditIngrediente(producto)}>Editar ingrediente</button>
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500">No hay productos para esta receta.</p>
+                )}
+                {/* Mostrar el costo total */}
+                <div className="mt-4">
+                  <span>Costo de Fabricación por plato: </span><span>${calcularCostoTotal().toFixed(2)}</span>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -918,9 +941,10 @@ const Page = () => {
           </div>
         </div>
       )}
+
       {ShowModalAgregarIngrediente && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ width: '90%', maxWidth: '800px', height:'90%' }}> {/* Estilos en línea */}
+          <div className="modal-content" style={{ width: '90%', maxWidth: '800px', height: '90%' }}> {/* Estilos en línea */}
             <div className="modal-header">
               <h2>Agregar Ingredientes a la Receta</h2>
             </div>
@@ -987,9 +1011,19 @@ const Page = () => {
                     step="1"
                     value={formPlato.cantidad_platos}
                     name="cantidad_platos"
-                    onChange={(e) => setformPlato({ ...formPlato, cantidad_platos: e.target.value })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Eliminar puntos y cualquier carácter que no sea un número
+                      const sanitizedValue = value.replace(/[^0-9]/g, '');
+                      // Actualizar el estado solo si el valor es un número entero válido
+                      if (sanitizedValue !== '' && Number.isInteger(Number(sanitizedValue)) && sanitizedValue >= 0) {
+                        setformPlato({ ...formPlato, cantidad_platos: sanitizedValue });
+                      } else {
+                        setformPlato({ ...formPlato, cantidad_platos: '' }); // Restablecer si no es válido
+                      }
+                    }}
                     className="form-control"
-                    placeholder='Por ej: 4'
+                    placeholder="Por ej: 4"
                   />
                   <br />
                   <label htmlFor="descripcion" className="label-form">Descripción</label>
