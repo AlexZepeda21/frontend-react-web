@@ -12,6 +12,8 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
         id_usuario: id,
         tipo_movimiento: '',
         costo_unitario: '',
+        fecha_vencimiento: '',
+
         cantidad: '',
         motivo: '',
     });
@@ -24,6 +26,10 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
         const valorUnitario = parseFloat(formData.costo_unitario) || 0;
         return Math.round((cantidad * valorUnitario) * 100) / 100;
     };
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split("T")[0]; 
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -46,6 +52,29 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
             }
         }
 
+         const today = new Date();
+         
+         
+         if(name == "fecha_vencimiento"){
+            const inputDate = new Date(value);
+
+            if (inputDate <= today) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La fecha debe de ser posterior al dia de hoy.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+                return;
+            }
+         }
+       
+
+
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -56,6 +85,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
         e.preventDefault();
 
         try {
+
             const response = await fetch(`${API_BASE_URL}/ingreso`, {
                 method: 'POST',
                 headers: {
@@ -67,15 +97,15 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                     tipo_movimiento: formData.tipo_movimiento,
                     costo_unitario: formData.costo_unitario,
                     cantidad: formData.cantidad,
+                    fecha_vencimiento: formData.fecha_vencimiento,
                     motivo: formData.motivo || 'Ninguna',
-                    costo_total: calcularTotal(), // Calcular total en el envío
+                    costo_total: calcularTotal(), 
                 }),
             });
 
             const result = await response.json();
             if (response.ok) {
                 let alertTitle = '';
-                // Check the type of movement to set the correct alert message
                 if (formData.tipo_movimiento === 'Entrada') {
                     alertTitle = 'Productos ingresados correctamente';
                 } else if (formData.tipo_movimiento === 'Salida') {
@@ -110,7 +140,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
             console.error('Error al enviar los datos:', error);
             Swal.fire({
                 title: 'Error',
-                text: 'Ocurrió un error al intentar registrar el producto.',
+                text: 'Ocurrió un error al intentar hacer movimientos con este producto el producto.',
                 icon: 'error',
                 toast: true,
                 position: 'top-end',
@@ -209,6 +239,20 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                             value={calcularTotal()}
                             readOnly
                             placeholder="Total"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="fecha_vencimiento" className="block text-sm font-medium text-gray-700 mb-1">
+                            Fecha vencimiento
+                        </label>
+                        <input
+                            type="date"
+                            name="fecha_vencimiento"
+                            min={minDate}
+                            value={formData.fecha_vencimiento}
+                            onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
