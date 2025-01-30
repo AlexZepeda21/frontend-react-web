@@ -11,10 +11,10 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
 
-
+ 
 const Platos = () => {
   const { id_categoria_menu } = useParams();
-
+  localStorage.setItem('id_categoria_menu', id_categoria_menu);
   const [menuItems, setMenuItems] = useState([]);
   const [RecetasPlato, setRecetasPlato] = useState([]);
   const [menuItemsSinCategoria, setMenuItemsSinCategoria] = useState([]);

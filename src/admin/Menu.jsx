@@ -201,7 +201,7 @@ const Menu = () => {
               <div className="card shadow-sm">
                 <div className="card-body">
                   {/* Título centrado */}
-                  <h5 className="card-title text-center">{categoria.nombre}, id: {categoria.id_categoria_menu}</h5>
+                  <h5 className="card-title text-center">{categoria.nombre}</h5>
 
                   {/* Contenedor de imagen con clase card-img-container */}
                   <div className="card-img-container text-center">

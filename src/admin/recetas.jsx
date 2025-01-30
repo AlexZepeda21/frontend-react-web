@@ -68,7 +68,7 @@ const RecetasList = () => {
 
   
   const handleVerRecetaPlato = (idReceta) => {
-    navigate(`/admin/VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`/admin/CrearplatoDeReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
   // Función para abrir el modal "Editar"

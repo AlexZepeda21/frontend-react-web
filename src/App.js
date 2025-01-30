@@ -26,6 +26,7 @@ import Reservas from './admin/Reservas';
 import Dashboard from './admin/dashboard';
 import { time } from 'framer-motion';
 import VerRecetaPlato from './admin/VerRecetaOpen';
+import CrearplatoDeReceta from './admin/CrearplatoDeReceta';
 
 // Componentes chef
 import LayoutChef from './Menus/Menuchef';
@@ -240,6 +241,8 @@ function App() {
             <Route path="Reservas" element={<Reservas />} />
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
             <Route path="VerRecetaPlato/:idReceta" element={<VerRecetaPlato />} />
+            <Route path="CrearplatoDeReceta/:idReceta" element={<CrearplatoDeReceta />} />
+
 
             
 
