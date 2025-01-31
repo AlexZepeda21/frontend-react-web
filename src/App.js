@@ -26,6 +26,7 @@ import Reservas from './admin/Reservas';
 import Dashboard from './admin/dashboard';
 import { time } from 'framer-motion';
 import VerRecetaPlato from './admin/VerRecetaOpen';
+import Reservas_item from './admin/Reservas_item';
 
 // Componentes chef
 import LayoutChef from './Menus/Menuchef';
@@ -229,6 +230,7 @@ function App() {
             <Route path="categoria_productos" element={<Categoria_productos />} />
             <Route path="eligiendo_pro" element={<ProductoCard />} />
             <Route path="productos" element={<Productos />} />
+            <Route path="Items" element={<Reservas_item />} />
             <Route path="uni_medidas" element={<UnidadMedidaList />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="recetas/:categoriaId" element={<RecetasList />} />

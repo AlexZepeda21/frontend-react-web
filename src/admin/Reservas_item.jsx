@@ -3,11 +3,13 @@ import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../url';
 import '../styles/productos/cardcategorias_pro.css';
+import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2'; // Importar SweetAlert2
 
 
-const Reservas = () => {
+
+const Reservas_item = () => {
     const { id_menu } = useParams();
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,9 +20,13 @@ const Reservas = () => {
     const navigate = useNavigate(); 
 
 
+
+    const location = useLocation();
+  const { id_re  } = location.state || {};
+
     const fetchMenuItems = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/web_reservas`);
+            const response = await fetch(`${API_BASE_URL}/reservas_item/${id_re}`);
             if (!response.ok) {
                 throw new Error('Error al cargar los menús con categoría');
             }
@@ -48,18 +54,51 @@ const Reservas = () => {
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
 
-    const EntregarReserva = async (id_reservas) => {
-        const id_re = id_reservas;
-        navigate(`/admin/Items`, { state: {id_re}  }); 
+    const EntregarReserva = async () => {
+        try {
+            const campos = {
+                fecha_entrega: new Date().toISOString().split('T')[0], 
+            };
 
-    }
+    
+            const response = await fetch(`${API_BASE_URL}/reservas/${id_re}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(campos),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error al actualizar la reserva con ID ${id_re}`);
+            }
+    
+            const data = await response.json();
+            Swal.fire({
+                      icon: 'success',
+                      title: 'Reserva Entrega',
+                      toast: true,  // Notificación tipo toast
+                      position: 'top-end',
+                      showConfirmButton: false,
+                      timer: 3000,  // Duración de la notificación en milisegundos
+                    });
+
+                    navigate(`/admin/Reservas`,); 
+
+            fetchMenuItems();
+            return data;
+        } catch (error) {
+            console.error("Error al entregar la reserva:", error);
+        }
+    };
+
 
     
 
 
     return (
         <Container fluid className="py-5">
-            <h1>Reservas</h1>
+            <h1>Reservas item</h1>
             <input
                 type="text"
                 className="form-control mb-3"
@@ -77,20 +116,21 @@ const Reservas = () => {
                             <tr>
                                 <th>ID</th>
                                 <th>Cantidad de articulos</th>
+                                <th>Nombre del articulo</th>
+                                <th>Precio unitario</th>
                                 <th>Sub total</th>
-                                <th>Correo Usuario</th>
                                 <th>Foto</th>
-                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentItems.length > 0 ? (
                                 currentItems.map((categoria) => (
-                                    <tr key={categoria.id_reservas}>
+                                    <tr>
                                         <td>{categoria.id_reservas}</td>
                                         <td>{categoria.cantidad}</td>
+                                        <td>{categoria.nombre}</td>
                                         <td>{categoria.precio}</td>
-                                        <td>{categoria.usuario_correo}</td>
+                                        <td>$ {categoria.precio * categoria.cantidad}</td>
                                         <td>
                                             <img
                                                 style={{
@@ -98,18 +138,16 @@ const Reservas = () => {
                                                     height: "100px",
                                                     objectFit: "cover"
                                                 }}
-                                                src={`data:image/png;base64,${categoria.img}`}
-                                                alt={categoria.usuario_correo}
+                                                src={`data:image/png;base64,${categoria.foto}`}
                                             />
                                         </td>
-                                        <td>
-                                        <button className="btn btn-success"
-                                            onClick={() => EntregarReserva(categoria.id_reservas)} 
->
-                                                Ver Articulos
-                                            </button>
-                                        </td>
+                                        
                                     </tr>
+
+                                    
+                           
+
+                                    
                                 ))
                             ) : (
                                 <tr>
@@ -118,8 +156,37 @@ const Reservas = () => {
                                     </td>
                                 </tr>
                             )}
+
+                            {currentItems.length > 0 ? (
+                                <tr >
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                <td>
+                                
+                                    Total $ {currentItems.reduce((acc, categoria) => acc + categoria.precio * categoria.cantidad, 0)}
+
+                                </td>
+                                <td  >
+                                <button className="btn btn-success"
+                                      onClick={() => EntregarReserva()} 
+
+                                    >
+                                        Entregar
+                                    </button>
+                                </td>
+                            </tr>
+                            ) : (
+                                <></>
+                            )}
+                                 
+
                         </tbody>
                     </table>
+
+                    
                 </div>
             )}
 
@@ -139,4 +206,4 @@ const Reservas = () => {
     );
 };
 
-export default Reservas;
+export default Reservas_item;
