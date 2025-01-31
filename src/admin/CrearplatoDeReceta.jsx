@@ -5,12 +5,11 @@ import { API_BASE_URL } from '../url';
 import { Button } from '../components/ui/button';
 import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import ListarIngredientes from '../components/MdListarIngredientes';
 import "../styles/m/mstyles.css";
 import Swal from 'sweetalert2';  // Import SweetAlert2
 
-const VerRecetaPlato = () => {
+const CrearplatoDeReceta = () => {
     // 1. Todos los Hooks deben ir aquí, al principio del componente.
     const { idReceta } = useParams();
     const [receta, setReceta] = useState(null);
@@ -27,7 +26,6 @@ const VerRecetaPlato = () => {
     const [ShowModalEditarPaso, setShowModalEditarPaso] = useState(false);
     const [pasoEditando, setPasoEditando] = useState(null);
     const [costoTotal, setCostoTotal] = useState(0);
-    const navigate = useNavigate(); // Inicializa el hook useNavigate
 
     // 2. Funciones que no son Hooks pueden ir después de los Hooks.
     const abrirModalIngredientes = () => setShowModalAgregarIngrediente(true);
@@ -197,7 +195,7 @@ const VerRecetaPlato = () => {
         descripcion: '',
         imagenBase64: '',
         estado: true,
-        id_categoria: '',
+        id_categoria:'',
     });
 
     const handleImageChange = (e) => {
@@ -422,7 +420,6 @@ const VerRecetaPlato = () => {
         }
     };
 
-    const id_categoriaMenu = localStorage.getItem('id_categoria_menu');
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Validación de campos vacíos
@@ -482,7 +479,7 @@ const VerRecetaPlato = () => {
             // Paso 2: Actualizamos el stock de cada producto utilizando el ingreso
             for (const producto of productosUsados) {
                 await actualizarProducto(producto.id_producto, producto.cantidadUsada);
-            }
+            }           
             // Paso 3: Crear el plato (ahora se hace de último)
             const response = await fetch(`${API_BASE_URL}/menu`, {
                 method: 'POST',
@@ -495,9 +492,7 @@ const VerRecetaPlato = () => {
                     cantidad_platos: formPlato.cantidad_platos,
                     descripcion: formPlato.descripcion,
                     img: formPlato.imagenBase64,
-                    estado: formPlato.estado,
-                    id_categoria: id_categoriaMenu || 0,
-
+                    estado: formPlato.estado                    
                 }),
             });
 
@@ -514,8 +509,8 @@ const VerRecetaPlato = () => {
                 });
 
                 setTimeout(() => {
-                    navigate(`/admin/Platos/${id_categoriaMenu}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
-                }, 4000); // 1000 milisegundos = 1 segundo
+                    window.location.reload();
+                }, 1000); // 1000 milisegundos = 1 segundo
             } else {
 
                 Swal.fire({
@@ -1053,4 +1048,4 @@ const VerRecetaPlato = () => {
     );
 };
 
-export default VerRecetaPlato;
+export default CrearplatoDeReceta;
