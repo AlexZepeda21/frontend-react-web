@@ -11,24 +11,25 @@ import Swal from 'sweetalert2';
 import '../styles/login/estilosregister.css';
 
 export default function Registro() {
-  const [correo, setCorreo] = useState('');
-  const [clave, setClave] = useState('');
-  const [tipo, setTipo] = useState('administrador'); // Valor inicial (opción del select)
+
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const [registroData, setRegistroData] = useState({
+    correo: '',
+    clave: '',
+    nombre: '',
+    apellido: '',
+    genero: '',
+    carrera: 'Trabajador ITCA', 
+    id_tipo_usuario: ''
+  });
+  
 
   async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
 
-    // Convertir el tipo de usuario en valor numérico
-    const tipoUsuario = tipo === 'administrador' ? 1 : 2;
-
-    const registroData = { 
-      correo, 
-      clave, 
-      id_tipo_usuario: tipoUsuario // Enviar el tipo de usuario como número
-    };
 
     try {
       const response = await fetch(`${API_BASE_URL}/user`, {
@@ -78,65 +79,138 @@ export default function Registro() {
     }
   }
 
+
+  function Limpiar() {
+    setRegistroData({
+      correo: '',
+      clave: '',
+      nombre: '',
+      apellido: '',
+      genero: '',
+      id_tipo_usuario: '1', // Valor por defecto de tipo de usuario
+    });
+  }
+  
+  
   function onCancel() {
     // Restablecer el formulario
-    setCorreo('');
-    setClave('');
-    setTipo('administrador');
-
-    // Navegar a la página de usuarios
+    setRegistroData({
+      correo: '',
+      clave: '',
+      nombre: '',
+      apellido: '',
+      genero: '',
+      id_tipo_usuario: '1',
+    }); 
     navigate('/admin/usuario');
   }
-
+  
   return (
     <div className="login-container">
       <div className="login-card">
         <h1 className="login-title">Registrar Usuarios</h1>
+        <button className='form-control btn btn-primary' onClick={Limpiar}>Limpiar formulario</button>
         <form onSubmit={onSubmit}>
           <div className="input-container">
+
             <Label htmlFor="correo">Correo Electrónico</Label>
             <div className="input-wrapper">
               <MdEmail className="input-icon" />
               <Input
                 id="correo"
                 type="email"
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
+                value={registroData.correo}
+                onChange={(e) => setRegistroData({ ...registroData, correo: e.target.value })}
                 className="input-field"
                 placeholder="Ingrese un correo"
                 required
               />
             </div>
+
           </div>
           <div className="input-container">
+
             <Label htmlFor="clave">Contraseña</Label>
             <div className="input-wrapper">
               <MdLock className="input-icon" />
               <Input
                 id="clave"
                 type="password"
-                value={clave}
-                onChange={(e) => setClave(e.target.value)}
+                value={registroData.clave}
+                onChange={(e) => setRegistroData({ ...registroData, clave: e.target.value })}
                 className="input-field"
                 placeholder="Ingrese una contraseña"
                 required
               />
             </div>
+
           </div>
+
+          <div className="input-container">
+
+            <Label htmlFor="nombre">Nombre</Label>
+            <div className="input-wrapper">
+              <Input
+                id="nombre"
+                type="text"
+                value={registroData.nombre}
+                onChange={(e) => setRegistroData({ ...registroData, nombre: e.target.value })}
+                className="input-field"
+                placeholder="Ingrese una contraseña"
+                required
+              />
+            </div>
+
+          </div>
+
+          <div className="input-container">
+
+            <Label htmlFor="apellido">Apellido</Label>
+            <div className="input-wrapper">
+              <Input
+                id="apellido"
+                type="text"
+                value={registroData.apellido}
+                onChange={(e) => setRegistroData({ ...registroData, apellido: e.target.value })}
+                className="input-field"
+                placeholder="Ingrese una contraseña"
+                required
+              />
+            </div>
+
+          </div>
+
+          <div className="input-container">
+
+            <Label htmlFor="genero">Genero</Label>
+            <div className="input-wrapper">
+              <Input
+                id="genero"
+                type="text"
+                value={registroData.genero}
+                onChange={(e) => setRegistroData({ ...registroData, genero: e.target.value })}
+                className="input-field"
+                placeholder="Ingrese una contraseña"
+                required
+              />
+            </div>
+
+          </div>
+
           <div className="input-container">
             <Label htmlFor="tipo">Tipo de Usuario</Label>
             <div className="input-wrapper">
-              <MdPerson className="input-icon" />
               <select
                 id="tipo"
-                value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
+                value={registroData.id_tipo_usuario}
+                onChange={(e) => setRegistroData({ ...registroData, id_tipo_usuario: e.target.value })}
                 className="input-field"
                 required
               >
-                <option value="administrador">Administrador</option>
-                <option value="chef">Chef</option>
+                <option value="1">Administrador</option>
+                <option value="2">Chef</option>
               </select>
+
             </div>
           </div>
           <div className="button-group">

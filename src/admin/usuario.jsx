@@ -409,8 +409,13 @@ const UsuarioList = () => {
               <TableHead className="w-[100px]">#</TableHead>
               <TableHead>Tipo Usuario</TableHead>
               <TableHead>Correo</TableHead>
+              <TableHead>apellido</TableHead>
+              <TableHead>nombre</TableHead>
+              <TableHead>Ocupación</TableHead>
+              <TableHead>genero</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead>Acciones</TableHead>
+
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -432,6 +437,23 @@ const UsuarioList = () => {
                     })()}
                   </TableCell>
                   <TableCell>{usuario.correo}</TableCell>
+                  
+                  
+                  <TableCell>
+                    {usuario.apellido}
+                  </TableCell>
+
+                  <TableCell>
+                  {usuario.nombre}
+                  </TableCell>
+
+                  <TableCell>
+                  {usuario.carrera}
+                  </TableCell>
+
+                  <TableCell>
+                  {usuario.genero}
+                  </TableCell>
                   <TableCell>
                     {(() => {
                       let claseEstado = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ";
@@ -468,6 +490,7 @@ const UsuarioList = () => {
                       </button>
                     )}
                   </TableCell>
+
                 </TableRow>
               ))
             ) : (
