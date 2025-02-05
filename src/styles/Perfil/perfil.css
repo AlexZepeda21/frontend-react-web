@@ -90,13 +90,6 @@
   object-fit: cover; /* Asegura que la imagen cubra el contenedor sin distorsionarse */
 }
 
-.container {
-  display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
-  height: 100px; /* Altura del contenedor (ajusta según necesites) */
-}
-
 
 .button-icon {
   align-items: center;
