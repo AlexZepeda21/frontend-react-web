@@ -21,54 +21,77 @@ export default function Registro() {
     nombre: '',
     apellido: '',
     genero: '',
-    carrera: 'Trabajador ITCA', 
-    id_tipo_usuario: ''
+    carrera: 'Trabajador ITCA',
+    id_tipo_usuario: 0,
   });
-  
+
 
   async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
 
-
     try {
-      const response = await fetch(`${API_BASE_URL}/user`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registroData),
-      });
-
-      if (response.ok) {
+      // Validación de campos
+      if (
+        !registroData.apellido ||
+        !registroData.carrera ||
+        !registroData.clave ||
+        !registroData.genero ||
+        !registroData.id_tipo_usuario ||
+        registroData.id_tipo_usuario === 0 ||  // Verifica correctamente el tipo de número
+        !registroData.nombre
+      ) {
         Swal.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
-          text: 'El usuario ha sido registrado correctamente!',
-          toast: true,  // Notificación tipo toast
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,  // Duración de la notificación en milisegundos
-        });
-
-        // Redirigir a la ruta deseada
-        navigate('/admin/usuario');
-      } else {
-        const data = await response.json();
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al registrar',
-          text: data.message || 'No se pudo registrar el usuario',
+          icon: 'question',
+          title: 'Registro invalido',
+          text: 'Alguno de los datos insertados es invalido',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
           timer: 3000,
         });
       }
+      else {
+        // Realizar solicitud de registro
+        const response = await fetch(`${API_BASE_URL}/user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registroData),
+        });
+
+        // Si la respuesta es exitosa
+        if (response.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro exitoso',
+            text: 'El usuario ha sido registrado correctamente!',
+            toast: true,  // Notificación tipo toast
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,  // Duración de la notificación en milisegundos
+          });
+
+          // Redirigir a la ruta deseada
+          navigate('/admin/usuario');
+        } else {
+          const data = await response.json();
+          Swal.fire({
+            icon: 'question',
+            title: 'El usuario ya existe',
+            text: 'Cambia el correo electronico',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+          });
+        }
+      }
     } catch (error) {
       console.error('Error:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error al registrar',
-        text: error.message || 'No se pudo registrar el usuario',
+        text: 'No se pudo registrar el usuario',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -78,7 +101,6 @@ export default function Registro() {
       setIsLoading(false);
     }
   }
-
 
   function Limpiar() {
     setRegistroData({
@@ -90,8 +112,7 @@ export default function Registro() {
       id_tipo_usuario: '1', // Valor por defecto de tipo de usuario
     });
   }
-  
-  
+
   function onCancel() {
     // Restablecer el formulario
     setRegistroData({
@@ -101,18 +122,17 @@ export default function Registro() {
       apellido: '',
       genero: '',
       id_tipo_usuario: '1',
-    }); 
+    });
     navigate('/admin/usuario');
   }
-  
+
   return (
     <div className="login-container">
       <div className="login-card">
         <h1 className="login-title">Registrar Usuarios</h1>
-        <button className='form-control btn btn-primary' onClick={Limpiar}>Limpiar formulario</button>
+        <button className="form-control btn btn-primary" onClick={Limpiar}>Limpiar formulario</button>
         <form onSubmit={onSubmit}>
           <div className="input-container">
-
             <Label htmlFor="correo">Correo Electrónico</Label>
             <div className="input-wrapper">
               <MdEmail className="input-icon" />
@@ -122,14 +142,14 @@ export default function Registro() {
                 value={registroData.correo}
                 onChange={(e) => setRegistroData({ ...registroData, correo: e.target.value })}
                 className="input-field"
-                placeholder="Ingrese un correo"
+                placeholder="Ingrese su correo electrónico"
                 required
               />
+
             </div>
-
           </div>
-          <div className="input-container">
 
+          <div className="input-container">
             <Label htmlFor="clave">Contraseña</Label>
             <div className="input-wrapper">
               <MdLock className="input-icon" />
@@ -143,11 +163,9 @@ export default function Registro() {
                 required
               />
             </div>
-
           </div>
 
           <div className="input-container">
-
             <Label htmlFor="nombre">Nombre</Label>
             <div className="input-wrapper">
               <Input
@@ -156,15 +174,13 @@ export default function Registro() {
                 value={registroData.nombre}
                 onChange={(e) => setRegistroData({ ...registroData, nombre: e.target.value })}
                 className="input-field"
-                placeholder="Ingrese una contraseña"
+                placeholder="Ingrese su nombre"
                 required
               />
             </div>
-
           </div>
 
           <div className="input-container">
-
             <Label htmlFor="apellido">Apellido</Label>
             <div className="input-wrapper">
               <Input
@@ -173,28 +189,27 @@ export default function Registro() {
                 value={registroData.apellido}
                 onChange={(e) => setRegistroData({ ...registroData, apellido: e.target.value })}
                 className="input-field"
-                placeholder="Ingrese una contraseña"
+                placeholder="Ingrese su apellido"
                 required
               />
             </div>
-
           </div>
 
           <div className="input-container">
-
-            <Label htmlFor="genero">Genero</Label>
+            <Label htmlFor="genero">Género</Label>
             <div className="input-wrapper">
-              <Input
+              <select
                 id="genero"
-                type="text"
                 value={registroData.genero}
                 onChange={(e) => setRegistroData({ ...registroData, genero: e.target.value })}
                 className="input-field"
-                placeholder="Ingrese una contraseña"
                 required
-              />
+              >
+                <option value="">Seleccione un genero</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
             </div>
-
           </div>
 
           <div className="input-container">
@@ -207,12 +222,13 @@ export default function Registro() {
                 className="input-field"
                 required
               >
+                <option value="0">Seleccione la dificultad</option>
                 <option value="1">Administrador</option>
                 <option value="2">Chef</option>
               </select>
-
             </div>
           </div>
+
           <div className="button-group">
             <Button
               type="submit"
@@ -233,4 +249,5 @@ export default function Registro() {
       </div>
     </div>
   );
+
 }
