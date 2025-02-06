@@ -536,7 +536,91 @@ const Page = () => {
     }
   };
 
+  const descartarPaso = async (idPaso) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/pasos_receta/${idPaso}`);
+      if (response.status === 200) {
+        // Actualizar la lista de pasos eliminando el paso descartado
+        const updatedPasos = pasos.filter((paso) => paso.id_paso !== idPaso);
+        setPasos(updatedPasos);
 
+        Swal.fire({
+          icon: 'success',
+          title: 'Paso descartado',
+          text: 'El paso ha sido eliminado correctamente.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al descartar el paso',
+          text: 'Inténtalo de nuevo más tarde.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error al descartar el paso:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en la respuesta del servidor',
+        text: 'Asegúrate de estar conectado a la red de ITCA.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
+  };
+
+  const descartarIngrediente = async (idRecetaProducto) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/receta_producto/${idRecetaProducto}`);
+      if (response.status === 200) {
+        // Actualizar la lista de productos eliminando el ingrediente descartado
+        const updatedProductos = productos.filter(
+          (producto) => producto.id_recetas_producto !== idRecetaProducto
+        );
+        setProductos(updatedProductos);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Ingrediente descartado',
+          text: 'El ingrediente ha sido eliminado correctamente.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al descartar el ingrediente',
+          text: 'Inténtalo de nuevo más tarde.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error al descartar el ingrediente:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en la respuesta del servidor',
+        text: 'Asegúrate de estar conectado a la red de ITCA.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
+  };
   const handlePasoChange = (e) => {
     const { name, value } = e.target;
     setNuevoPaso((prevPaso) => ({ ...prevPaso, [name]: value }));
@@ -781,7 +865,7 @@ const Page = () => {
       </button>
 
       <div className="mt-8">
-        <div>         
+        <div>
           <div className="mt-8">
             <div>
               <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
@@ -799,6 +883,7 @@ const Page = () => {
                           </span>
                           <span>
                             <button className='form-control' onClick={() => abrirEditIngrediente(producto)}>Editar ingrediente</button>
+                            <button className='form-control ml-2' onClick={() => descartarIngrediente(producto.id_recetas_producto)}>Descartar</button>
                           </span>
                         </div>
                       </li>
@@ -810,7 +895,6 @@ const Page = () => {
                 {/* Mostrar el costo total */}
                 <div className="mt-4">
                   <span>Costo de Fabricación por plato: </span><span>${calcularCostoTotal().toFixed(2)}</span>
-
                 </div>
               </div>
             </div>
@@ -832,8 +916,8 @@ const Page = () => {
                     <span>Paso {paso.paso_numero}: {paso.descripcion}</span>
                     <span>
                       <button className='form-control' onClick={() => abrirModalEditarPaso(paso)}>Editar paso</button>
+                      <button className='form-control ml-2' onClick={() => descartarPaso(paso.id_paso)}>Descartar</button>
                     </span>
-
                   </div>
                 </li>
               ))}

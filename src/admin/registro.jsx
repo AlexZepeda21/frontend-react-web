@@ -109,7 +109,7 @@ export default function Registro() {
       nombre: '',
       apellido: '',
       genero: '',
-      id_tipo_usuario: '1', // Valor por defecto de tipo de usuario
+      id_tipo_usuario: '0', // Valor por defecto de tipo de usuario
     });
   }
 
@@ -121,7 +121,7 @@ export default function Registro() {
       nombre: '',
       apellido: '',
       genero: '',
-      id_tipo_usuario: '1',
+      id_tipo_usuario: '0',
     });
     navigate('/admin/usuario');
   }

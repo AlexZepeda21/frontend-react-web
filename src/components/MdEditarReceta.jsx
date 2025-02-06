@@ -245,7 +245,7 @@ const MdEditarReceta = ({ showModalEditar, setShowModalEditar, receta, actualiza
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Número de Porciones</Form.Label>
+            <Form.Label>Número de Porciones por plato</Form.Label>
             <Form.Control
               type="number"
               value={numeroPorciones}

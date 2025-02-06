@@ -205,7 +205,7 @@ export default function MdAgregarRecetas({ setShowModal }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="numero_porciones" className="text-lg font-medium">Número de Porciones</Label>
+              <Label htmlFor="numero_porciones" className="text-lg font-medium">Número de Porciones por plato</Label>
               <Input
                 id="numero_porciones"
                 type="number"
