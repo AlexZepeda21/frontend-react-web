@@ -16,3 +16,23 @@
 .listado-ingredientes li:last-child {
   border-bottom: none;
 }
+.producto-item {
+  display: flex;              /* Alineación en línea horizontal */
+  align-items: center;        /* Alineación vertical centrada */
+  gap: 10px;                 /* Espacio entre los elementos */
+}
+
+.btn-editar, .btn-descartar {
+  font-size: 16px;            /* Tamaño de fuente pequeño */
+  padding: 5px 10px;    
+  background-color: #7a8087; /* Fondo de botón (puedes personalizarlo) */
+  color: white;               /* Color de texto */
+  border: none;               /* Sin borde */
+  border-radius: 5px;         /* Bordes redondeados */
+  cursor: pointer;           /* Cursor de puntero */
+}
+
+.btn-editar:hover, .btn-descartar:hover {
+  background-color: #000000; /* Cambio de color al pasar el mouse */
+}
+

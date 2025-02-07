@@ -7,10 +7,9 @@ import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
 import ListarIngredientes from '../components/MdListarIngredientes';
 import "../styles/m/mstyles.css";
-import Swal from 'sweetalert2';  // Import SweetAlert2
+import Swal from 'sweetalert2'; 
 
 const Page = () => {
-  // 1. Todos los Hooks deben ir aquí, al principio del componente.
   const { idReceta } = useParams();
   const [receta, setReceta] = useState(null);
   const [productos, setProductos] = useState([]);
@@ -27,20 +26,17 @@ const Page = () => {
   const [pasoEditando, setPasoEditando] = useState(null);
   const [costoTotal, setCostoTotal] = useState(0);
 
-  // 2. Funciones que no son Hooks pueden ir después de los Hooks.
   const abrirModalIngredientes = () => setShowModalAgregarIngrediente(true);
   const cerrarModalIngredientes = () => setShowModalAgregarIngrediente(false);
   const abrirModalAgregarPaso = () => setShowModalAgregarPaso(true);
   const cerrarModalAgregarPaso = () => setShowModalAgregarPaso(false);
 
-  // 3. Funciones que dependen de Hooks también pueden ir aquí.
   const calcularCostoTotal = () => {
     return productos.reduce((total, producto) => {
       return total + (producto.cantidad * producto.producto.costo_unitario);
     }, 0);
   };
 
-  // 4. Los useEffect deben ir después de los useState, pero antes de cualquier lógica condicional.
   useEffect(() => {
     setCostoTotal(calcularCostoTotal());
   }, [productos]);
@@ -63,17 +59,15 @@ const Page = () => {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación (en milisegundos)
+        timer: 3000,  
       });
-
       return;
     }
-
     try {
       const response = await axios.put(
         `${API_BASE_URL}/pasos_receta/${pasoEditando.id_paso}`,
         {
-          paso_numero: pasoEditando.paso_numero, // Asegúrate de enviar el paso_numero
+          paso_numero: pasoEditando.paso_numero, 
           descripcion: pasoEditando.descripcion,
         }
       );
@@ -96,12 +90,10 @@ const Page = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 1500,  // Duración de la notificación (en milisegundos)
+          timer: 1500, 
         });
 
-
       } else {
-
         Swal.fire({
           icon: 'question',
           title: 'El paso no se ah creado, posiblemente por un error de red, intentelo de nuevo mas tarde',
@@ -109,7 +101,7 @@ const Page = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,  // Duración de la notificación (en milisegundos)
+          timer: 3000, 
         });
       }
     } catch (error) {
@@ -121,31 +113,28 @@ const Page = () => {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación (en milisegundos)
+        timer: 3000,  
       });
     }
   };
 
+
   const abrirEditIngrediente = async (ingrediente) => {
     try {
-      // Hacer una llamada a la API para obtener todos los productos activos
       const response = await axios.get(`${API_BASE_URL}/Productosactivos`);
 
       if (response.status === 200 && response.data && Array.isArray(response.data.productos)) {
-        // Buscar el producto correspondiente al id_producto del ingrediente
         const producto = response.data.productos.find(
           (p) => p.id_producto === ingrediente.producto.id_producto
         );
 
         if (producto) {
-          // Actualizar el estado con la información del ingrediente y el nombre del producto
           setIngredienteEditando({
             ...ingrediente,
             nombre: producto.nombre,
             unidad_medida: producto.unidad_medida
           });
 
-          // Mostrar el modal de edición
           setShowModalEditarIngrediente(true);
         } else {
           Swal.fire({
@@ -155,7 +144,7 @@ const Page = () => {
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,  // Duración de la notificación (en milisegundos)
+            timer: 3000, 
           });
         }
       } else {
@@ -166,7 +155,7 @@ const Page = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,  // Duración de la notificación (en milisegundos)
+          timer: 3000,  
         });
       }
     } catch (error) {
@@ -178,10 +167,11 @@ const Page = () => {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación (en milisegundos)
+        timer: 3000,  
       });
     }
   };
+
 
   const cerrarModalEditarIngrediente = () => {
     setShowModalEditarIngrediente(false); // Cierra el modal
@@ -223,7 +213,6 @@ const Page = () => {
   const valorCostoUnitario = 1;
 
   const guardarCambiosIngrediente = async () => {
-    // Validar que la cantidad sea un número válido y mayor que 0
     if (!ingredienteEditando.cantidad || isNaN(ingredienteEditando.cantidad) || ingredienteEditando.cantidad <= 0) {
 
       Swal.fire({
@@ -232,12 +221,11 @@ const Page = () => {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,  // Duración de la notificación (en milisegundos)
+        timer: 3000, 
       }); return;
     }
 
     try {
-      // Enviar los cambios a la API
       const response = await axios.put(
         `${API_BASE_URL}/receta_producto/${ingredienteEditando.id_recetas_producto}`, // Endpoint para actualizar el ingrediente
         {
@@ -419,6 +407,7 @@ const Page = () => {
     }
   };
 
+  //FORMULARIO DE CREACIÓN DE PLATO
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validación de campos vacíos
@@ -878,12 +867,12 @@ const Page = () => {
                     {productos.map((producto) => (
                       <li key={producto.id_recetas_producto}>
                         <div className="flex justify-between items-center">
-                          <span>
+                          <span className="producto-item">
                             {producto.producto.unidad_medida} de {producto.producto.nombre}......... a ${producto.producto.costo_unitario} x({formatearCantidad(producto.cantidad)})
-                          </span>
-                          <span>
-                            <button className='form-control' onClick={() => abrirEditIngrediente(producto)}>Editar ingrediente</button>
-                            <button className='form-control ml-2' onClick={() => descartarIngrediente(producto.id_recetas_producto)}>Descartar</button>
+                            <div className="btn-container"> {/* Contenedor para los botones */}
+                              <button className='btn-editar m-2' onClick={() => abrirEditIngrediente(producto)}>🖋</button>
+                              <button className='btn-descartar' onClick={() => descartarIngrediente(producto.id_recetas_producto)}>❌</button>
+                            </div>
                           </span>
                         </div>
                       </li>
@@ -902,6 +891,7 @@ const Page = () => {
         </div>
       </div>
 
+
       <div className="mt-8">
         <h3 className="text-2xl font-semibold text-gray-900">Pasos</h3>
         <Button onClick={abrirModalAgregarPaso} variant="outline" className="mt-4">
@@ -913,10 +903,12 @@ const Page = () => {
               {pasos.map((paso) => (
                 <li key={paso.id_paso}>
                   <div className="flex justify-between items-center">
-                    <span>Paso {paso.paso_numero}: {paso.descripcion}</span>
-                    <span>
-                      <button className='form-control' onClick={() => abrirModalEditarPaso(paso)}>Editar paso</button>
-                      <button className='form-control ml-2' onClick={() => descartarPaso(paso.id_paso)}>Descartar</button>
+                    <span className='producto-item flex justify-between items-center'>
+                      Paso {paso.paso_numero}: {paso.descripcion}
+                      <div className="btn-container"> {/* Contenedor para los botones */}
+                        <button className='btn-editar m-2' onClick={() => abrirModalEditarPaso(paso)}>🖋</button>
+                        <button className='btn-descartar' onClick={() => descartarPaso(paso.id_paso)}>❌</button>
+                      </div>
                     </span>
                   </div>
                 </li>
