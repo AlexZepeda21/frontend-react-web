@@ -19,18 +19,14 @@ const Platos = () => {
   const [RecetasPlato, setRecetasPlato] = useState([]);
   const [menuItemsSinCategoria, setMenuItemsSinCategoria] = useState([]);
   const [productosActivos, setProductosActivos] = useState([]);
-
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [showFormularioModal, setShowFormularioModal] = useState(false);
   const navigate = useNavigate(); // Hook para navegar
-
   const [searchMenuItems, setSearchMenuItems] = useState('');
   const [searchProductos, setSearchProductos] = useState('');
   const [searchRecetasPlato, setSearchRecetasPlato] = useState('');
-
   const [formPlato, setFormPlato] = useState({
     nombre: '',
     precio: '',
