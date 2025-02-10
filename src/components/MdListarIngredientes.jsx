@@ -121,10 +121,10 @@ export default function ListarIngredientes() {
             const producto = productos.find(p => p.id_producto === idProducto);
             const cantidadProducto = cantidades[idProducto] || 0;
             const unidadSeleccionada = unidadesSeleccionadas[idProducto] || 0;
-    
+
             const unidadBase = producto ? producto.unidad_medida : null;
             const unidadBaseId = unidades.find(unidad => unidad.nombre_unidad === unidadBase)?.id_unidad_medida;
-    
+
             if (producto && unidadBaseId) {
                 return {
                     id_producto: idProducto,
@@ -137,35 +137,35 @@ export default function ListarIngredientes() {
                 return null;
             }
         }));
-    
+
         const conversionesValidas = conversiones.filter(item => item !== null);
-    
+
         // Actualizamos el estado con los productos y unidades a convertir
         setDataConversion(conversionesValidas);
-    
+
         // Devolvemos las conversiones válidas para que puedan ser usadas inmediatamente
         return conversionesValidas;
     }
-    
+
     async function CalcularConversion(conversiones) {
         try {
             const response = await axios.get(`${API_BASE_URL}/conversiones`);
-    
+
             if (response.status === 200 && response.data.status === 'success') {
                 const conversionesAPI = response.data.data;
-    
+
                 // Aplicamos la conversión a todos los productos seleccionados
                 const productosConvertidos = await Promise.all(conversiones.map(async (producto) => {
                     const unidadSeleccionada = producto.unidad_seleccionada;
                     const unidadBaseId = producto.unidad_base_id;
                     const cantidad = producto.cantidad;
-    
+
                     // Buscamos la conversión entre las unidades
                     const conversion = conversionesAPI.find(conv => {
                         return (conv.id_unidad_origen === unidadBaseId && conv.id_unidad_destino === unidadSeleccionada) ||
                             (conv.id_unidad_origen === unidadSeleccionada && conv.id_unidad_destino === unidadBaseId);
                     });
-    
+
                     if (conversion) {
                         const factor = conversion.factor;
                         const cantidadConvertida = cantidad * factor;
@@ -179,10 +179,10 @@ export default function ListarIngredientes() {
                         return producto;
                     }
                 }));
-    
+
                 // Actualizamos el estado de productos convertidos
                 setDataConversion(productosConvertidos);
-    
+
                 // Devolvemos los productos convertidos para que puedan ser usados inmediatamente
                 return productosConvertidos;
             } else {
@@ -196,39 +196,46 @@ export default function ListarIngredientes() {
             return [];
         }
     }
-    
+
     async function manejarAgregarIngredientes() {
         if (!idReceta) {
             alert("No se ha encontrado el id de la receta.");
             return;
         }
-    
+
         // Primero, recuperamos las unidades y realizamos las conversiones necesarias
         const conversionesValidas = await RecuperarUnidades();  // Esperamos a que las conversiones estén listas
-    
+
         // Luego, calculamos las conversiones
         const productosConvertidos = await CalcularConversion(conversionesValidas);
-    
+
         // Esperar a que las conversiones estén completamente actualizadas antes de proceder
         if (!Array.isArray(productosConvertidos) || productosConvertidos.length === 0) {
             alert("Las conversiones no están listas.");
             return;
         }
-    
+
         // Ahora construimos el arreglo de productos a agregar con las conversiones aplicadas
         const productosAAgregar = selectedProductos.map(idProducto => {
             const cantidad = cantidades[idProducto];  // La cantidad original
-            const unidadMedida = unidadesSeleccionadas[idProducto];
-    
-            // Buscar el producto convertido en el arreglo productosConvertidos
+            const unidadMedida = unidadesSeleccionadas[idProducto];  // El id de la unidad seleccionada
+        
+            // Buscar el nombre de la unidad de medida en el array 'unidades'
+            const unidad = unidades.find(u => u.id_unidad_medida === unidadMedida);
+            const nombreUnidad = unidad ? unidad.nombre_unidad : '';  // Obtener el nombre de la unidad, si existe
+        
             let cantidadConvertida = cantidad;  // Inicializamos con la cantidad original
-    
-            // Verificamos si productosConvertidos está disponible
+        
+            // Buscar el producto convertido en el arreglo productosConvertidos
             const productoConvertido = productosConvertidos.find(item => item.id_producto === idProducto);
             if (productoConvertido && productoConvertido.cantidad_convertida) {
                 cantidadConvertida = productoConvertido.cantidad_convertida;
             }
-    
+        
+            // Buscar el nombre del producto
+            const producto = productos.find(p => p.id_producto === idProducto);
+            const nombreProducto = producto ? producto.nombre : '';
+        
             // Validar que la cantidad sea un número positivo y que haya una unidad de medida
             if (isNaN(cantidadConvertida) || cantidadConvertida <= 0 || !unidadMedida) {
                 Swal.fire({
@@ -241,16 +248,17 @@ export default function ListarIngredientes() {
                 });
                 return null;
             }
-    
-            // Aquí estamos asegurándonos de que la cantidad_convertida esté correctamente asignada
+        
             return {
                 id_producto: idProducto,
                 id_receta: idReceta,
                 cantidad: cantidadConvertida,  // Usar la cantidad convertida o la original
                 id_unidad_medida: unidadMedida,
+                nombre_unidad: nombreUnidad,   // Incluir el nombre de la unidad de medida
+                nombre_producto: nombreProducto, // Incluir el nombre del producto
             };
-        }).filter(producto => producto !== null);
-    
+        }).filter(producto => producto !== null);        
+
         if (productosAAgregar.length === 0) {
             Swal.fire({
                 icon: 'question',
@@ -262,9 +270,9 @@ export default function ListarIngredientes() {
             });
             return;
         }
-    
+
         console.log("Enviando productos a la API:", productosAAgregar);
-    
+
         // Enviamos los productos convertidos a la API después de haber calculado las conversiones
         try {
             for (const producto of productosAAgregar) {
@@ -273,7 +281,7 @@ export default function ListarIngredientes() {
                         'Content-Type': 'application/json'
                     }
                 });
-    
+
                 if (response.status === 201) {
                     Swal.fire({
                         icon: 'success',
@@ -306,16 +314,19 @@ export default function ListarIngredientes() {
                 timer: 3000,
             });
         }
-    
+
         setDialogOpen(false);
         setSelectedProductos([]);
         setCantidades({});
     }
-    
+
     //AQUI II I I I
     return (
         <div className="bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white w-[100%] max-w-[1000px] h-auto max-h-[80vh] p-6 rounded-lg shadow-lg overflow-hidden overflow-y-auto">
+
+
+
 
                 {/* Campo de Búsqueda */}
                 <div className="p-6">
@@ -401,62 +412,69 @@ export default function ListarIngredientes() {
                 {dialogOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
                         <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                            <DialogTitle>Agregar Ingredientes</DialogTitle>
-                            <DialogDescription>Ingrese la cantidad de los ingredientes seleccionados:</DialogDescription>
+
+                            <div className="modal-header">
+                                <DialogTitle>Agregar Ingredientes</DialogTitle>
+                            </div>
 
                             {/* Contenedor con overflow-y-auto para permitir el desplazamiento vertical */}
                             <div className="max-h-[60vh] overflow-y-auto">
-                                {selectedProductos.map(idProducto => {
-                                    const producto = productos.find(p => p.id_producto === idProducto);
+                                {selectedProductos.map((idProducto) => {
+                                    const producto = productos.find((p) => p.id_producto === idProducto);
+                                    const cantidad = cantidades[idProducto] || '';
+                                    const unidadSeleccionada = unidadesSeleccionadas[idProducto] || '';
+
                                     return (
                                         <div key={idProducto} className="mb-4">
                                             <label className="block text-sm font-medium">{producto.nombre}</label>
-                                            <Input
-                                                type="number"
-                                                step="any"
-                                                value={cantidades[idProducto] || ''}
-                                                onChange={(e) => manejarCambioCantidad(idProducto, e)}
-                                                className="mt-2"
-                                                placeholder={"Agregue la cantidad de producto que necesita"}
-                                            />
+                                            <div className="flex gap-4 mt-2">
+                                                {/* Campo de cantidad */}
+                                                <div className="flex-1">
+                                                    <Input
+                                                        type="number"
+                                                        step="any"
+                                                        value={cantidad}
+                                                        onChange={(e) => manejarCambioCantidad(idProducto, e)}
+                                                        className="w-full"
+                                                        placeholder="Cantidad de producto"
+                                                    />
+                                                </div>
 
-                                            <div>
-                                                <br />
-                                                <label htmlFor="">Unidad de medida a usar</label>
-                                                <select
-                                                    id="select"
-                                                    className="form-control"
-                                                    value={unidadesSeleccionadas[idProducto] || ''}
-                                                    onChange={(e) => {
-                                                        const unidadSeleccionada = parseInt(e.target.value, 10); // Convertimos a entero
-                                                        setUnidadesSeleccionadas(prev => ({
-                                                            ...prev,
-                                                            [idProducto]: unidadSeleccionada // Guardamos el id como entero
-                                                        }));
-                                                    }}
-                                                >
-                                                    <option value="">--Selecciona una opción--</option>
-                                                    {unidades.map((unidad) => (
-                                                        <option key={unidad.id_unidad_medida} value={unidad.id_unidad_medida}>
-                                                            {unidad.nombre_unidad}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-
+                                                {/* Selector de unidad */}
+                                                <div className="flex-1">
+                                                    <select
+                                                        id="select"
+                                                        className="form-control w-full"
+                                                        value={unidadSeleccionada}
+                                                        onChange={(e) => {
+                                                            const unidad = parseInt(e.target.value, 10); // Convertimos a entero
+                                                            setUnidadesSeleccionadas((prev) => ({
+                                                                ...prev,
+                                                                [idProducto]: unidad,
+                                                            }));
+                                                        }}
+                                                    >
+                                                        <option value="">Unidad de medida</option>
+                                                        {unidades.map(({ id_unidad_medida, nombre_unidad }) => (
+                                                            <option key={id_unidad_medida} value={id_unidad_medida}>
+                                                                {nombre_unidad}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
-
                                         </div>
-
                                     );
                                 })}
                             </div>
+
 
                             <DialogFooter>
                                 <Button
                                     variant="outline"
                                     onClick={manejarAgregarIngredientes}
                                     disabled={selectedProductos.length === 0}
+                                    className='mr-20'
                                 >
                                     Agregar a la Receta
                                 </Button>
@@ -465,13 +483,6 @@ export default function ListarIngredientes() {
                                     onClick={() => setDialogOpen(false)}
                                 >
                                     Cancelar
-                                </Button>
-
-                                <Button
-                                    variant="outline"
-                                    onClick={RecuperarUnidades}
-                                >
-                                    Ver detalles
                                 </Button>
 
                             </DialogFooter>

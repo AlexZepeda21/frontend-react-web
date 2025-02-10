@@ -33,5 +33,6 @@
 
 /* Modificar el tamaño de la cabecera */
 .modal-header {
-  padding: 1.5rem 2rem; /* Más espacio para la cabecera */
+  text-align: center;
+  padding: 1rem 1rem; /* Más espacio para la cabecera */
 }
