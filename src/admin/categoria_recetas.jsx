@@ -66,7 +66,7 @@ const Categoria_recetas = () => {
   };
 
   return (
-    <div className="container mt-5 overflow-y-auto max-h-[80vh]">
+    <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-4">
         <input
           type="text"

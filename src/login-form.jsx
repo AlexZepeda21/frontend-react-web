@@ -46,7 +46,7 @@ export default function Login() {
 
         if (result.estado === true) {
           if (result.tipo_usuario === 1) {
-            navegar("/admin", { state: { token: result.token, tipo_usuario: result.tipo_usuario } });
+            navegar("/admin/Fechas", { state: { token: result.token, tipo_usuario: result.tipo_usuario } });
           } else if (result.tipo_usuario === 2) {
             navegar("/chef", { state: { token: result.token, tipo_usuario: result.tipo_usuario } });
           }

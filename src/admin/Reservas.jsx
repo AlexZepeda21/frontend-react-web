@@ -58,7 +58,7 @@ const Reservas = () => {
 
 
     return (
-        <Container fluid className="py-5">
+        <Container fluid className="p-8 max-w-7xl mx-auto">
             <h1>Reservas</h1>
             <input
                 type="text"

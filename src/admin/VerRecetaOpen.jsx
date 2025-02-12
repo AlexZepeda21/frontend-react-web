@@ -128,6 +128,229 @@ const VerRecetaPlato = () => {
         }
     };
 
+    const descartarPaso = async (idPaso) => {
+        try {
+            const response = await axios.delete(`${API_BASE_URL}/pasos_receta/${idPaso}`);
+            if (response.status === 200) {
+                // Actualizar la lista de pasos eliminando el paso descartado
+                const updatedPasos = pasos.filter((paso) => paso.id_paso !== idPaso);
+                setPasos(updatedPasos);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Paso descartado',
+                    text: 'El paso ha sido eliminado correctamente.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al descartar el paso',
+                    text: 'Inténtalo de nuevo más tarde.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+            }
+        } catch (error) {
+            console.error('Error al descartar el paso:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error en la respuesta del servidor',
+                text: 'Asegúrate de estar conectado a la red de ITCA.',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
+    };
+
+    const descartarIngrediente = async (idRecetaProducto) => {
+        try {
+            const response = await axios.delete(`${API_BASE_URL}/receta_producto/${idRecetaProducto}`);
+            if (response.status === 200) {
+                // Actualizar la lista de productos eliminando el ingrediente descartado
+                const updatedProductos = productos.filter(
+                    (producto) => producto.id_recetas_producto !== idRecetaProducto
+                );
+                setProductos(updatedProductos);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Ingrediente descartado',
+                    text: 'El ingrediente ha sido eliminado correctamente.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al descartar el ingrediente',
+                    text: 'Inténtalo de nuevo más tarde.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+            }
+        } catch (error) {
+            console.error('Error al descartar el ingrediente:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error en la respuesta del servidor',
+                text: 'Asegúrate de estar conectado a la red de ITCA.',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
+    };
+
+    function VerIngredientes(unidadMedida, cantidad, nombreProducto, costoUnitario, nombreUnidad) {
+        axios.get(`${API_BASE_URL}/uni_medidas`)
+            .then(response => {
+                if (response.status === 200 && response.data.unidad_medida) {
+                    const unidades = response.data.unidad_medida;
+
+                    const unidadMedidaObj = unidades.find(uni => uni.nombre_unidad === unidadMedida);
+                    const nombreUnidadObj = unidades.find(uni => uni.nombre_unidad === nombreUnidad);
+
+                    if (!unidadMedidaObj || !nombreUnidadObj) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Revisa si hay factores de conversion, no se encontraron las unidades de medida, De no ser asi lo mas probable es que agregaste unidades de medida erroneas en este ingrediente.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 8000
+                        });
+                        return;
+                    }
+
+                    const idUnidadOrigen = unidadMedidaObj.id_unidad_medida;
+                    const idUnidadDestino = nombreUnidadObj.id_unidad_medida;
+
+                    // Paso 2: Si las unidades son diferentes, obtenemos el factor de conversión
+                    if (unidadMedida !== nombreUnidad) {
+                        // Llamar a la API de conversiones para obtener el factor de conversión entre las dos unidades
+                        axios.get(`${API_BASE_URL}/conversiones`, {
+                            params: {
+                                id_unidad_origen: idUnidadOrigen,
+                                id_unidad_destino: idUnidadDestino
+                            }
+                        })
+                            .then(conversionResponse => {
+                                if (conversionResponse.status === 200 && conversionResponse.data.status === 'success') {
+                                    // Buscar el factor de conversión correcto
+                                    const conversion = conversionResponse.data.data.find(conversionItem =>
+                                        conversionItem.id_unidad_origen === idUnidadOrigen &&
+                                        conversionItem.id_unidad_destino === idUnidadDestino
+                                    );
+
+                                    if (conversion) {
+                                        const factorConversion = conversion.factor;  // Factor de conversión
+
+                                        // Aplicar el factor de conversión a la cantidad
+                                        const cantidadConvertida = cantidad / factorConversion;
+
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: 'Detalles',
+                                            html: `
+                                <strong>Producto:</strong> ${nombreProducto} <br>
+                                <strong>Cantidad usada:</strong> ${cantidadConvertida} ${nombreUnidad} <br>
+                                <strong>Costo unitario:</strong> ${costoUnitario ? `$${costoUnitario.toFixed(2)}` : 'No disponible'}
+                              `,
+                                            toast: true,
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 8000
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Revisa si hay factores de conversion ya que se encontraron las unidades de medida, de no ser asi lo mas probable es que agregaste unidades de medida erroneas en este ingrediente.',
+                                            toast: true,
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 9000
+                                        });
+                                    }
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Error al obtener el factor de conversión.',
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error al consultar la API de conversiones',
+                                    text: error.message,
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                            });
+                    } else {
+                        // Si las unidades son iguales, no necesitamos hacer ninguna conversión
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Detalles:',
+                            html: `
+                        <strong>Producto:</strong> ${nombreProducto} <br>
+                        <strong>Cantidad usada:</strong> ${cantidad} ${unidadMedida} <br>
+                        <strong>Costo unitario:</strong> ${costoUnitario ? `$${costoUnitario.toFixed(2)}` : 'No disponible'}
+                      `,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 5000
+                        });
+                    }
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al consultar las unidades de medida',
+                        text: 'La respuesta del servidor no es la esperada.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en la consulta',
+                    text: 'Error al consultar la API de unidades de medida.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+    }
+
     const abrirEditIngrediente = async (ingrediente) => {
         try {
             // Hacer una llamada a la API para obtener todos los productos activos
@@ -184,6 +407,7 @@ const VerRecetaPlato = () => {
             });
         }
     };
+
 
     const cerrarModalEditarIngrediente = () => {
         setShowModalEditarIngrediente(false); // Cierra el modal
@@ -788,37 +1012,137 @@ const VerRecetaPlato = () => {
 
             <div className="mt-8">
                 <div>
-                    <div className="mt-8">
-                        <div>
-                            <h3 className="text-2xl font-semibold text-gray-900">Ingredientes</h3>
-                            <Button onClick={abrirModalIngredientes} variant="outline" className="mt-4">
-                                Agregar Ingredientes
-                            </Button>
-                            <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
-                                {productos.length > 0 ? (
-                                    <ul className="space-y-2">
-                                        {productos.map((producto) => (
-                                            <li key={producto.id_recetas_producto}>
-                                                <div className="flex justify-between items-center">
-                                                    <span>
-                                                        {producto.producto.unidad_medida} de {producto.producto.nombre}......... a ${producto.producto.costo_unitario} x({formatearCantidad(producto.cantidad)})
-                                                    </span>
-                                                    <span>
-                                                        <button className='form-control' onClick={() => abrirEditIngrediente(producto)}>Editar ingrediente</button>
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-gray-500">No hay productos para esta receta.</p>
-                                )}
-                                {/* Mostrar el costo total */}
-                                <div className="mt-4">
-                                    <span>Costo de Fabricación por plato: </span><span>${calcularCostoTotal().toFixed(2)}</span>
+                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">Ingredientes</h3>
 
-                                </div>
+                    {/* Botón de agregar ingredientes */}
+                    <Button onClick={abrirModalIngredientes} variant="outline" className="mt-2 mb-4">
+                        Agregar Ingredientes
+                    </Button>
+
+                    <div className="bg-white p-6 border-2 border-gray-300 rounded-lg shadow-md space-y-4">
+                        {/* Listado de ingredientes */}
+                        {productos.length > 0 ? (
+                            <div>
+                                {/* Tabla completa con encabezados y datos */}
+                                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                                    <thead>
+                                        <tr style={{ backgroundColor: '#f4f4f4' }}>
+                                            <th
+                                                style={{
+                                                    padding: '10px',
+                                                    textAlign: 'left',
+                                                    fontWeight: 'bold',
+                                                    maxWidth: '200px',
+                                                    wordWrap: 'break-word',
+                                                }}
+                                            >
+                                                Costo
+                                            </th>
+                                            <th
+                                                style={{
+                                                    padding: '10px',
+                                                    textAlign: 'left',
+                                                    fontWeight: 'bold',
+                                                    maxWidth: '200px',
+                                                    wordWrap: 'break-word',
+                                                }}
+                                            >
+                                                Cantidad a usar en receta
+                                            </th>
+                                            <th
+                                                style={{
+                                                    padding: '10px',
+                                                    textAlign: 'left',
+                                                    fontWeight: 'bold',
+                                                    maxWidth: '300px',
+                                                    wordWrap: 'break-word',
+                                                }}
+                                            >
+                                                Nombre
+                                            </th>
+                                            <th
+                                                style={{
+                                                    padding: '10px',
+                                                    textAlign: 'left',
+                                                    fontWeight: 'bold',
+                                                    maxWidth: '200px',
+                                                    wordWrap: 'break-word',
+                                                }}
+                                            >
+
+                                                Unidad de Medida(Usada en receta)
+                                            </th>
+                                            <th
+                                                style={{
+                                                    padding: '10px',
+                                                    textAlign: 'left',
+                                                    fontWeight: 'bold',
+                                                }}
+                                            >
+                                                Acciones
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {/* Lista de productos */}
+                                        {productos.map((producto) => (
+                                            <tr key={producto.id_recetas_producto} style={{ borderBottom: '1px solid #ddd' }}>
+                                                <td style={{ padding: '10px', textAlign: 'left' }}>
+                                                    ${producto.producto.costo_unitario} por {producto.producto.unidad_medida}
+                                                </td>
+                                                <td style={{ padding: '10px', textAlign: 'left' }}>
+                                                    {formatearCantidad(producto.cantidad)} {producto.producto.unidad_medida}
+                                                </td>
+                                                <td style={{ padding: '10px', textAlign: 'left' }}>
+                                                    {producto.producto.nombre}
+                                                </td>
+
+                                                <td style={{ padding: '10px', textAlign: 'left' }}>
+                                                    En la receta se agregaron {producto.nombre_unidad}
+                                                </td>
+                                                <td style={{ padding: '10px', textAlign: 'left' }}>
+                                                    <div className="flex space-x-2">
+                                                        <button
+                                                            className="btn-editar p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+                                                            onClick={() => abrirEditIngrediente(producto)}
+                                                        >
+                                                            🖋
+                                                        </button>
+                                                        <button
+                                                            className="btn-descartar p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                                            onClick={() => descartarIngrediente(producto.id_recetas_producto)}
+                                                        >
+                                                            ❌
+                                                        </button>
+                                                        <button
+                                                            className="btn-descartar p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                                            onClick={() =>
+                                                                VerIngredientes(
+                                                                    producto.producto.unidad_medida,
+                                                                    producto.cantidad,
+                                                                    producto.producto.nombre,
+                                                                    producto.producto.costo_unitario,
+                                                                    producto.nombre_unidad
+                                                                )}
+                                                        >
+                                                            🗒️
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
+                        ) : (
+                            <p className="text-gray-500 text-center mt-4">No hay productos para esta receta.</p>
+                        )}
+
+                        {/* Mostrar el costo total */}
+                        <div className="mt-4 bg-gray-100 p-4 rounded-lg">
+                            <span className="text-gray-700 font-medium">Costo de Fabricación por plato :</span>
+                            <span > </span>
+                            <span className="font-semibold text-gray-900">_${calcularCostoTotal().toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -829,25 +1153,42 @@ const VerRecetaPlato = () => {
                 <Button onClick={abrirModalAgregarPaso} variant="outline" className="mt-4">
                     Agregar Paso
                 </Button>
-                <div className="bg-white p-4 border-2 border-gray-300 rounded-lg shadow-md space-y-4 listado-ingredientes">
+                <div className="bg-white p-6 border-2 border-gray-300 rounded-lg shadow-md space-y-6 listado-pasos">
+                    {/* Mostrar la lista de pasos */}
                     {pasos.length > 0 ? (
-                        <ul className="space-y-2">
+                        <ul className="space-y-4">
                             {pasos.map((paso) => (
-                                <li key={paso.id_paso}>
+                                <li key={paso.id_paso} className="p-4 border-b border-gray-200">
                                     <div className="flex justify-between items-center">
-                                        <span>Paso {paso.paso_numero}: {paso.descripcion}</span>
-                                        <span>
-                                            <button className='form-control' onClick={() => abrirModalEditarPaso(paso)}>Editar paso</button>
+                                        {/* Paso descriptivo */}
+                                        <span className="text-gray-800 font-medium flex-1">
+                                            <span className="text-blue-600 font-semibold">Paso {paso.paso_numero}</span>: {paso.descripcion}
                                         </span>
 
+                                        {/* Contenedor de botones */}
+                                        <div className="flex space-x-2">
+                                            <button
+                                                className="btn-editar p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+                                                onClick={() => abrirModalEditarPaso(paso)}
+                                            >
+                                                🖋
+                                            </button>
+                                            <button
+                                                className="btn-descartar p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                                onClick={() => descartarPaso(paso.id_paso)}
+                                            >
+                                                ❌
+                                            </button>
+                                        </div>
                                     </div>
                                 </li>
                             ))}
                         </ul>
                     ) : (
-                        <p className="text-gray-500">No hay pasos para esta receta.</p>
+                        <p className="text-gray-500 text-center mt-4">No hay pasos para esta receta.</p>
                     )}
                 </div>
+
 
                 <Button onClick={recargarDatos} variant="outline" className="mt-4">
                     .:.:.:

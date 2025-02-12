@@ -28,6 +28,7 @@ import { time } from 'framer-motion';
 import VerRecetaPlato from './admin/VerRecetaOpen';
 import Reservas_item from './admin/Reservas_item';
 import CrearplatoDeReceta from './admin/CrearplatoDeReceta';
+import Fechas from './admin/Fechas';
 
 // Componentes chef
 import LayoutChef from './Menus/Menuchef';
@@ -45,6 +46,7 @@ import MenuChef from './chef/Menu';
 import PlatosChef from './chef/Platos';
 import ReservasChef from './chef/Reservas'
 import DashboardChef from './chef/dashboard';
+
 function App() {
 
   const location = useLocation();
@@ -244,6 +246,8 @@ function App() {
             <Route path="VerReceta/:idReceta" element={<VerReceta />} />
             <Route path="VerRecetaPlato/:idReceta" element={<VerRecetaPlato />} />
             <Route path="CrearplatoDeReceta/:idReceta" element={<CrearplatoDeReceta />} />
+            <Route path="Fechas" element={<Fechas />} />
+
 
 
             
