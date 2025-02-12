@@ -177,6 +177,7 @@ const UnidadMedidaList = () => {
       .post(`${API_BASE_URL}/conversiones`, factorData)
       .then((response) => {
         if (response.data.status === 'success') {
+          obtenerFactoresConversion()
           setShowModalAgregarFactores(false);
           setShowModalFactores(true)
         } else {

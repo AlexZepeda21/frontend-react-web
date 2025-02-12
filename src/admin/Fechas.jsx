@@ -27,10 +27,10 @@ function Fechas() {
             try {
                 const response = await fetch(`${API_BASE_URL}/ingreso`);
                 const data = await response.json();
-                
+
                 // Filtrar solo las fechas con tipo_movimiento "Entrada"
                 const filteredData = data.ingreso.filter(item => item.tipo_movimiento === "Entrada");
-                
+
                 // Ordenar por fecha de vencimiento (más reciente primero)
                 const sortedData = filteredData.sort((a, b) => new Date(b.fecha_vencimiento) - new Date(a.fecha_vencimiento));
                 setFechas(sortedData || []);
@@ -48,17 +48,20 @@ function Fechas() {
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/Productosactivos');
                 const data = await response.json();
-                if (data.status === 200) {
+                if (data && data.status === 200 && Array.isArray(data.productos) && data.productos.length > 0) {
                     setProductos(data.productos);
                 } else {
-                    console.error("Error al obtener productos activos:", data.message);
+                    console.error("No se encontraron productos activos");
+                    setProductos([]); // Evita tener un estado vacío
                 }
             } catch (error) {
                 console.error("Error en la solicitud:", error);
+                setProductos([]); // Evita tener un estado vacío en caso de error
             }
         };
         fetchProductos();
     }, []);
+
 
     // Calcular días restantes
     const getDaysLeft = (fechaVencimiento) => {
@@ -72,7 +75,7 @@ function Fechas() {
     const indexOfFirstProduct = indexOfLastProduct - productosPorPagina;
 
     // Filtrar productos por nombre (basado en searchTerm)
-    const filteredProductos = productos.filter(producto => 
+    const filteredProductos = productos.filter(producto =>
         producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -140,7 +143,9 @@ function Fechas() {
                                     const producto = productos.find(p => p.id_producto === item.id_producto);
                                     const daysLeft = getDaysLeft(item.fecha_vencimiento);
                                     const isExpiringSoon = daysLeft <= 3 && daysLeft >= 0; // Producto con fecha de vencimiento en 3 días o menos
-                                    const estado = isExpiringSoon ? 'Por Vencerse' : 'Vigente';
+
+                                    // Aquí agregamos la condición para marcar como "Vencido" si los días restantes son negativos
+                                    const estado = daysLeft <= 0 ? 'Vencido' : (isExpiringSoon ? 'Por Vencerse' : 'Vigente');
 
                                     return (
                                         <TableRow
@@ -151,8 +156,7 @@ function Fechas() {
                                             <TableCell>{new Date(item.fecha_vencimiento).toLocaleDateString()}</TableCell>
                                             <TableCell>{daysLeft} días</TableCell>
                                             <TableCell>
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isExpiringSoon ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
-                                                    }`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${estado === 'Vencido' ? "bg-gray-100 text-gray-800" : isExpiringSoon ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
                                                     {estado}
                                                 </span>
                                             </TableCell>
@@ -167,6 +171,7 @@ function Fechas() {
                                 </TableRow>
                             )}
                         </TableBody>
+
                     </Table>
                 </div>
             </div>
