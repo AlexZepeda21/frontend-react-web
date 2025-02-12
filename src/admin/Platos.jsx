@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../url';
 import { Container, Row, Col, Card, Button, Modal, Form, Table, Badge, InputGroup } from 'react-bootstrap';
 import { motion } from 'framer-motion';
+import ReactPaginate from 'react-paginate';
 import { Search } from 'lucide-react';
 import '../styles/Platos.css';
 import '../styles/modal/modal.css'
@@ -11,10 +12,11 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
 
- 
+
 const Platos = () => {
   const { id_categoria_menu } = useParams();
   localStorage.setItem('id_categoria_menu', id_categoria_menu);
+  const [currentPage, setCurrentPage] = useState(0); // Estado para la página actual
   const [menuItems, setMenuItems] = useState([]);
   const [RecetasPlato, setRecetasPlato] = useState([]);
   const [menuItemsSinCategoria, setMenuItemsSinCategoria] = useState([]);
@@ -41,7 +43,11 @@ const Platos = () => {
 
   useEffect(() => {
     fetchRecetasPlato();
-  })
+  }, []);  // Se agrega el arreglo vacío para que solo se ejecute una vez al montar el componente
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
 
   useEffect(() => {
     fetchMenuItems();
@@ -222,6 +228,52 @@ const Platos = () => {
     setShowFormularioModal(true);
   };
 
+  const EliminarPlato = async (id) => {
+    try {
+      const estado = 0;  // Cambiar el estado a 2 (esto lo consideras como "eliminado")
+      const response = await axios.put(`${API_BASE_URL}/menu/${id}`, {
+        estado: estado,  // Se está actualizando el estado del plato
+      });
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Producto actualizado',
+          text: 'El estado del producto ha sido actualizado a "No disponible".',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+
+        fetchMenuItems();  // Re-fetch de los platos para reflejar el cambio de estado
+        setShowModal(false);  // Cerrar modal si es necesario
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar estado',
+          text: 'No se pudo cambiar el estado del plato. Intente nuevamente.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    } catch (err) {
+      console.error('Error al actualizar el estado del plato', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'Conéctese a la red de ITCA y vuelva a intentarlo.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
+  };
+
+
   const handleUpdate = async (id) => {
     try {
       const response = await axios.put(`${API_BASE_URL}/menu/${id}`, {
@@ -275,7 +327,7 @@ const Platos = () => {
   if (error) return <Container className="text-center py-5"><h2 className="text-danger">{error}</h2></Container>;
 
   return (
-    <Container fluid className="py-5">
+    <Container fluid className="p-8 max-w-7xl mx-auto">
       <Row className="mb-4">
         <Col className="text-center">
           <Button variant="primary" className="me-3" onClick={() => setShowModalReceta(true)}>
@@ -314,9 +366,11 @@ const Platos = () => {
                     <Badge bg={item.estado ? "success" : "danger"}>
                       {item.estado ? "Disponible" : "No disponible"}
                     </Badge>
-
+                    <br></br>
+                    <Button onClick={() => EliminarPlato(item.id_menu)}>
+                      Eliminar
+                    </Button>
                   </Card.Body>
-
                 </Card>
               </motion.div>
             </Col>
