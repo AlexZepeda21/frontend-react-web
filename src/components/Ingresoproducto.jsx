@@ -7,6 +7,8 @@ import Swal from 'sweetalert2'; // Import SweetAlert2
 export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoProducto }) {
     const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
 
+
+
     const [formData, setFormData] = useState({
         id_producto: producto.id_producto,
         id_usuario: id,
@@ -52,16 +54,26 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
             }
         }
 
-         const today = new Date();
-         
+        const options = {
+            timeZone: 'America/El_Salvador', 
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour12: false 
+          };
+          
+          const date = new Date();
+          const date_get = new Intl.DateTimeFormat('en-CA', options).format(date).replace(',', '').replace(/\//g, '-').replace(' ', ' ');
+          
+     
          
          if(name == "fecha_vencimiento"){
-            const inputDate = new Date(value);
-
-            if (inputDate <= today) {
+            
+            if (formData.tipo_movimiento === 'Entrada') {
+                if (value < date_get) {
                 Swal.fire({
                     title: 'Error',
-                    text: 'La fecha debe de ser posterior al dia de hoy.',
+                    text: 'La fecha debe de ser posterior al dia de hoy o debe ser el mismo dia.',
                     icon: 'error',
                     toast: true,
                     position: 'top-end',
@@ -69,7 +81,23 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                     timerProgressBar: true,
                     showConfirmButton: false,
                 });
-                return;
+                return; 
+            }
+        }
+        else {
+                if (value > date_get) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La fecha no debe de ser anterior al dia de hoy o debe ser el mismo dia.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+                return; 
+            }
             }
          }
        
@@ -97,7 +125,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                     tipo_movimiento: formData.tipo_movimiento,
                     costo_unitario: formData.costo_unitario,
                     cantidad: formData.cantidad,
-                    fecha_vencimiento: formData.fecha_vencimiento,
+                    fecha_vencimiento: formData.fecha_vencimiento ,
                     motivo: formData.motivo || 'Ninguna',
                     costo_total: calcularTotal(), 
                 }),
@@ -127,7 +155,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
             } else {
                 Swal.fire({
                     title: 'Error',
-                    text: result.error || 'Hubo un problema al registrar el producto.',
+                    text: result.message || 'Hubo un problema al registrar el producto.',
                     icon: 'error',
                     toast: true,
                     position: 'top-end',
@@ -140,7 +168,7 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
             console.error('Error al enviar los datos:', error);
             Swal.fire({
                 title: 'Error',
-                text: 'Ocurrió un error al intentar hacer movimientos con este producto el producto.',
+                text: error,
                 icon: 'error',
                 toast: true,
                 position: 'top-end',
@@ -250,9 +278,10 @@ export default function Ingresoproductos({ isOpen, setIsOpen, producto, ingresoP
                         <input
                             type="date"
                             name="fecha_vencimiento"
-                            min={minDate}
+                            /*min={minDate}*/
                             value={formData.fecha_vencimiento}
                             onChange={handleInputChange}
+                            required
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         />
                     </div>
