@@ -66,7 +66,7 @@ const RecetasList = () => {
     navigate(`/admin/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
-  
+
   const handleVerRecetaPlato = (idReceta) => {
     navigate(`/admin/CrearplatoDeReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
@@ -80,7 +80,7 @@ const RecetasList = () => {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Lista de Recetas</h1>
+        <h1 className="text-3xl titulo font-bold tracking-tight">Lista de recetas</h1>
         <Button onClick={() => setShowModal(true)} size="lg" className='m-1'>
           Agregar Receta
         </Button>
@@ -144,11 +144,10 @@ const RecetasList = () => {
                     <TableCell>{receta.tiempo_preparacion} min</TableCell>
                     <TableCell>{receta.numero_porciones}</TableCell>
                     <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        receta.dificultad === "Fácil" ? "bg-green-100 text-green-800" :
-                        receta.dificultad === "Medio" ? "bg-yellow-100 text-yellow-800" :
-                        "bg-red-100 text-red-800"
-                      }`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${receta.dificultad === "Fácil" ? "bg-green-100 text-green-800" :
+                          receta.dificultad === "Medio" ? "bg-yellow-100 text-yellow-800" :
+                            "bg-red-100 text-red-800"
+                        }`}>
                         {receta.dificultad}
                       </span>
                     </TableCell>
@@ -162,9 +161,8 @@ const RecetasList = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        receta.estado ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                      }`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${receta.estado ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}>
                         {receta.estado ? "Activo" : "Inactivo"}
                       </span>
                     </TableCell>

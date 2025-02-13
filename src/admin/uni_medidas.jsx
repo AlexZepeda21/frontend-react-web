@@ -31,7 +31,7 @@ const UnidadMedidaList = () => {
   const [dividendo, setDividendo] = useState('');
   const [divisor, setDivisor] = useState('');
   const [mostrarCalculadora, setMostrarCalculadora] = useState(false);
-  
+
 
 
   const handleDividendoChange = (e) => {
@@ -149,7 +149,6 @@ const UnidadMedidaList = () => {
     }
   };
 
-
   const handleFactorChange = (e) => {
     setFactor(e.target.value);
   };
@@ -218,7 +217,6 @@ const UnidadMedidaList = () => {
     unidad?.nombre_unidad?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
   const currentUnidades = filteredUnidades.slice(indexOfFirstUnidad, indexOfLastUnidad);
   const pageCount = Math.ceil(filteredUnidades.length / unidadesPorPagina);
 
@@ -240,10 +238,6 @@ const UnidadMedidaList = () => {
     setSelectedFactor(conversion);  // Guardamos la conversión seleccionada para editar
     setShowModalEditarFactor(true);  // Abrimos el modal de edición
   };
-
-
-
-
 
 
   const openModalEditar = (unidad) => {
@@ -285,17 +279,14 @@ const UnidadMedidaList = () => {
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl titulo font-bold tracking-tight">Unidades de Medida</h1>
-        <Button onClick={() => setShowModal(true)} size="lg" className='m-1 btn-agregar'>
-          Agregar Unidad
-        </Button>
-        <Button onClick={obtenerFactoresConversion} size="lg" className='m-1 btn-agregar'>
-          Obtener factores de conversion
-        </Button>
-      </div>
 
-      <div className="mb-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl titulo font-bold tracking-tight">Unidades de Medida</h1>
+      </div>
+      <p className="titulo font-bold tracking-tight">Gestione las unidades de medida que desea agregar a sus productos, asi como los factores de conversion</p>
+      <br />
+
+      <div className="flex justify-between items-center">
         <input
           type="text"
           className="form-control"
@@ -303,9 +294,7 @@ const UnidadMedidaList = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
 
-      <div className="mb-4">
         <label htmlFor="recordsPerPage" className="mr-2">Registros por página:</label>
         <select
           id="recordsPerPage"
@@ -318,6 +307,20 @@ const UnidadMedidaList = () => {
           <option value={15}>15</option>
           <option value={20}>20</option>
         </select>
+      </div>
+
+      <br />
+
+      <div className="mb-2">
+        <div className="flex justify-between items-center">
+          <Button onClick={() => setShowModal(true)} className=' btn btn-primary'>
+            Agregar Unidad
+          </Button>
+          <Button onClick={obtenerFactoresConversion} className=' btn btn-primary'>
+            Obtener factores de conversion
+          </Button>
+        </div>
+
       </div>
 
       {error && (
@@ -530,7 +533,7 @@ const UnidadMedidaList = () => {
 
               {/* Contenedor de la mini calculadora, se muestra solo si mostrarCalculadora es true */}
               {mostrarCalculadora && (
-                <div className="calculadora-container"  style={{ border: '2px solid #ccc', padding: '15px', marginTop: '10px', backgroundColor: '#f9f9f9' }}>
+                <div className="calculadora-container" style={{ border: '2px solid #ccc', padding: '15px', marginTop: '10px', backgroundColor: '#f9f9f9' }}>
                   <label>Ingrese el dividendo (Ej: 1 para 1 litro)</label>
                   <input
                     type="number"

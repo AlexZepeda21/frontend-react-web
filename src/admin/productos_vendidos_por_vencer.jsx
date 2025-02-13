@@ -63,8 +63,9 @@ const Productos_vencidos_por_vencer = () => {
   return (
     <div className="container di mt-5">
       <h1 className="text-3xl titulo font-bold tracking-tight">Productos por vencerse o vencidos</h1>
-
+      <p className="titulo font-bold tracking-tight">Retire los productos proximos a vencer o vencidos para  tener un mejor control del inventario</p>
       <div className="mb-4">
+        <br />
         <input
           type="text"
           className="form-control"
