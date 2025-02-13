@@ -1,123 +1,111 @@
-.width-250px {
-    width: z50px;
-  }
-  
-  
-  .bg-white {
-    background-color: white;
-  }
-  
-  .rounded-lg {
-    border-radius: 8px;
-  }
-  
-  .shadow-md {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .overflow-hidden {
-    overflow: hidden;
-  }
-  
-  .p-3 {
-    padding: 0.75rem;
-  }
-  
-  .flex {
-    display: flex;
-  }
-  
-  .justify-between {
-    justify-content: space-between;
-  }
-  
-  .items-center {
-    align-items: center;
-  }
-  
-  .mb-3 {
-    margin-bottom: 0.75rem;
-  }
-  
-  .text-sm {
-    font-size: 0.875rem;
-  }
-  
-  .font-medium {
-    font-weight: 500;
-  }
-  
-  .text-gray-700 {
-    color: #4a4a4a;
-  }
-  
-  .text-xl {
-    font-size: 1.25rem;
-  }
-  
-  .font-bold {
-    font-weight: 700;
-  }
-  
-  .relative {
-    position: relative;
-  }
-  
-  .w-full {
-    width: 100%;
-  }
-  
-  .height-150px {
-    height: 70px;
-  }
-  
-  .object-cover {
-    object-fit: cover;
-  }
-  
-  .rounded-md {
-    border-radius: 4px;
-  }
-  
-  .bg-gray-100 {
-    background-color: white;
-  }
-  
-  .bg-blue-500 {
-    background-color: #4299e1;
-  }
-  
-  .text-white {
-    color: white;
-  }
-  
-  .text-gray-800 {
-    color: #2d3748;
-  }
-  
-  .py-1 {
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-  }
-  
-  .px-3 {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-  
-  .rounded {
-    border-radius: 4px;
-  }
-  
-  .hover\:bg-blue-600:hover {
-    background-color: #3182ce;
-  }
-  
-  .hover\:bg-gray-300:hover {
-    background-color: #f7fafc;
-  }
-  
-  .transition-colors {
-    transition: background-color 0.3s;
-  }
-  
+/* Estilo general */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el título */
+h1 {
+  text-align: center;
+  color: #343a40;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Estilo del campo de búsqueda */
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 10px;
+}
+
+/* Estilos de la tabla */
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 10px;
+  background: white;
+  text-align: center;
+}
+
+.table thead {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+/* Estilo para las imágenes */
+.table img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #dee2e6;
+}
+
+/* Botón de acción */
+.btn-success {
+  background-color: #28a745;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+  border-radius: 6px;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+/* Paginación */
+.d-flex.justify-content-center {
+  margin-top: 20px;
+}
+
+.btn-primary,
+.btn-light {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-light {
+  background-color: #e9ecef;
+}
+
+.btn-light:hover {
+  background-color: #dee2e6;
+}
