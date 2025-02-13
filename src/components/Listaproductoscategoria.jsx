@@ -54,11 +54,15 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
   };
 
   const ActualizarProducto = (nuevoProducto) => {
-    setProductos((prev) =>
-      prev.map((producto) =>
-        producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
-      )
-    );
+    nuevoProducto.forEach(nuevo => {
+           setProductos((prev) =>
+        prev.map((producto) =>
+          producto.id_producto === nuevo.id_producto ? nuevo : producto
+        )
+      );
+    });
+
+    
   };
 
 
@@ -69,11 +73,14 @@ export default function Listaproductoscategoria({ isOpen, setIsOpen, categoria, 
   }
 
   const ingresoProducto = (nuevoProducto) => {
-    setProductos((prev) =>
-      prev.map((producto) =>
-        producto.id_producto === nuevoProducto.id_producto ? nuevoProducto : producto
-      )
-    );
+
+    nuevoProducto.forEach(nuevo => {
+           setProductos((prev) =>
+        prev.map((producto) =>
+          producto.id_producto === nuevo.id_producto ? nuevo : producto
+        )
+      );
+    });
   };
 
 

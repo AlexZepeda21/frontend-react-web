@@ -67,6 +67,9 @@ const Categoria_recetas = () => {
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
+      <h1 className="text-3xl titulo font-bold tracking-tight">Categoria de recetas</h1>
+      <p className="titulo font-bold tracking-tight">Agregue categorias por ejemplo: Pures, Ensaladas, Postres...</p>
+
       <div className="mb-4">
         <input
           type="text"

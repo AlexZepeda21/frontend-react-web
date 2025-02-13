@@ -112,9 +112,10 @@ function Fechas() {
 
     return (
         <div className="p-8 max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">Productos a vencerse</h1>
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl titulo font-bold tracking-tight">Productos por vencerse</h1>
             </div>
+            <p className="titulo font-bold tracking-tight">Cuidado con tus productos que estan proximos a vencer</p>
 
             <div className="mb-4">
                 <input

@@ -51,19 +51,6 @@ input[type="text"].form-control {
     transition: background-color 0.3s ease;
 }
 
-
-
-
-  button.btn-agregar{
-    background-color: #8B2323;
-    
-  }
-
-  button.btn-agregar:hover{
-    background-color: black;
-    color: white;
-    
-  }
   
   button.btn-edit {
     background-color: #CD853F;
