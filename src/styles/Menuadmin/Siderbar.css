@@ -110,3 +110,61 @@
     }
   }
   
+
+  .menu-toggle {
+    display: none;
+    font-size: 30px;
+    background-color: transparent;
+    border: none;
+    color: black;
+    /* Otros estilos para el botón */
+  }
+
+
+
+
+  @media (max-width: 767px) {
+    .sidebar.false {
+      width: 0; /* Oculta la barra lateral */
+      overflow: hidden;
+      transition: width 0.3s ease;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      background-color: #ffffff;
+      border-right: 1px solid #e0e0e0;
+      z-index: 1000;
+    }     
+
+    .sidebar.open {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 550px;
+      height: 100vh; /* Ocupar toda la altura de la pantalla */
+      background-color: #ffffff;
+      color: white;
+      padding: 15px;
+      z-index: 9999; /* Asegura que esté sobre todo */
+      box-shadow: 5px 0 10px rgba(0, 0, 0, 0.3); /* Agrega una sombra para mejor visibilidad */
+    }
+  
+    .menu-toggle {
+      display: block;
+      font-size: 30px;
+      background-color: transparent;
+      border: none;
+      color: black;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 10000; /* Asegura que el botón esté siempre accesible */
+    }
+  
+    
+  
+   
+  }
+  

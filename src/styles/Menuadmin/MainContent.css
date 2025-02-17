@@ -12,26 +12,12 @@
     overflow-y: auto; /* Mostrar barra de desplazamiento solo cuando sea necesario */
 }
 
-/* Ajustes para pantallas más pequeñas */
-@media (max-width: 1024px) {
-    .main-content {
-        left: 200px; /* Reduce el margen izquierdo */
-    }
-}
+
 
 @media (max-width: 768px) {
     .main-content {
-        left: 150px; /* Ajusta el margen para tablets */
+        left: 0;
+        width: 100%;
     }
 }
 
-@media (max-width: 576px) {
-    .main-content {
-        position: relative; /* Cambia de fijo a relativo */
-        left: 0; /* Sin margen izquierdo */
-        top: 0; /* Ajusta la posición superior */
-        border-left: none; /* Elimina la línea divisoria */
-        max-height: none; /* Elimina la altura máxima */
-        overflow-y: visible; /* Sin límite en scroll */
-    }
-}

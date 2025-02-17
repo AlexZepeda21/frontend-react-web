@@ -13,7 +13,7 @@ export default function Salidaproductos({ isOpen, setIsOpen, id_ingreso  }) {
         try {
           const response = await fetch(`${API_BASE_URL}/ingreso/${id_ingreso}`);
           const data = await response.json();
-          setIngreso( data.message[0] || []);
+          setIngreso(data.message || {});
         } catch (error) {
           console.error('Error al obtener los productos:', error);
           alert(error);
@@ -47,6 +47,7 @@ export default function Salidaproductos({ isOpen, setIsOpen, id_ingreso  }) {
     
           useEffect(() => {
         if (Ingreso) {
+            alert(Ingreso.id_ingreso)
             const fechaVencimiento = new Date(Ingreso.fecha_vencimiento);
             if (fechaVencimiento.getTime()) {
                 const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];

@@ -86,7 +86,7 @@ const Productos_vencidos_por_vencer = () => {
                 <div class="p-3">
                   <div class="flex justify-between items-center mb-3">
                     <h2 class="text-sm font-medium text-gray-700">
-                      {categoria.nombre}
+                      {categoria.nombre} {categoria.id_ingreso}
                     </h2>
                   </div>
                 {/*id del producto categoria.id_producto */}

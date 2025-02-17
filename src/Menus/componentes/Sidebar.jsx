@@ -10,6 +10,8 @@ function Sidebar() {
   const navigate = useNavigate();
   const id = localStorage.getItem('id'); // Obtener el id de usuario del localStorage
 
+
+
   const handleLogout = () => {
     // Usar SweetAlert2 para confirmar la acción de cerrar sesión
     Swal.fire({
@@ -65,12 +67,31 @@ function Sidebar() {
     }
   }, [isLoggedOut, id]); // Se ejecuta cuando isLoggedOut cambia
 
+
+  const [isOpen, setIsOpen] = useState(false);
+
+
+  
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <>
-      <aside className="sidebar">
+    {/* Botón de hamburguesa */}
+
+
+
+   
+      <button className="menu-toggle" onClick={toggleSidebar}>
+        ☰
+      </button>
+      
+      <aside className={`sidebar ${isOpen ? 'open' : 'false'}`}>      
+      
         <div className="logo-container">
           <img src={logo} alt="ITCA FEPADE" className="logo" />
         </div>
+
         <nav className="main-nav">
         <a href="/../admin/por_Vencer" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Dashboard
