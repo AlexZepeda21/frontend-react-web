@@ -63,12 +63,12 @@ const RecetasListChef = () => {
   };
 
   const handleVerReceta = (idReceta) => {
-    navigate(`/admin/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`/chef/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
 
   const handleVerRecetaPlato = (idReceta) => {
-    navigate(`/admin/CrearplatoDeReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`/chef/CrearplatoDeReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
   // Función para abrir el modal "Editar"

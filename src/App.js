@@ -48,6 +48,10 @@ import MenuChef from './chef/Menu';
 import PlatosChef from './chef/Platos';
 import ReservasChef from './chef/Reservas'
 import DashboardChef from './chef/dashboard';
+import CrearplatoDeRecetaChef from './chef/CrearplatoDeReceta';
+import VerRecetaPlatoChef from './chef/VerRecetaOpen';
+import Reservas_itemChef from './chef/Reservas_item';
+
 
 function App() {
 
@@ -267,6 +271,7 @@ function App() {
       return (
         <Routes>
           <Route path="/chef" element={<LayoutChef />}>
+
             <Route path="categoria_recetas" element={<Categoria_recetasChef />} />
             <Route path="categoria_productos" element={<Categoria_productosChef />} />
             <Route path="eligiendo_pro" element={<ProductoCardChef />} />
@@ -279,7 +284,9 @@ function App() {
             <Route path="Reservas" element={<ReservasChef />} />
             <Route path="Platos/:id_categoria_menu" element={<PlatosChef />} />
             <Route path="dashboard" element={<DashboardChef />} />
-
+            <Route path="CrearplatoDeReceta/:idReceta" element={<CrearplatoDeRecetaChef />} />
+            <Route path="VerRecetaPlato/:idReceta" element={<VerRecetaPlatoChef />} />
+            <Route path="Items" element={<Reservas_itemChef />} />
 
 
           </Route>
