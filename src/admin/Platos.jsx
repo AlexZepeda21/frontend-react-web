@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../url';
-import { Container, Row, Col, Card, Button, Modal, Form, Table, Badge, InputGroup } from 'react-bootstrap';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/tabledesign";
+import { Container, Row, Col, Card, Button, Modal, Form, Badge, InputGroup } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import ReactPaginate from 'react-paginate';
 import { Search } from 'lucide-react';
@@ -228,11 +236,56 @@ const Platos = () => {
     setShowFormularioModal(true);
   };
 
+
+  const QuitarPlato = async (id) => {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/menu/${id}`, {
+        id_categoria: null,
+      });
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Producto enviado de nuevo a listarce',
+          text: 'El producto esta listo para ser reubicado.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+
+        fetchMenuItems();  // Re-fetch de los platos para reflejar el cambio de estado
+        setShowModal(false);  // Cerrar modal si es necesario
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar estado',
+          text: 'No se pudo cambiar el estado del plato. Intente nuevamente.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    } catch (err) {
+      console.error('Error al actualizar el estado del plato', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'Conéctese a la red de ITCA y vuelva a intentarlo.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
+  };
+
   const EliminarPlato = async (id) => {
     try {
-      const estado = 0;  // Cambiar el estado a 2 (esto lo consideras como "eliminado")
+      const estado = 0;
       const response = await axios.put(`${API_BASE_URL}/menu/${id}`, {
-        estado: estado,  // Se está actualizando el estado del plato
+        estado: estado,
       });
 
       if (response.status === 200) {
@@ -367,8 +420,11 @@ const Platos = () => {
                       {item.estado ? "Disponible" : "No disponible"}
                     </Badge>
                     <br></br>
-                    <Button onClick={() => EliminarPlato(item.id_menu)}>
+                    <Button onClick={() => EliminarPlato(item.id_menu)} className='m-2'>
                       Eliminar
+                    </Button>
+                    <Button onClick={() => QuitarPlato(item.id_menu)}>
+                      Relistar
                     </Button>
                   </Card.Body>
                 </Card>
@@ -383,7 +439,7 @@ const Platos = () => {
       </Row>
 
       {/* Modal para asignar productos */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="xl">
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="xl" scrollable>
         <Modal.Header
           closeButton
           className="bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-t-lg"
@@ -401,9 +457,10 @@ const Platos = () => {
               onChange={(e) => setSearchMenuItems(e.target.value)}
             />
           </InputGroup>
-          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            <Table responsive striped bordered hover>
-              <thead className="bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <Table responsive striped bordered hover style={{ tableLayout: 'fixed', minWidth: '1000px' }}>
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
@@ -447,7 +504,7 @@ const Platos = () => {
       </Modal>
 
       {/* Modal para crear plato apartir de la receta */}
-      <Modal show={showModalReceta} onHide={() => setShowModalReceta(false)} size="xl">
+      <Modal show={showModalReceta} onHide={() => setShowModalReceta(false)} size="xl" scrollable>
         <Modal.Header
           closeButton
           className="bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-t-lg"
@@ -465,21 +522,23 @@ const Platos = () => {
               onChange={(e) => setSearchRecetasPlato(e.target.value)}
             />
           </InputGroup>
-          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            <Table responsive striped bordered hover>
-              <thead className="bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <Table responsive striped bordered hover style={{ tableLayout: 'fixed', minWidth: '1000px' }}>
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Tiempo de preparación</th>
                   <th>Dificultad</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredRecetas.length > 0 ? (
                   filteredRecetas.map((item) => (
                     <tr>
+                      <td>{item.id_recetas || 'Sin nombre'}</td>
                       <td>{item.nombre_receta || 'Sin nombre'}</td>
                       <td>{item.descripcion || 'Sin descripción'}</td>
                       <td>{item.tiempo_preparacion || '0'} min</td>
@@ -502,7 +561,7 @@ const Platos = () => {
 
 
       {/* Modal para ver productos del inventario */}
-      <Modal show={verModalInventario} onHide={() => setVerModalInventario(false)} className="custom-modal">
+      <Modal show={verModalInventario} onHide={() => setVerModalInventario(false)} className="custom-modal" scrollable>
         <Modal.Header
           closeButton
           className="bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-t-lg"
@@ -520,8 +579,8 @@ const Platos = () => {
               onChange={(e) => setSearchProductos(e.target.value)}
             />
           </InputGroup>
-          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            <Table responsive striped bordered hover>
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <Table responsive striped bordered hover style={{ tableLayout: 'fixed', minWidth: '1000px' }}>
               <thead>
                 <tr>
                   <th>ID</th>

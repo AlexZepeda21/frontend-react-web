@@ -29,6 +29,14 @@
 /* Ajuste para el contenido dentro del modal si excede el tamaño */
 .modal-body {
   overflow-y: auto; /* Permitir desplazamiento si el contenido es más grande que la altura del modal */
+  overflow-x: auto; /* Permitir desplazamiento horizontal */
+  padding-right: 10px; /* Evitar que el contenido se vea cortado con el scrollbar */
+}
+
+/* Contenedor de la tabla para permitir desplazamiento horizontal */
+.modal-body .table-container {
+  max-width: 100%; /* Asegurarse de que ocupe todo el ancho */
+  overflow-x: auto; /* Permitir desplazamiento horizontal */
 }
 
 /* Modificar el tamaño de la cabecera */
