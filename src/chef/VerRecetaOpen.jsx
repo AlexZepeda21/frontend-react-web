@@ -738,7 +738,7 @@ const VerRecetaPlatoChef = () => {
                 });
 
                 setTimeout(() => {
-                    navigate(`/admin/Platos/${id_categoriaMenu}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+                    navigate(`/chef/Platos/${id_categoriaMenu}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
                 }, 4000); // 1000 milisegundos = 1 segundo
             } else {
 

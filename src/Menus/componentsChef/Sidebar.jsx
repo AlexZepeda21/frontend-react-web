@@ -85,9 +85,6 @@ function Sidebar() {
           <a href="/../chef/uni_medidas" className="nav-item">
             <i className="fas fa-balance-scale"></i>Unidades Medida
           </a>
-          <a href="#" className="nav-item">
-            <i className="fas fa-box"></i>Productos
-          </a>
           <a href="/../chef/categoria_recetas" className="nav-item">
             <i className="fas fa-utensils"></i>Recetas
           </a>

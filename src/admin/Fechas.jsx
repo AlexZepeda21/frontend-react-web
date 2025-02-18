@@ -43,10 +43,10 @@ function Fechas() {
     }, []);
 
     // Fetch para los productos activos
-    useEffect(() => {
+    useEffect(() => { 
         const fetchProductos = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/Productosactivos');
+                const response = await fetch(`${API_BASE_URL}/Productosactivos`);
                 const data = await response.json();
                 if (data && data.status === 200 && Array.isArray(data.productos) && data.productos.length > 0) {
                     setProductos(data.productos);

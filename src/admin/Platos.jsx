@@ -413,7 +413,10 @@ const Platos = () => {
                   />
                   <Card.Body>
                     <Card.Title>{item.nombre}</Card.Title>
-                    <Card.Text>{item.descripcion}</Card.Text>
+                    {/* Limitando la descripción a 25 caracteres */}
+                    <Card.Text> 
+                      {item.descripcion.length > 25 ? item.descripcion.slice(0, 45) + '...' : item.descripcion}
+                    </Card.Text>
                     <Card.Text><strong>Precio:</strong> ${item.precio}</Card.Text>
                     <Card.Text><strong>Cantidad disponible:</strong> {item.cantidad_platos}</Card.Text>
                     <Badge bg={item.estado ? "success" : "danger"}>
@@ -437,6 +440,7 @@ const Platos = () => {
           </Col>
         )}
       </Row>
+
 
       {/* Modal para asignar productos */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="xl" scrollable>
