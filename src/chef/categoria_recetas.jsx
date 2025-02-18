@@ -16,6 +16,7 @@ const Categoria_recetasChef = () => {
   const navigateNow = useNavigate();
 
   useEffect(() => {
+    
     const fetchCategorias = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/cate_recetas`);
@@ -62,11 +63,14 @@ const Categoria_recetasChef = () => {
   // Función para navegar a la página de recetas con el id de la categoría
   const navegar = (categoriaId) => {
     localStorage.setItem("id_categoria_recetas", categoriaId);
-    navigateNow(`/chef/recetas/${categoriaId}`);
+    navigateNow(`/admin/recetas/${categoriaId}`);
   };
 
   return (
-    <div className="container mt-5 overflow-y-auto max-h-[80vh]">
+    <div className="p-8 max-w-7xl mx-auto">
+      <h1 className="text-3xl titulo font-bold tracking-tight">Categoria de recetas</h1>
+      <p className="titulo font-bold tracking-tight">Agregue categorias por ejemplo: Pures, Ensaladas, Postres...</p>
+
       <div className="mb-4">
         <input
           type="text"

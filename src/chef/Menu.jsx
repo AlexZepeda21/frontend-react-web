@@ -166,13 +166,13 @@ const MenuChef = () => {
         timer: 7000,
       });
     }
-    
+
   };
 
   // Función para redirigir al usuario a la página de platos
   const navigateToPlatos = (idCategoriaMenu) => {
     localStorage.setItem("id_categoria_menu", idCategoriaMenu); // Guardamos el ID en el localStorage
-    navigate(`/chef/Platos/${idCategoriaMenu}`); // Navegamos a la página de platos con el ID de la categoría
+    navigate(`/Chef/Platos/${idCategoriaMenu}`); // Navegamos a la página de platos con el ID de la categoría
   };
 
   useEffect(() => {
@@ -182,7 +182,12 @@ const MenuChef = () => {
   if (error) return <div className="text-center text-danger">{error}</div>;
 
   return (
-    <div className="container mt-5 overflow-y-auto max-h-[80vh]">
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center">
+      <h1 className="text-3xl titulo font-bold tracking-tight">Construya su menu</h1>
+      </div>
+      <p className="titulo font-bold tracking-tight">Agregue categorias por ejemplo: Platos de entrada o postres</p>
+
       {/* Botón Agregar Categoría */}
       <div className="mb-4">
         <button
@@ -201,7 +206,7 @@ const MenuChef = () => {
               <div className="card shadow-sm">
                 <div className="card-body">
                   {/* Título centrado */}
-                  <h5 className="card-title text-center">{categoria.nombre}, id: {categoria.id_categoria_menu}</h5>
+                  <h5 className="card-title text-center">{categoria.nombre}</h5>
 
                   {/* Contenedor de imagen con clase card-img-container */}
                   <div className="card-img-container text-center">

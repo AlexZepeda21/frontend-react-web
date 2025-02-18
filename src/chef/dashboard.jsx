@@ -41,7 +41,7 @@ const DashboardChef = () => {
 
           const labels = message.map((item) => item.nombre);
           const barDataValues = message.map((item) => item.cantidad);
-          const lineDataValues = message.map((item) => item.cantidad); 
+          const lineDataValues = message.map((item) => item.cantidad);
 
           setBarData({
             labels,
@@ -56,7 +56,7 @@ const DashboardChef = () => {
             ],
           });
 
-        
+
         } else {
           console.error("Error en los datos de la API:", result.message);
         }
@@ -66,7 +66,7 @@ const DashboardChef = () => {
     };
 
     fetchData();
-  }, []); 
+  }, []);
 
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const DashboardChef = () => {
 
           const labels = message.map((item) => item.nombre);
           const barDataValues = message.map((item) => item.cantidad);
-          const lineDataValues = message.map((item) => item.cantidad); 
+          const lineDataValues = message.map((item) => item.cantidad);
 
           setLineData({
             labels,
@@ -96,7 +96,7 @@ const DashboardChef = () => {
             ],
           });
 
-        
+
         } else {
           console.error("Error en los datos de la API:", result.message);
         }
@@ -106,7 +106,7 @@ const DashboardChef = () => {
     };
 
     fetchData();
-  }, []); 
+  }, []);
 
   const barOptions = {
     responsive: true,
@@ -124,6 +124,9 @@ const DashboardChef = () => {
 
   return (
     <div className="container di mt-5">
+      <h1 className="text-3xl titulo font-bold tracking-tight">Graficos</h1>
+      <p className="titulo font-bold tracking-tight"> Estos le proporcionaran un analisis mas detenido de la gestion de sus productos y platillos</p>
+
       <div className="dashboard-container" style={styles.dashboardContainer}>
         {/* Gráfica de Barras */}
         <div className="chart" style={styles.chart}>
@@ -152,10 +155,10 @@ const DashboardChef = () => {
 const styles = {
   dashboardContainer: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr", 
+    gridTemplateColumns: "1fr 1fr",
     gap: "20px",
     padding: "20px",
-    maxWidth: "1200px", 
+    maxWidth: "1200px",
     margin: "auto",
   },
   chart: {
@@ -163,7 +166,7 @@ const styles = {
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    height: "300px", 
+    height: "300px",
   },
   title: {
     textAlign: "center",

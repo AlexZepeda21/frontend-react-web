@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../url';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'; // Importar SweetAlert2
 import {
     Table,
@@ -20,8 +20,8 @@ const Reservas = () => {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 3; 
-    const navigate = useNavigate(); 
+    const itemsPerPage = 3;
+    const navigate = useNavigate();
 
     const fetchMenuItems = async () => {
         try {
@@ -54,12 +54,14 @@ const Reservas = () => {
 
     const EntregarReserva = async (id_reservas) => {
         const id_re = id_reservas;
-        navigate(`/admin/Items`, { state: {id_re}  }); 
+        navigate(`/admin/Items`, { state: { id_re } });
     }
 
     return (
         <Container fluid className="p-8 max-w-7xl mx-auto">
-            <h1>Reservas</h1>
+            <h1 className="text-3xl titulo font-bold tracking-tight">Reservas</h1>
+            <p className="titulo font-bold tracking-tight">Gestione las reservas de platos de los estudiantes</p>
+
             <input
                 type="text"
                 className="form-control mb-3"
@@ -103,7 +105,7 @@ const Reservas = () => {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <button 
+                                            <button
                                                 className="btn btn-success"
                                                 onClick={() => EntregarReserva(categoria.id_reservas)}
                                             >

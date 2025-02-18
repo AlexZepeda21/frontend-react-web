@@ -90,7 +90,9 @@ const Categoria_productosChef = () => {
   return (
     <div className="container di mt-5">
       <h1 className="text-3xl titulo font-bold tracking-tight">Categorias de Productos</h1>
+      <p className="titulo font-bold tracking-tight">Categorice sus productos por ejemplo en verduras, frutas, Lacteos, etc</p>
 
+<br />
       <div className="mb-4">
         <input
           type="text"
@@ -107,9 +109,6 @@ const Categoria_productosChef = () => {
         </div>
 
       </div>
-
-
-
 
       <div className="row">
         {currentCategorias.length > 0 ? (
@@ -191,7 +190,6 @@ const Categoria_productosChef = () => {
           categoriascontproducto={categoriascontproducto}
         />
       )}
-
 
       {isOpens && MdActualizarCate_producto && (
         <MdActualizarCate_producto
