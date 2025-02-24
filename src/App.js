@@ -30,6 +30,7 @@ import Reservas_item from './admin/Reservas_item';
 import CrearplatoDeReceta from './admin/CrearplatoDeReceta';
 import Fechas from './admin/Fechas';
 import Productos_vencidos_por_vencer from './admin/productos_vendidos_por_vencer';
+import Recuperacion from './admin/Recuperacion';
 
 
 // Componentes chef
@@ -236,6 +237,7 @@ function App() {
           <Route path="/admin" element={<Layout />}>
 
             <Route path="por_Vencer" element={<Productos_vencidos_por_vencer />} />
+            <Route path="Recuperacion" element={<Recuperacion />} />
 
             <Route path="categoria_recetas" element={<Categoria_recetas />} />
             <Route path="categoria_productos" element={<Categoria_productos />} />

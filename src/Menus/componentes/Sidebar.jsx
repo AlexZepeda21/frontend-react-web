@@ -99,6 +99,9 @@ function Sidebar() {
           <a href="/../admin/dashboard" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Graficos
           </a>
+          <a href="/../admin/Recuperacion" className="nav-item">
+            <i className="fas fa-tachometer-alt"></i>Recuperacion
+          </a>
           <a href="/../admin/categoria_productos" className="nav-item">
             <i className="fas fa-th-large"></i>Categorías
           </a>
