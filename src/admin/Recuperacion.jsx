@@ -52,9 +52,35 @@ const Recuperacion = () => {
 
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-    const EntregarReserva = async (id_reservas) => {
-        const id_re = id_reservas;
-        navigate(`/admin/Items`, { state: { id_re } });
+    const cambiocontraseña = async (id_usuario,id_mensajes) => {
+
+        const responseusuario = await fetch(`${API_BASE_URL}/user/${id_usuario}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ clave: "ITCA-FEPADE" }),
+    });
+
+    const result = await responseusuario.json();
+    if (responseusuario.ok && result.status === 200) {
+        Swal.fire({
+            title: 'Su contraseña ha sido cambiada',
+            text: 'Su nueva contraseña es: ITCA-FEPADE.',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'OK'
+          });
+          const responsemensaje = await fetch(`${API_BASE_URL}/mensajes/${id_mensajes}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ estado: 0 }),
+    });
+    }
+    
+        
     }
 
     return (
@@ -93,7 +119,7 @@ const Recuperacion = () => {
                                         <TableCell>
                                             <button
                                                 className="btn btn-success"
-                                                onClick={() => EntregarReserva(categoria.id_mensajes)}
+                                                onClick={() => cambiocontraseña(categoria.id_usuario,categoria.id_mensajes)}
                                             >
                                                 Restablecer contraseñas
                                             </button>
