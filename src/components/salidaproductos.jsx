@@ -13,7 +13,7 @@ export default function Salidaproductos({ isOpen, setIsOpen, id_ingreso  }) {
         try {
           const response = await fetch(`${API_BASE_URL}/ingreso/${id_ingreso}`);
           const data = await response.json();
-          setIngreso(data.message || {});
+          setIngreso(data.message[0] || {});
         } catch (error) {
           console.error('Error al obtener los productos:', error);
           alert(error);
@@ -47,7 +47,6 @@ export default function Salidaproductos({ isOpen, setIsOpen, id_ingreso  }) {
     
           useEffect(() => {
         if (Ingreso) {
-            alert(Ingreso.id_ingreso)
             const fechaVencimiento = new Date(Ingreso.fecha_vencimiento);
             if (fechaVencimiento.getTime()) {
                 const fechaFormateada = fechaVencimiento.toISOString().split('T')[0];
@@ -244,7 +243,7 @@ export default function Salidaproductos({ isOpen, setIsOpen, id_ingreso  }) {
             >
                 <div className="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        Gestión del producto llamado {Ingreso.nombre} {Ingreso.id_ingreso}
+                        Gestión del producto llamado {Ingreso.nombre} 
                     </h2>
                     <button
                         onClick={closeModal}
