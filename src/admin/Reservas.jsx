@@ -54,7 +54,7 @@ const Reservas = () => {
 
     const EntregarReserva = async (id_reservas) => {
         const id_re = id_reservas;
-        navigate(`/admin/Items`, { state: { id_re } });
+        navigate(`/cafe/appWeb/admin/Items`, { state: { id_re } });
     }
 
     return (
