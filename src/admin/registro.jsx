@@ -9,6 +9,7 @@ import { MdEmail, MdLock, MdPerson } from "react-icons/md";
 import { API_BASE_URL } from '../url';
 import Swal from 'sweetalert2';
 import '../styles/login/estilosregister.css';
+import { ADMIN } from '../url';
 
 export default function Registro() {
 
