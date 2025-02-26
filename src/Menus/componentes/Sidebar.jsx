@@ -93,37 +93,37 @@ function Sidebar() {
         </div>
 
         <nav className="main-nav">
-        <a href="/../admin/por_Vencer" className="nav-item">
+        <a href="/../cafe/appWeb/admin/por_Vencer" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Dashboard
           </a>
-          <a href="/../admin/dashboard" className="nav-item">
+          <a href="/../cafe/appWeb/admin/dashboard" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Graficos
           </a>
-          <a href="/../admin/Recuperacion" className="nav-item">
+          <a href="/../cafe/appWeb/admin/Recuperacion" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Recuperacion
           </a>
-          <a href="/../admin/categoria_productos" className="nav-item">
+          <a href="/../cafe/appWeb/admin/categoria_productos" className="nav-item">
             <i className="fas fa-th-large"></i>Categorías
           </a>
-          <a href="/../admin/uni_medidas" className="nav-item">
+          <a href="/../cafe/appWeb/admin/uni_medidas" className="nav-item">
             <i className="fas fa-balance-scale"></i>Unidades Medida
           </a>
-          <a href="/../admin/Fechas" className="nav-item">
+          <a href="/../cafe/appWeb/admin/Fechas" className="nav-item">
             <i className="fas fa-box"></i>Fechas
           </a>
-          <a href="/../admin/categoria_recetas" className="nav-item">
+          <a href="/../cafe/appWeb/admin/categoria_recetas" className="nav-item">
             <i className="fas fa-utensils"></i>Recetas
           </a>
-          <a href="/../admin/Menu" className="nav-item">
+          <a href="/../cafe/appWeb/admin/Menu" className="nav-item">
             <i className="fas fa-concierge-bell"></i>Menu
           </a>
-          <a href="../admin/Reservas" className="nav-item">
+          <a href="/../cafe/appWeb/admin/Reservas" className="nav-item">
             <i className="fas fa-calendar-check"></i>Reservas
           </a>
-          <a href="../admin/usuario" className="nav-item">
+          <a href="/../cafe/appWeb/admin/usuario" className="nav-item">
             <i className="fas fa-users"></i>Usuarios
           </a>
-          <a href="../admin/perfil" className="nav-item">
+          <a href="/../cafe/appWeb/admin/perfil" className="nav-item">
             <i className="fas fa-user"></i>Ver Perfil
           </a>
           {/* Botón para cerrar sesión usando SweetAlert */}

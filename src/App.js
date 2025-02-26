@@ -234,7 +234,7 @@ function App() {
       startTimeout();
       return (
         <Routes>
-          <Route path="/admin" element={<Layout />}>
+          <Route path="cafe/appWeb/admin" element={<Layout />}>
 
             <Route path="por_Vencer" element={<Productos_vencidos_por_vencer />} />
             <Route path="Recuperacion" element={<Recuperacion />} />
@@ -264,7 +264,7 @@ function App() {
 
 
           </Route>
-          <Route path="*" element={<Navigate to="/admin" />} />
+          <Route path="*" element={<Navigate to="cafe/appWeb/admin" />} />
         </Routes>
       );
     }
@@ -272,7 +272,7 @@ function App() {
     if (tipoUsuarioSession === '2') {
       return (
         <Routes>
-          <Route path="/chef" element={<LayoutChef />}>
+          <Route path="cafe/appWeb/chef" element={<LayoutChef />}>
 
             <Route path="categoria_recetas" element={<Categoria_recetasChef />} />
             <Route path="categoria_productos" element={<Categoria_productosChef />} />
@@ -292,7 +292,7 @@ function App() {
 
 
           </Route>
-          <Route path="*" element={<Navigate to="/chef" />} />
+          <Route path="*" element={<Navigate to="cafe/appWeb/chef" />} />
         </Routes>
       );
     }
