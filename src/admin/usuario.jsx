@@ -353,7 +353,7 @@ const UsuarioList = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl titulo font-bold tracking-tight">Lista de Usuarios</h1>
         <Button
-          onClick={() => navigate('/admin/registro')}
+          onClick={() => navigate(`${ADMIN}/registro`)}
           size="lg"
           className='m-1 btn-agregar'
         >

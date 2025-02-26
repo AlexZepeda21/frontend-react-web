@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/tabledesign";
-import { API_BASE_URL } from '../url';
+import { ADMIN, API_BASE_URL } from '../url';
 import MdAgregarRecetas from '../components/MdAgregarreceta';
 import MdEditarReceta from '../components/MdEditarReceta'; // Modal de Editar receta
 import { useParams } from 'react-router-dom';
@@ -63,12 +63,11 @@ const RecetasList = () => {
   };
 
   const handleVerReceta = (idReceta) => {
-    navigate(`/admin/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`${ADMIN}/verReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
-
   const handleVerRecetaPlato = (idReceta) => {
-    navigate(`/admin/CrearplatoDeReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`${ADMIN}/CrearplatoDeReceta/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
   // Función para abrir el modal "Editar"

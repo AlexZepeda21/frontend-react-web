@@ -72,7 +72,7 @@ export default function Registro() {
           });
 
           // Redirigir a la ruta deseada
-          navigate('/admin/usuario');
+          navigate(`${ADMIN}/usuario`);
         } else {
           const data = await response.json();
           Swal.fire({
@@ -123,7 +123,7 @@ export default function Registro() {
       genero: '',
       id_tipo_usuario: '0',
     });
-    navigate('/admin/usuario');
+    navigate(`${ADMIN}/usuario`);
   }
 
   return (

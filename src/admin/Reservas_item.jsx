@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { API_BASE_URL } from '../url';
+import { ADMIN, API_BASE_URL } from '../url';
 import '../styles/productos/cardcategorias_pro.css';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
@@ -83,7 +83,7 @@ const Reservas_item = () => {
                       timer: 3000,  // Duración de la notificación en milisegundos
                     });
 
-                    navigate(`/admin/Reservas`,); 
+                    navigate(`${ADMIN}/Reservas`,); 
 
             fetchMenuItems();
             return data;

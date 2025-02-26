@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { API_BASE_URL } from '../url';
+import { ADMIN, API_BASE_URL } from '../url';
 import {
   Table,
   TableBody,
@@ -372,7 +372,7 @@ const Platos = () => {
   );
 
   const handleVerRecetaPlato = (idReceta) => {
-    navigate(`/admin/VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`${ADMIN}VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
 

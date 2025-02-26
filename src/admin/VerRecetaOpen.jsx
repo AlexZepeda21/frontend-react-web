@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { API_BASE_URL } from '../url';
+import { ADMIN, API_BASE_URL } from '../url';
 import { Button } from '../components/ui/button';
 import { Image } from 'react-bootstrap';
 import { Clock, ChefHat } from 'lucide-react';
@@ -738,7 +738,7 @@ const VerRecetaPlato = () => {
                 });
 
                 setTimeout(() => {
-                    navigate(`/admin/Platos/${id_categoriaMenu}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+                    navigate(`${ADMIN}/Platos/${id_categoriaMenu}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
                 }, 4000); // 1000 milisegundos = 1 segundo
             } else {
 
