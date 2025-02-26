@@ -372,7 +372,7 @@ const Platos = () => {
   );
 
   const handleVerRecetaPlato = (idReceta) => {
-    navigate(`${ADMIN}VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
+    navigate(`${ADMIN}/VerRecetaPlato/${idReceta}`);  // Corrección: usa la ruta absoluta para redirigir correctamente
   };
 
 

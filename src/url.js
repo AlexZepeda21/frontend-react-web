@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://192.168.128.190/cafe/backend-itca-laravel/public/ap
 //const API_BASE_URL = 'http://192.168.131.69:8080/api';
 //const API_BASE_URL = 'http://192.168.0.129:8080/api';
 const ADMIN = '/cafe/appWeb/admin';
-const CHEF = '/../cafe/appWeb/chef/';
+const CHEF = '/../cafe/appWeb/chef';
 
 
 

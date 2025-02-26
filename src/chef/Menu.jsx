@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import Swal from 'sweetalert2'  // Import SweetAlert2
 import { Cat } from 'lucide-react';
+import { CHEF } from '../url';
 
 const MenuChef = () => {
   const [isOpenGenerador, setIsOpenGenerador] = useState(false);
@@ -172,7 +173,7 @@ const MenuChef = () => {
   // Función para redirigir al usuario a la página de platos
   const navigateToPlatos = (idCategoriaMenu) => {
     localStorage.setItem("id_categoria_menu", idCategoriaMenu); // Guardamos el ID en el localStorage
-    navigate(`/Chef/Platos/${idCategoriaMenu}`); // Navegamos a la página de platos con el ID de la categoría
+    navigate(`${CHEF}/Platos/${idCategoriaMenu}`); // Navegamos a la página de platos con el ID de la categoría
   };
 
   useEffect(() => {

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import "../styles/Cardcategorias.css";
-import { API_BASE_URL } from '../url';
+import { API_BASE_URL, CHEF } from '../url';
 import MdActualizarCateRecetas from '../components/MdActualizarCateRecetas';
 import MdAgregarCateRecetas from '../components/MdAgregarCateRecetas';
 import { useNavigate } from 'react-router-dom';
+
 
 const Categoria_recetasChef = () => {
   const [categorias, setCategorias] = useState([]);
@@ -63,7 +64,7 @@ const Categoria_recetasChef = () => {
   // Función para navegar a la página de recetas con el id de la categoría
   const navegar = (categoriaId) => {
     localStorage.setItem("id_categoria_recetas", categoriaId);
-    navigateNow(`/chef/recetas/${categoriaId}`);
+    navigateNow(`${CHEF}recetas/${categoriaId}`);
   };
 
   return (

@@ -13,6 +13,8 @@ import {
     TableRow,
 } from "../components/ui/tabledesign";
 
+import { CHEF } from '../url';
+
 const Reservas = () => {
     const { id_menu } = useParams();
     const [menuItems, setMenuItems] = useState([]);
@@ -54,7 +56,7 @@ const Reservas = () => {
 
     const EntregarReserva = async (id_reservas) => {
         const id_re = id_reservas;
-        navigate(`/chef/Items`, { state: { id_re } });
+        navigate(`${CHEF}/Items`, { state: { id_re } });
     }
 
     return (
