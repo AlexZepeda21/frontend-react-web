@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../url';
 import MdActualizarCateRecetas from '../components/MdActualizarCateRecetas';
 import MdAgregarCateRecetas from '../components/MdAgregarCateRecetas';
 import { useNavigate } from 'react-router-dom';
+import { ADMIN } from '../url';
 
 const Categoria_recetas = () => {
   const [categorias, setCategorias] = useState([]);
@@ -62,7 +63,7 @@ const Categoria_recetas = () => {
   // Función para navegar a la página de recetas con el id de la categoría
   const navegar = (categoriaId) => {
     localStorage.setItem("id_categoria_recetas", categoriaId);
-    navigateNow(`/admin/recetas/${categoriaId}`);
+    navigateNow(`${ADMIN}/recetas/${categoriaId}`);
   };
 
   return (

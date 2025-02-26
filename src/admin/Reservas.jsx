@@ -3,6 +3,7 @@ import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../url';
 import { useNavigate } from 'react-router-dom';
+import { ADMIN } from '../url';
 import Swal from 'sweetalert2'; // Importar SweetAlert2
 import {
     Table,
@@ -54,7 +55,7 @@ const Reservas = () => {
 
     const EntregarReserva = async (id_reservas) => {
         const id_re = id_reservas;
-        navigate(`/cafe/appWeb/admin/Items`, { state: { id_re } });
+        navigate(`${ADMIN}/Items`, { state: { id_re } });
     }
 
     return (

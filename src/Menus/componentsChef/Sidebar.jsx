@@ -76,26 +76,26 @@ function Sidebar() {
           <img src={logo} alt="ITCA FEPADE" className="logo" />
         </div>
         <nav className="main-nav">
-          <a href="/../chef/dashboard" className="nav-item">
+          <a href="/../cafe/appWeb/chef/dashboard" className="nav-item">
             <i className="fas fa-tachometer-alt"></i>Dashboard
           </a>
-          <a href="/../chef/categoria_productos" className="nav-item">
+          <a href="/../cafe/appWeb/chef/categoria_productos" className="nav-item">
             <i className="fas fa-th-large"></i>Categorías
           </a>
-          <a href="/../chef/uni_medidas" className="nav-item">
+          <a href="/../cafe/appWeb/chef/uni_medidas" className="nav-item">
             <i className="fas fa-balance-scale"></i>Unidades Medida
           </a>
-          <a href="/../chef/categoria_recetas" className="nav-item">
+          <a href="/../cafe/appWeb/chef/categoria_recetas" className="nav-item">
             <i className="fas fa-utensils"></i>Recetas
           </a>
-          <a href="/../chef/Menu" className="nav-item">
+          <a href="/../cafe/appWeb/chef/Menu" className="nav-item">
             <i className="fas fa-concierge-bell"></i>Menu
           </a>
-          <a href="/../chef/Reservas" className="nav-item">
+          <a href="/../cafe/appWeb/chef/Reservas" className="nav-item">
             <i className="fas fa-calendar-check"></i>Reservas
           </a>
           
-          <a href="../chef/perfil" className="nav-item">
+          <a href="/../cafe/appWeb/chef/perfil" className="nav-item">
             <i className="fas fa-user"></i>Ver Perfil
           </a>
           {/* Botón para cerrar sesión usando SweetAlert */}
